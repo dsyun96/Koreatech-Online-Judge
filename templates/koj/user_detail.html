@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+            <div class="table-responsive" style="margin-top: 15px;">
+              <br><br><br>
+              <th> 이름 : {{user.username}}</th>
+              <br>
+              맞은 문제 :
+
+                {% for submit in submits_ac %}
+                  <th> <a href="{% url 'koj:problem_detail' submit.prob_id %}"> {{ submit.prob_id }}</a> <th>
+
+                {% endfor %}
+              <br>
+              <th> 맞은 문제 수 : {{ submits_count_ac }}<th>
+              <br>
+              틀린 문제 :
+              {% for submit in submits_wa%}
+
+              <th> <a href="{% url 'koj:problem_detail' submit.prob_id %}"> {{ submit.prob_id }}</a> <th>
+              {% endfor %}
+              <br>
+              <th> 틀린 문제 수 : {{ submits_count_wa }}<th>
+              <br><br><br>
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
