@@ -78,3 +78,4 @@ class Comment(models.Model):
 
 class Fortest(models.Model):
     ip_adress = models.CharField(max_length=126)
+    test = models.TextField()

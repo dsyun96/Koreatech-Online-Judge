@@ -21,10 +21,10 @@
                 <tbody>
                     {% for submit in submits %}
                     <tr>
-						<td>{{ submit.id }}</td>
-						<td>{{ submit.author }}</td>
-                        <td>{{ submit.problem }}</td>
-                        <td>{{ submit.result }}</td>
+						            <td>{{ submit.id }}</td>
+						            <td><a href="{% url 'koj:user_detail' submit.author %}">{{ submit.author }}</a></td>
+                        <td><a href="{% url 'koj:problem_detail' submit.problem %}", style="font-weight: bold">{{ submit.problem }}</a></td>
+                        <td style="font-weight: bold">{{ submit.result }}</td>
                         <td>{{ submit.memory }}</td>
                         <td>{{ submit.runtime }}</td>
                         <td>{{ submit.lang }}</td>
