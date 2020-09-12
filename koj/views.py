@@ -36,6 +36,21 @@ def problem_detail(request, prob_id):
     context = {'problem': problem}
     return render(request, 'koj/problem_detail.html', context)
 
+
+def ranking_list(request):
+    page = request.GET.get('page', '1')
+
+
+    users = CustomUser.objects.all().order_by('rank')
+
+
+
+    paginator = Paginator(users, 15)
+    page_obj = paginator.get_page(page)
+
+    context = {'Users_list': page_obj, 'Users': users[int(page) * 15 - 15: int(page) * 15]}
+    return render(request, 'koj/ranking_list.html', context)
+
 #------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------
@@ -221,6 +236,17 @@ def user_detail(request, username):
     submit_count_ac_d = submit_list_ac_d.count()
     submit_count_wa = Submit.objects.filter(author=user).filter(result='WA').count()
     submit_count_author = Submit.objects.filter(author=user).count()
+
+    user.solved = submit_count_ac_d
+    user.submited = Submit.objects.filter(author=user).count()
+    user.save()
+    ranking = CustomUser.objects.all().order_by('-solved')
+    counts=1
+
+    for i in ranking:
+        i.rank = counts
+        counts +=1
+        i.save()
 
 
     submit_list_ac_e = []
