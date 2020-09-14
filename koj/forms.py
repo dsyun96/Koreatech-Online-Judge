@@ -1,5 +1,5 @@
 from django import forms
-from .models import Article, Comment
+from .models import Article, Comment, Problem, prob_path, Testcase
 from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
@@ -24,3 +24,22 @@ class CommentForm(forms.ModelForm):
         widgets = {
           'content': forms.Textarea(attrs={'placeholder': '바르고 고운 말을 사용합시다', 'rows':1}),
         }
+
+class ProblemForm(forms.ModelForm):
+    prob_id = forms.IntegerField(label = "문제 번호")
+    title = forms.CharField(label = "제목")
+    body = forms.CharField()
+    input = forms.CharField()
+    output = forms.CharField()
+    time_limit = forms.IntegerField()
+    memory_limit = forms.IntegerField()
+    class Meta:
+        model = Problem
+        fields = ['prob_id', 'title', 'body', 'input', 'output', 'time_limit', 'memory_limit']
+
+class TestcaseForm(forms.ModelForm):
+    input_data = forms.FileField()
+    output_data = forms.FileField()
+    class Meta:
+        model = Testcase
+        fields = ['input_data', 'output_data']

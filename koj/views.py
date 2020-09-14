@@ -8,12 +8,13 @@ from django.contrib import messages
 #from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .tasks import judge
-from .forms import ArticleForm, CommentForm
+from .forms import ArticleForm, CommentForm, ProblemForm, TestcaseForm
 
 
 # Create your views here.
 def index(request):
     return render(request, 'koj/index.html', {})
+
 
 
 def problemset(request):
@@ -36,6 +37,37 @@ def problem_detail(request, prob_id):
     context = {'problem': problem}
     return render(request, 'koj/problem_detail.html', context)
 
+def problem_write_foruser(request):
+    if request.method == "GET":
+        form = ProblemForm()
+        form_t = TestcaseForm()
+
+    if request.method == "POST":
+        form = ProblemForm(request.POST)
+        form_t = TestcaseForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            user = CustomUser.objects.get(username = request.user.get_username())
+            new_problem = Problem(
+                prob_id = form.cleaned_data['prob_id'],
+                title = form.cleaned_data['title'],
+                body = form.cleaned_data['body'],
+                input = form.cleaned_data['input'],
+                output = form.cleaned_data['output'],
+                time_limit = form.cleaned_data['time_limit'],
+                memory_limit = form.cleaned_data['memory_limit'],
+                made_by = user
+            )
+            new_problem.save()
+            if form_t.is_valid():
+                form_t.problem = new_problem
+                form_t.input_data = Testcase(input_data = request.FILES['input_data'])
+                form_t.output_data = Testcase(output_data = request.FILES['output_data'])
+                form_t.save()
+                return redirect('koj:problemset')
+
+    context = {'form':form, 'form_t':form_t}
+    return render(request, 'koj/problem_write_foruser.html',context)
 
 def ranking_list(request):
     page = request.GET.get('page', '1')

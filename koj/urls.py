@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('problemset', views.problemset, name='problemset'),
     path('problem/<int:prob_id>', views.problem_detail, name='problem_detail'),
+    path('problem_write_foruser/', views.problem_write_foruser, name='problem_write_foruser'),
     path('ranking_list/', views.ranking_list, name='ranking_list'),
     path('koj_ide', views.koj_ide, name='koj_ide'),
     path('article_list/', views.article_list, name='article_list'),

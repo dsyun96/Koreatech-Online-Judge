@@ -12,6 +12,7 @@ class Problem(models.Model):
     output = models.TextField()
     time_limit = models.IntegerField(default=1)
     memory_limit = models.IntegerField(default=128)
+    made_by = models.CharField(default='admin', max_length=32)
 
     def __str__(self):
         return str(self.prob_id)
