@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Problem, Submit, Article, Comment, Fortest
+from .models import Problem, Submit, Article, Comment, Fortest, Testcase
 from common.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
@@ -59,15 +59,46 @@ def problem_write_foruser(request):
                 made_by = user
             )
             new_problem.save()
+
             if form_t.is_valid():
-                form_t.problem = new_problem
-                form_t.input_data = Testcase(input_data = request.FILES['input_data'])
-                form_t.output_data = Testcase(output_data = request.FILES['output_data'])
-                form_t.save()
+                temp_form = form_t.save(commit=False)
+                temp_form.problem = Problem.objects.get(prob_id = new_problem.prob_id)
+                temp_form.save()
+                #form_t.input_data = Testcase(input_data = request.FILES['input_data'])
+                #form_t.output_data = Testcase(output_data = request.FILES['output_data'])
+                temp_form.save()
                 return redirect('koj:problemset')
 
-    context = {'form':form, 'form_t':form_t}
+            #return redirect('koj:problem_write_addfile', new_problem.prob_id)
+    #context = {'form':form, 'form_t':form_t}
+    context = {'form_t':form_t, 'form':form}
     return render(request, 'koj/problem_write_foruser.html',context)
+
+
+def problem_write_addfile(request, prob_id):
+    if request.method == "GET":
+        form = TestcaseForm()
+
+
+    if request.method == "POST":
+
+        form = TestcaseForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            #form.save(commit=False)
+            temp_form = form.save(commit=False)
+            temp_form.problem = Problem.objects.get(prob_id = prob_id)
+            temp_form.save()
+            #form.problem = Problem.objects.get(prob_id = prob_id)
+            #form.input_data = Testcase(input_data = request.FILES['input_data'])
+            #form.output_data = Testcase(output_data = request.FILES['output_data'])
+            return redirect('koj:index')
+
+    context = {'form':form}
+    return render(request, 'koj/problem_write_addfile.html', context)
+
+
+
 
 def ranking_list(request):
     page = request.GET.get('page', '1')

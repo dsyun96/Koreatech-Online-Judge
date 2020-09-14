@@ -1,5 +1,6 @@
 from django import forms
 from .models import Article, Comment, Problem, prob_path, Testcase
+from common.models import CustomUser
 from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
@@ -38,8 +39,6 @@ class ProblemForm(forms.ModelForm):
         fields = ['prob_id', 'title', 'body', 'input', 'output', 'time_limit', 'memory_limit']
 
 class TestcaseForm(forms.ModelForm):
-    input_data = forms.FileField()
-    output_data = forms.FileField()
     class Meta:
         model = Testcase
         fields = ['input_data', 'output_data']

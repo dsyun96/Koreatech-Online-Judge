@@ -5,14 +5,12 @@
 <div class = "container">
 
   <br>
-  <form method = "POST" action="." enctype="multipart/form-data">
+    <form enctype="multipart/form-data" method = "POST" >
     {% csrf_token %}
-
-
-    {{ form.as_p }} 
+    {{ form.as_p }}
     {{ form_t.as_p }}
 
-    <input type="submit" value="Save">
+    <button type="submit" class="btn btn-primary" style = "float:right;">다음</button>
   </form>
 </div>
 

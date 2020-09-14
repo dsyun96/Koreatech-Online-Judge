@@ -11,6 +11,7 @@ urlpatterns = [
     path('problemset', views.problemset, name='problemset'),
     path('problem/<int:prob_id>', views.problem_detail, name='problem_detail'),
     path('problem_write_foruser/', views.problem_write_foruser, name='problem_write_foruser'),
+    path('problem_write_addfile/<int:prob_id>', views.problem_write_addfile, name='problem_write_addfile'),
     path('ranking_list/', views.ranking_list, name='ranking_list'),
     path('koj_ide', views.koj_ide, name='koj_ide'),
     path('article_list/', views.article_list, name='article_list'),
@@ -27,4 +28,4 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
