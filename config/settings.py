@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+AUTH_USER_MODEL = 'common.CustomUser'
+
 INSTALLED_APPS = [
     'koj.apps.KojConfig',
     'common.apps.CommonConfig',
@@ -39,7 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
+    'ckeditor_uploader',
+    'mathfilters',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,6 +79,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -85,6 +93,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,3 +135,7 @@ STATICFILES_DIRS = [
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '')
+CKEDITOR_UPLOAD_PATH = 'uploads/'

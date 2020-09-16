@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+            <div class="table-responsive" style="margin-top: 15px;">
+              {% if messages %}
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>제목 : {{article.title}}</th>
+                            <th>IP : {{article.ip_address}}</th>
+
+                        </tr>
+                    </thead>
+                        <tbody>
+                            <tr>
+                                <td><br>
+                                  {% with content=article.content|safe %}
+                                  {{content|linebreaksbr}}
+                                  {% endwith %}
+                                  <br></td>
+
+                            </tr>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+
+                    <button type ="button" class = "btn btn-primary" style = "float:left;"
+                          onclick = "location.href = '{% url 'koj:article_rcmd' article.article_id %}'">추천</button>
+
+                    <button type ="button" class = "btn btn-primary" style = "float:left;"
+                          onclick = "location.href = '{% url 'koj:article_update' article.article_id %}'">수정하기</button>
+                    <button type ="button" class = "btn btn-primary" style = "float:left;"
+                          onclick = "location.href ='{% url 'koj:article_delete' article.article_id %}'">삭제하기</button>
+                    <button type ="button" class = "btn btn-primary" style = "float:left;"
+                          onclick = "location.href ='/article_list/'">돌아가기</button>
+                </div>
+    </div>
+</div>
+<br> <br>
+<div class="container">
+    <div class="row">
+            <div class="table-responsive" style="margin-top: 15px;">
+              <hr>
+              <form method="post" action="{% url 'koj:comment_write' article.article_id %}">
+                {%csrf_token%}
+                {% for i in article.comment_set.all %}
+                  <p>   ->{{i.author}}&nbsp&nbsp {{i}} <a href="{% url 'koj:comment_delete' i.id article.article_id %}">삭제</a></p>
+                  <hr>
+                  {%endfor%}
+
+                {{comment}}
+                <input type="submit">
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+{% endblock %}
