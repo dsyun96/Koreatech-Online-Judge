@@ -18,23 +18,37 @@ def index(request):
 
 
 def problemset(request):
-    # 입력 파라미터
-    page = request.GET.get('page', '1')
+    probs = Submit.objects.filter(problem__prob_id='1000')
+    problem_sub = Submit.objects.filter(problem__prob_id='1000').count()
+    problem_ac = Submit.objects.filter(result = 'AC').filter(problem__prob_id='1000').count()
+    problem_wa = Submit.objects.filter(result = 'WA').filter(problem__prob_id='1000').count()
 
-    # 조회
+    page = request.GET.get('page', '1') # 입력 파라미터
     problem_list = Problem.objects.order_by('prob_id')
-
-    # 페이징 처리
-    paginator = Paginator(problem_list, 15)
+    paginator = Paginator(problem_list, 15) # 페이징 처리
     page_obj = paginator.get_page(page)
 
-    context = {'problem_list': page_obj, 'problems': problem_list[int(page) * 15 - 15: int(page) * 15]}
+    problem_info = []
+    for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
+        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result='AC').count(),
+                            Submit.objects.filter(problem=prob).count()))
+
+
+
+    context = {'problem_list': page_obj, 'problems': problem_info}
     return render(request, 'koj/problemset.html', context)
 
 
 def problem_detail(request, prob_id):
     problem = get_object_or_404(Problem, prob_id=prob_id)
-    context = {'problem': problem}
+
+    code = ''
+
+    if request.GET.get('id'):
+        #code = Submit.objects.all().filter(id=request.GET['id'])
+        code = get_object_or_404(Submit, id=request.GET['id'])
+
+    context = {'problem': problem, 'code':code}
     return render(request, 'koj/problem_detail.html', context)
 
 def problem_write_foruser(request):
@@ -74,7 +88,6 @@ def problem_write_foruser(request):
     context = {'form_t':form_t, 'form':form}
     return render(request, 'koj/problem_write_foruser.html',context)
 
-
 def problem_write_addfile(request, prob_id):
     if request.method == "GET":
         form = TestcaseForm()
@@ -97,9 +110,6 @@ def problem_write_addfile(request, prob_id):
     context = {'form':form}
     return render(request, 'koj/problem_write_addfile.html', context)
 
-
-
-
 def ranking_list(request):
     page = request.GET.get('page', '1')
 
@@ -115,12 +125,8 @@ def ranking_list(request):
     return render(request, 'koj/ranking_list.html', context)
 
 #------------------------------------------------------------------------------------------------------------
-#------------------------------------------------------------------------------------------------------------
-#------------------------------------------------------------------------------------------------------------
 def koj_ide(request):
     return render(request, 'koj/koj_ide.html')
-#------------------------------------------------------------------------------------------------------------
-#------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------
 
 def article_list(request):
@@ -192,7 +198,6 @@ def article_write(request):
 
     return render(request, 'koj/article_write.html', {'form' :form})
 
-
 def article_update(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
 
@@ -228,7 +233,6 @@ def article_delete(request, article_id):
      article.delete()
      return redirect('koj:article_list')
 
-
 def article_rcmd(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
     context = {'article': article}
@@ -254,7 +258,6 @@ def article_rcmd(request, article_id):
         return response
     return redirect('/article/' + str(article.article_id))
 
-
 def comment_write(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
     filled_form = CommentForm(request.POST)
@@ -266,7 +269,6 @@ def comment_write(request, article_id):
         temp_form.save();
 
         return redirect('/article/' + str(article.article_id))
-
 
 def comment_delete(request, com_id, article_id):
     article = get_object_or_404(Article, article_id=article_id)
@@ -321,6 +323,7 @@ def user_detail(request, username):
 
     for i in submit_list_wa_d:
         submit_list_wa_e.append(Problem.objects.get(pk=list(i.values())[0]))
+
 
 
     context = {'User': user, 'submits_ac_d':submit_list_ac_e, 'submits_count_ac_d':submit_count_ac_d,

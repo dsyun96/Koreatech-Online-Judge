@@ -4,6 +4,7 @@
 <section class="clean-block features">
     <div style="padding: 30px;margin: 28px;">
         <div class="table-responsive">
+          <a href="{{ request.get_full_path }}"><button class="btn btn-primary" type="button" style="float:right">새로고침</button></a>
             <table class="table">
                 <thead>
                     <tr>
@@ -16,6 +17,7 @@
                         <th>언어</th>
                         <th>코드 길이</th>
                         <th>제출 시간</th>
+                        <th>코드 수정</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +32,11 @@
                         <td>{{ submit.lang }}</td>
                         <td>{{ submit.length }}</td>
                         <td>{{ submit.time }}</td>
+                        {% ifnotequal submit.author|stringformat:"s" user.username %}
+                        <td> {{user.username}} </td>
+                        {% else %}
+                        <td><a href="{% url 'koj:problem_detail' submit.problem%}?id={{submit.id}}">Edit</a></td>
+                        {% endifnotequal %}
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -27,15 +27,15 @@
                             </tr>
                             <tr>
                                 <th>제출</th>
-                                <th> <a href="{% url 'koj:status' %}?user_id={{ user.username }}">{{submit_count_author}}</a> </th>
+                                <th> <a href="{% url 'koj:status' %}?user_id={{ User.username }}">{{submit_count_author}}</a> </th>
                             </tr>
                             <tr>
                                 <th>AC</th>
-                                <th> <a href="{% url 'koj:status' %}?user_id={{ user.username }}&result=AC">{{submits_count_ac}}</a> </th>
+                                <th> <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=AC">{{submits_count_ac}}</a> </th>
                             </tr>
                             <tr>
                                 <th>WA</th>
-                                <th> <a href="{% url 'koj:status' %}?user_id={{ user.username }}&result=WA">{{ submits_count_wa }}</a> </th>
+                                <th> <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=WA">{{ submits_count_wa }}</a> </th>
                             </tr>
                             <tr>
                                 <th>시간초과</th>
