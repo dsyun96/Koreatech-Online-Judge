@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Problem, Testcase, Submit, Article, Comment
+from .models import Problem, Testcase, Submit, Article, Comment, Contest, ConParticipants, ConProblems
 #from ckeditor.widgets import CKEditorWidget
 
 
@@ -14,14 +14,29 @@ class ProblemAdmin(admin.ModelAdmin):
 
 class ArticleAdmin(admin.ModelAdmin):
     search_fields = ['title']
-    #content = forms.CharField(widget=CKEditorWidget())
+
+class Con_Participants(admin.StackedInline):
+    model = ConParticipants
+
+class Con_Problems(admin.StackedInline):
+    model = ConProblems
+
+class ContestAdmin(admin.ModelAdmin):
+    search_fields = ['title']
+    inlines = [Con_Participants, Con_Problems]
+    #inlines = [Con_Problems]
+
 
 class TestcaseAdmin(admin.ModelAdmin):
     pass
-
+class Con_Participants(admin.StackedInline):
+    pass
+class Con_Problems(admin.StackedInline):
+    pass
 
 admin.site.register(Problem, ProblemAdmin)
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Testcase, TestcaseAdmin)
+admin.site.register(Contest, ContestAdmin)
 admin.site.register(Submit)
 admin.site.register(Comment)
