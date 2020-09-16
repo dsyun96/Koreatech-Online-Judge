@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load mathfilters %}
+<section class="clean-block features">
+    <div style="padding: 30px;margin: 28px;">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>아이디</th>
+                        <th>맞은 문제</th>
+                        <th>제출</th>
+                        <th>정답 비율</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for users in Users %}
+                    <tr>
+                      <td>{{users.rank}}</td>
+                      <td><a class="nav-link" href="{% url 'koj:user_detail' users.username %}">{{users.username}}</a></td>
+                      <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=AC">{{users.solved}}</a></td>
+                      <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}">{{users.submited}}</a></td>
+                        {% if users.submited == 0 or users.submited == None %}
+                        <td>None</td>
+                        {% else %}
+                        <td> {{users.solved|div:users.submited|mul:100|floatformat:2}}</td>
+                        {% endif %}
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- 페이징처리 시작 -->
+                  <ul class="pagination justify-content-center">
+                      <!-- 이전페이지 -->
+                      {% if Users_list.has_previous %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ Users_list.previous_page_number }}">이전</a>
+                      </li>
+                      {% else %}
+                      <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+              </li>
+              {% endif %}
+
+              <!-- 페이지리스트 -->
+              {% for page_number in Users_list.paginator.page_range %}
+                {% if page_number == Users_list.number %}
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                </li>
+                {% endif %}
+              {% endfor %}
+
+              <!-- 다음페이지 -->
+              {% if Users_list.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ Users_list.next_page_number }}">다음</a>
+              <li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+              </li>
+              {% endif %}
+            </ul>
+            <!-- 페이징처리 끝 -->
+              </div>
+            </div>
+
+</section>
+{% endblock %}

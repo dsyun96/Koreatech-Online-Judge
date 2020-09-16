@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    <div class="row my-3">
+        <div class="col-4">
+          {% csrf_token %}
+          <p>congratulations</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
