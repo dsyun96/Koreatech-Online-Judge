@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="clean-block features">
+    <div style="padding: 30px;margin: 28px;">
+        <div class="table-responsive">
+          <a href="{{ request.get_full_path }}"><button class="btn btn-primary" type="button" style="float:right">새로고침</button></a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>채점번호</th>
+                        <th>아이디</th>
+                        <th>문제번호</th>
+                        <th>결과</th>
+                        <th>메모리</th>
+                        <th>실행 시간</th>
+                        <th>언어</th>
+                        <th>코드 길이</th>
+                        <th>제출 시간</th>
+                        <th>코드 수정</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submit in submits %}
+                    <tr>
+						            <td>{{ submit.id }}</td>
+						            <td><a href="{% url 'koj:user_detail' submit.author %}">{{ submit.author }}</a></td>
+                        <td><a href="{% url 'koj:problem_detail' submit.problem %}", style="font-weight: bold">{{ submit.problem }}</a></td>
+                        <td style="font-weight: bold">{{ submit.result }}</td>
+                        <td>{{ submit.memory }}</td>
+                        <td>{{ submit.runtime }}</td>
+                        <td>{{ submit.lang }}</td>
+                        <td>{{ submit.length }}</td>
+                        <td>{{ submit.time }}</td>
+                        {% ifnotequal submit.author|stringformat:"s" user.username %}
+                        <td> {{user.username}} </td>
+                        {% else %}
+                        <td><a href="{% url 'koj:problem_detail' submit.problem%}?id={{submit.id}}">Edit</a></td>
+                        {% endifnotequal %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+			<!-- 페이징처리 시작 -->
+            <ul class="pagination justify-content-center">
+                <!-- 이전페이지 -->
+                {% if submit_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ submit_list.previous_page_number }}">이전</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+        			<a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+				</li>
+				{% endif %}
+
+				<!-- 페이지리스트 -->
+				{% for page_number in submit_list.paginator.page_range %}
+					{% if page_number == submit_list.number %}
+					<li class="page-item active" aria-current="page">
+						<a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+					</li>
+					{% else %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+					</li>
+					{% endif %}
+				{% endfor %}
+
+				<!-- 다음페이지 -->
+				{% if submit_list.has_next %}
+				<li class="page-item">
+					<a class="page-link" href="?page={{ submit_list.next_page_number }}">다음</a>
+				<li>
+				{% else %}
+				<li class="page-item disabled">
+					<a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+				</li>
+				{% endif %}
+			</ul>
+			<!-- 페이징처리 끝 -->
+        </div>
+    </div>
+</section>
+{% endblock %}
