@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="container">
+      <br>
+      <h2>이름 : {{User.username}}</h2>
+      <h5>성별 : {{User.get_gender_display}}</h5>
+      <h5>생일 : {{User.birth_date}}</h5>
+      <h5>전공 : {{User.major}}</h5>
+      <br>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="table-responsive" style="margin-top: 15px;">
+
+                    <table class="table">
+
+                            <tr>
+                                <th>랭킹</th>
+                                <th>{{ User.rank }}</th>
+                            </tr>
+                            <tr>
+                                <th>맞은 문제</th>
+                                <th>{{ User.solved }}</th>
+                            </tr>
+                            <tr>
+                                <th>제출</th>
+                                <th> <a href="{% url 'koj:status' %}?user_id={{ User.username }}">{{submit_count_author}}</a> </th>
+                            </tr>
+                            <tr>
+                                <th>AC</th>
+                                <th> <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=AC">{{submits_count_ac}}</a> </th>
+                            </tr>
+                            <tr>
+                                <th>WA</th>
+                                <th> <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=WA">{{ submits_count_wa }}</a> </th>
+                            </tr>
+                            <tr>
+                                <th>시간초과</th>
+                                <th> A </th>
+                            </tr>
+                            <tr>
+                                <th>출력초과</th>
+                                <th> A </th>
+                            </tr>
+                            <tr>
+                                <th>컴파일 에러</th>
+                                <th> A </th>
+                            </tr>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+              <br>
+              맞은 문제 :
+
+                {% for submit in submits_ac_d %}
+                  <th> <a href="{% url 'koj:problem_detail' submit.prob_id %}", style="color:#04B404; font-weight: bold"> {{ submit.prob_id }}</a> <th>
+                {% endfor %}
+                <br>
+              시도했지만 풀지 못한 문제 :
+              {% for submit in submits_wa%}
+              <th> <a href="{% url 'koj:problem_detail' submit.prob_id %}", style="color:#FF4000"> {{ submit.prob_id }}</a> <th>
+              {% endfor %}
+
+              <br>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
