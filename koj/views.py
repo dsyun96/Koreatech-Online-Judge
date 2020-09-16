@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Problem, Submit, Article, Comment, Fortest, Testcase
+from .models import Problem, Submit, Article, Comment, Fortest, Testcase, Contest, ConProblems, ConParticipants
 from common.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
@@ -18,10 +18,6 @@ def index(request):
 
 
 def problemset(request):
-    probs = Submit.objects.filter(problem__prob_id='1000')
-    problem_sub = Submit.objects.filter(problem__prob_id='1000').count()
-    problem_ac = Submit.objects.filter(result = 'AC').filter(problem__prob_id='1000').count()
-    problem_wa = Submit.objects.filter(result = 'WA').filter(problem__prob_id='1000').count()
 
     page = request.GET.get('page', '1') # 입력 파라미터
     problem_list = Problem.objects.order_by('prob_id')
@@ -51,7 +47,7 @@ def problem_detail(request, prob_id):
     context = {'problem': problem, 'code':code}
     return render(request, 'koj/problem_detail.html', context)
 
-def problem_write_foruser(request):
+def problem_write_for_user(request):
     if request.method == "GET":
         form = ProblemForm()
         form_t = TestcaseForm()
@@ -86,7 +82,7 @@ def problem_write_foruser(request):
             #return redirect('koj:problem_write_addfile', new_problem.prob_id)
     #context = {'form':form, 'form_t':form_t}
     context = {'form_t':form_t, 'form':form}
-    return render(request, 'koj/problem_write_foruser.html',context)
+    return render(request, 'koj/problem_write_for_user.html',context)
 
 def problem_write_addfile(request, prob_id):
     if request.method == "GET":
@@ -368,3 +364,25 @@ def status(request):
 
     context = {'submit_list': page_obj, 'submits': submit_list[int(page) * 15 - 15: int(page) * 15]}
     return render(request, 'koj/status.html', context)
+
+def contest_list(request):
+    contest=Contest.objects.all().order_by('contest_id')
+    context = {'Contest':contest}
+    return render(request, 'koj/contest_list.html', context)
+
+def contest_detail(request, contest_id):
+    #prob = Contest.objects.values_list('Problems', 'p_list')
+
+    contest = get_object_or_404(Contest, contest_id=contest_id)
+    contest_probs = ConProblems.objects.filter(contest=contest)
+    contest_partis = ConParticipants.objects.filter(contest=contest)
+
+    problem_info = []
+    for prob in contest_probs:
+        #number = contest_probs.values_list('problems', flat=True)
+        problem_info.append((Problem.objects.get(prob_id = prob.problems.prob_id),
+        Submit.objects.filter(problem=prob.problems).filter(result='AC').count(),
+                            Submit.objects.filter(problem=prob.problems).count()))
+
+    context = {'con': contest, 'con_prob':contest_probs, 'con_partis':contest_partis, 'problem_info':problem_info}
+    return render(request, 'koj/contest.html',context)
