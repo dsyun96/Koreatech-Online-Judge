@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from common.models import CustomUser
 from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
-
+from koj.infos import *
 
 # Create your views here.
 def article_list(request):

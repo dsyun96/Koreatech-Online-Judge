@@ -19,7 +19,7 @@
                     {% for users in Users %}
                     <tr>
                       <td>{{users.rank}}</td>
-                      <td><a class="nav-link" href="{% url 'koj:user_detail' users.username %}">{{users.username}}</a></td>
+                      <td><a class="nav-link" href="{% url 'common:user_detail' users.username %}">{{users.username}}</a></td>
                       <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=AC">{{users.solved}}</a></td>
                       <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}">{{users.submited}}</a></td>
                         {% if users.submited == 0 or users.submited == None %}

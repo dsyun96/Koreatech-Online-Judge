@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('koj.urls')),
     path('board/', include('board.urls')),
     path('common/', include('common.urls')),
+    path('contest/', include('contest.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
