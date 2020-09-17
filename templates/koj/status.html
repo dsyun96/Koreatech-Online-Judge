@@ -21,21 +21,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for submit in submits %}
+                    {% for id, author, problem, result, memory, runtime, lang, length, time in submits %}
                     <tr>
-						            <td>{{ submit.id }}</td>
-						            <td><a href="{% url 'koj:user_detail' submit.author %}">{{ submit.author }}</a></td>
-                        <td><a href="{% url 'koj:problem_detail' submit.problem %}", style="font-weight: bold">{{ submit.problem }}</a></td>
-                        <td style="font-weight: bold">{{ submit.result }}</td>
-                        <td>{{ submit.memory }}</td>
-                        <td>{{ submit.runtime }}</td>
-                        <td>{{ submit.lang }}</td>
-                        <td>{{ submit.length }}</td>
-                        <td>{{ submit.time }}</td>
-                        {% ifnotequal submit.author|stringformat:"s" user.username %}
-                        <td> {{user.username}} </td>
+						<td>{{ id }}</td>
+						<td><a href="{% url 'koj:user_detail' author %}">{{ author }}</a></td>
+                        <td><a href="{% url 'koj:problem_detail' problem %}", style="font-weight: bold">{{ problem }}</a></td>
+                        <td style="font-weight: bold">{{ result }}</td>
+                        <td>
+                            {% if memory > -1 %}
+                            {{ memory }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if runtime > -1 %}
+                            {{ runtime }}
+                            {% endif %}
+                        </td>
+                        <td>{{ lang }}</td>
+                        <td>{{ length }}</td>
+                        <td>{{ time }}</td>
+                        {% ifnotequal author|stringformat:"s" user.username %}
+                        <td> {{ user.username }} </td>
                         {% else %}
-                        <td><a href="{% url 'koj:problem_detail' submit.problem%}?id={{submit.id}}">Edit</a></td>
+                        <td><a href="{% url 'koj:problem_detail' problem %}?id={{ id }}">Edit</a></td>
                         {% endifnotequal %}
                     </tr>
                     {% endfor %}

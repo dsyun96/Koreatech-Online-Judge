@@ -7,4 +7,6 @@ __pycache__
 upload
 *.so
 *.log
+output
+error
 

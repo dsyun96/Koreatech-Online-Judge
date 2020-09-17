@@ -98,7 +98,7 @@
                         <option value="3">dracula</option>
                         <option value="4">darcula</option>
                     </select>
-                    <textarea name="code" id="code" style="margin: 30px;height: 350px;width: 500px;margin-top: 15px;">{{code.code}}</textarea>
+                    <textarea name="code" id="code" style="margin: 30px;height: 350px;width: 500px;margin-top: 15px;">{{ code.code }}</textarea>
                     <script>
 
                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
@@ -175,11 +175,8 @@
                         if (theme) { input_theme.value = theme; selectTheme(); }
                       });
 
-
-
                       </script>
                     <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
-
                     <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 470px;margin-bottom: 15px;min-width: 45px;">제출</button>
                 </form>
             </div>

@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .tasks import judge
 from .forms import ArticleForm, CommentForm, ProblemForm, TestcaseForm
+from .infos import *
 
 
 # Create your views here.
@@ -17,11 +18,6 @@ def index(request):
 
 
 def problemset(request):
-    probs = Submit.objects.filter(problem__prob_id='1000')
-    problem_sub = Submit.objects.filter(problem__prob_id='1000').count()
-    problem_ac = Submit.objects.filter(result='AC').filter(problem__prob_id='1000').count()
-    problem_wa = Submit.objects.filter(result='WA').filter(problem__prob_id='1000').count()
-
     page = request.GET.get('page', '1')  # 입력 파라미터
     problem_list = Problem.objects.order_by('prob_id')
     paginator = Paginator(problem_list, 15)  # 페이징 처리
@@ -29,7 +25,7 @@ def problemset(request):
 
     problem_info = []
     for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
-        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result='AC').count(),
+        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=AC).count(),
                             Submit.objects.filter(problem=prob).count()))
 
     context = {'problem_list': page_obj, 'problems': problem_info}
@@ -291,16 +287,16 @@ def user_detail(request, username):
     user = CustomUser.objects.get(username=username)
     submit = Submit()
 
-    submit_list_ac_d = Submit.objects.filter(author=user).filter(result='AC').\
+    submit_list_ac_d = Submit.objects.filter(author=user).filter(result=AC).\
         order_by('problem').values('problem').distinct()
 
-    submit_ac = Submit.objects.filter(author=user).filter(result='AC').values('problem').distinct()
-    submit_wa = Submit.objects.filter(author=user).filter(result='WA').values('problem').distinct()
+    submit_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
+    submit_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
     submit_list_wa_d = submit_wa.difference(submit_ac)
 
-    submit_count_ac = Submit.objects.filter(author=user).filter(result='AC').count()
+    submit_count_ac = Submit.objects.filter(author=user).filter(result=AC).count()
     submit_count_ac_d = submit_list_ac_d.count()
-    submit_count_wa = Submit.objects.filter(author=user).filter(result='WA').count()
+    submit_count_wa = Submit.objects.filter(author=user).filter(result=WA).count()
     submit_count_author = Submit.objects.filter(author=user).count()
 
     user.solved = submit_count_ac_d
@@ -348,23 +344,33 @@ def status(request):
         submit.save()
         judge.delay(submit.id)
 
-    submit_list = Submit.objects.all().order_by('-id')
+    submits = Submit.objects.all().order_by('-id')
 
     if request.GET.get('user_id'):
-        submit_list = submit_list.filter(author=CustomUser.objects.get(username=request.GET['user_id']))
+        submits = submits.filter(author=CustomUser.objects.get(username=request.GET['user_id']))
     if request.GET.get('prob_id'):
-        submit_list = submit_list.filter(problem=Problem.objects.get(prob_id=request.GET['prob_id']))
+        submits = submits.filter(problem=Problem.objects.get(prob_id=request.GET['prob_id']))
     if request.GET.get('result') == 'AC':
-        submit_list = submit_list.filter(result='AC')
+        submits = submits.filter(result=AC)
     if request.GET.get('result') == 'WA':
-        submit_list = submit_list.filter(result='WA')
-
-    if request.GET.get('result') == 'WA_d':
-        submit_list = submit_list.filter(result='WA')
+        submits = submits.filter(result=WA)
 
     page = request.GET.get('page', '1')
-    paginator = Paginator(submit_list, 15)
+    paginator = Paginator(submits, 15)
     page_obj = paginator.get_page(page)
 
-    context = {'submit_list': page_obj, 'submits': submit_list[int(page) * 15 - 15: int(page) * 15]}
+    submit_info = []
+    for submit in submits[int(page) * 15 - 15: int(page) * 15]:
+        submit_info.append((submit.id,
+                            submit.author,
+                            submit.problem,
+                            submit_result[int(submit.result)] if submit.result is not None else '채점 중...',
+                            submit.memory,
+                            submit.runtime,
+                            submit_lang[int(submit.lang)],
+                            submit.length,
+                            submit.time,
+                            ))
+
+    context = {'submit_list': page_obj, 'submits': submit_info}
     return render(request, 'koj/status.html', context)

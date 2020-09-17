@@ -40,7 +40,7 @@ class Submit(models.Model):
     length = models.IntegerField(null=False)
     time = models.DateTimeField(null=False)
 
-    result = models.CharField(max_length=3, null=True)
+    result = models.IntegerField(null=True)
     memory = models.IntegerField(null=True)
     runtime = models.IntegerField(null=True)
 
