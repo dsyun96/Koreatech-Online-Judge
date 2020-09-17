@@ -17,5 +17,4 @@ WORKDIR /Koreatech-OJ/
 RUN pip3 install -r requirements.txt
 
 WORKDIR /Koreatech-OJ/
-COPY . .
 

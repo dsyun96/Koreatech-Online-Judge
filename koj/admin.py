@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django import forms
 from .models import Problem, Testcase, Submit, Contest, ConParticipants, ConProblems
-# from ckeditor.widgets import CKEditorWidget
 
 
 class TestcaseAdmin(admin.StackedInline):
