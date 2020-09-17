@@ -71,8 +71,8 @@ class JudgeClass:
         return True
 
     def run(self):
-        inputs = fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.in')
-        outputs = fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.out')
+        inputs = sorted(fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.in'))
+        outputs = sorted(fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.out'))
 
         runtime = used_memory = 0
         for number in range(len(inputs)):
@@ -87,10 +87,10 @@ class JudgeClass:
 
                 res = _judger.run(max_cpu_time=self._time_limit * 1000,
                                   max_real_time=self._time_limit * 2000,
-                                  max_memory=2048 * 2 ** 20,
+                                  max_memory=self._memory_limit * 2 ** 20,
                                   max_process_number=200,
                                   max_output_size=16384,
-                                  max_stack=1024 * 1024 * 1024,
+                                  max_stack=self._memory_limit * 2 ** 20,
                                   exe_path=f"{self.run_cmd[self._lang]}",
                                   input_path=f"{self.DIR}/upload/{self._prob_id}/{inputs[number]}",
                                   output_path=f"{self.DIR}/output",
@@ -102,8 +102,6 @@ class JudgeClass:
                                   uid=0,
                                   gid=0
                                   )
-
-                print(res)
 
                 result = res['result']
                 if 1 <= result <= 2:
