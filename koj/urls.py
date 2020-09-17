@@ -23,6 +23,8 @@ urlpatterns = [
     path('comment_write/<int:article_id>', views.comment_write, name='comment_write'),
     path('comment_delete/<int:com_id>/<int:article_id>', views.comment_delete, name='comment_delete'),
     path('user_detail/<str:username>', views.user_detail, name='user_detail'),
+    path('contest_list', views.contest_list, name='contest_list'),
+    path('contest/<int:contest_id>', views.contest_detail, name = 'contest_detail'),
 
     path('status', views.status, name='status'),
     path('ckeditor', include('ckeditor_uploader.urls')),

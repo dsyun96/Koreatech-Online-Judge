@@ -131,7 +131,6 @@ def judge_c(code, lang, prob_id, time_limit, memory_limit):
 
     return judger.run()
 
-
 def judge_cpp(code, lang, prob_id, time_limit, memory_limit):
     judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)
 
