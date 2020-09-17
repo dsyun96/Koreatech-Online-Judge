@@ -35,6 +35,7 @@ AUTH_USER_MODEL = 'common.CustomUser'
 INSTALLED_APPS = [
     'koj.apps.KojConfig',
     'common.apps.CommonConfig',
+    'board.apps.BoardConfig',
     'core',
     'django.contrib.admin',
     'django.contrib.auth',

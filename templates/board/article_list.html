@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
 
 <!--
@@ -37,7 +35,7 @@
 					{% for article in articles %}
 						<td>{{ article.article_id }}</td>
             <td>{{ article.get_head_display }}</td>
-						<td><a href="{% url 'koj:article_detail' article.article_id %}">{{ article.title }}</a></td>
+						<td><a href="{% url 'board:article_detail' article.article_id %}">{{ article.title }}</a></td>
             <td>{{ article.author }}</td>
             <td>{{ article.created_at }}</td>
             <td>{{ article.views }}</td>
@@ -46,7 +44,7 @@
 					{% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'koj:article_write' %}"><button class="btn btn-primary" type="button">새 게시글 작성</button></a>
+            <a href="{% url 'board:article_write' %}"><button class="btn btn-primary" type="button">새 게시글 작성</button></a>
 
       <!-- 페이징처리 시작 -->
 
