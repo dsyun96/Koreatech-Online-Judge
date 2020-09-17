@@ -19,7 +19,6 @@ urlpatterns = [
     path('contest/<int:contest_id>', views.contest_detail, name='contest_detail'),
 
     path('status', views.status, name='status'),
-    path('ckeditor', include('ckeditor_uploader.urls')),
 ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,14 +3,13 @@
 {% block content %}
 {% load static %}
 
-    <div class = "container">
-      <form method = "POST" action=".">
+<div class="container">
+    <form method="POST" action="{% url 'board:article_write' %}">
         {% csrf_token %}
-        {{ form.media }}
         {{ form.as_p }}
 
-        <button type="submit" class="btn btn-primary" style = "float:right;">글쓰기</button>
-      </form>
-    </div>
+        <button type="submit" class="btn btn-primary" style="float:right;">글쓰기</button>
+    </form>
+</div>
 
 {% endblock %}
