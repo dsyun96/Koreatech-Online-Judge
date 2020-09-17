@@ -24,7 +24,7 @@
                     {% for id, author, problem, result, memory, runtime, lang, length, time in submits %}
                     <tr>
 						<td>{{ id }}</td>
-						<td><a href="{% url 'koj:user_detail' author %}">{{ author }}</a></td>
+						<td><a href="{% url 'common:user_detail' author %}">{{ author }}</a></td>
                         <td><a href="{% url 'koj:problem_detail' problem %}", style="font-weight: bold">{{ problem }}</a></td>
                         <td style="font-weight: bold">{{ result }}</td>
                         <td>
