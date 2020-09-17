@@ -1,14 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Problem, Submit, Article, Comment, Fortest, Testcase, Contest, ConProblems, ConParticipants
+from .models import Problem, Submit, Article, Comment, Contest, ConProblems, ConParticipants
 from common.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
-#from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .tasks import judge
 from .forms import ArticleForm, CommentForm, ProblemForm, TestcaseForm
+from .infos import *
 
 
 # Create your views here.
@@ -16,20 +17,16 @@ def index(request):
     return render(request, 'koj/index.html', {})
 
 
-
 def problemset(request):
-
-    page = request.GET.get('page', '1') # 입력 파라미터
+    page = request.GET.get('page', '1')  # 입력 파라미터
     problem_list = Problem.objects.order_by('prob_id')
-    paginator = Paginator(problem_list, 15) # 페이징 처리
+    paginator = Paginator(problem_list, 15)  # 페이징 처리
     page_obj = paginator.get_page(page)
 
     problem_info = []
     for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
-        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result='AC').count(),
+        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=AC).count(),
                             Submit.objects.filter(problem=prob).count()))
-
-
 
     context = {'problem_list': page_obj, 'problems': problem_info}
     return render(request, 'koj/problemset.html', context)
@@ -37,15 +34,15 @@ def problemset(request):
 
 def problem_detail(request, prob_id):
     problem = get_object_or_404(Problem, prob_id=prob_id)
-
     code = ''
 
     if request.GET.get('id'):
-        #code = Submit.objects.all().filter(id=request.GET['id'])
+        # code = Submit.objects.all().filter(id=request.GET['id'])
         code = get_object_or_404(Submit, id=request.GET['id'])
 
-    context = {'problem': problem, 'code':code}
+    context = {'problem': problem, 'code': code}
     return render(request, 'koj/problem_detail.html', context)
+
 
 def problem_write_for_user(request):
     if request.method == "GET":
@@ -57,16 +54,16 @@ def problem_write_for_user(request):
         form_t = TestcaseForm(request.POST, request.FILES)
 
         if form.is_valid():
-            user = CustomUser.objects.get(username = request.user.get_username())
+            user = CustomUser.objects.get(username=request.user.get_username())
             new_problem = Problem(
-                prob_id = form.cleaned_data['prob_id'],
-                title = form.cleaned_data['title'],
-                body = form.cleaned_data['body'],
-                input = form.cleaned_data['input'],
-                output = form.cleaned_data['output'],
-                time_limit = form.cleaned_data['time_limit'],
-                memory_limit = form.cleaned_data['memory_limit'],
-                made_by = user
+                prob_id=form.cleaned_data['prob_id'],
+                title=form.cleaned_data['title'],
+                body=form.cleaned_data['body'],
+                input=form.cleaned_data['input'],
+                output=form.cleaned_data['output'],
+                time_limit=form.cleaned_data['time_limit'],
+                memory_limit=form.cleaned_data['memory_limit'],
+                made_by=user
             )
             new_problem.save()
 
@@ -74,75 +71,74 @@ def problem_write_for_user(request):
                 temp_form = form_t.save(commit=False)
                 temp_form.problem = Problem.objects.get(prob_id = new_problem.prob_id)
                 temp_form.save()
-                #form_t.input_data = Testcase(input_data = request.FILES['input_data'])
-                #form_t.output_data = Testcase(output_data = request.FILES['output_data'])
+                # form_t.input_data = Testcase(input_data = request.FILES['input_data'])
+                # form_t.output_data = Testcase(output_data = request.FILES['output_data'])
                 temp_form.save()
                 return redirect('koj:problemset')
 
-            #return redirect('koj:problem_write_addfile', new_problem.prob_id)
-    #context = {'form':form, 'form_t':form_t}
-    context = {'form_t':form_t, 'form':form}
-    return render(request, 'koj/problem_write_for_user.html',context)
+            # return redirect('koj:problem_write_addfile', new_problem.prob_id)
+    # context = {'form':form, 'form_t':form_t}
+
+    context = {'form_t': form_t, 'form': form}
+    return render(request, 'koj/problem_write_for_user.html', context)
+
 
 def problem_write_addfile(request, prob_id):
     if request.method == "GET":
         form = TestcaseForm()
 
-
     if request.method == "POST":
-
         form = TestcaseForm(request.POST, request.FILES)
 
         if form.is_valid():
-            #form.save(commit=False)
+            # form.save(commit=False)
             temp_form = form.save(commit=False)
-            temp_form.problem = Problem.objects.get(prob_id = prob_id)
+            temp_form.problem = Problem.objects.get(prob_id=prob_id)
             temp_form.save()
-            #form.problem = Problem.objects.get(prob_id = prob_id)
-            #form.input_data = Testcase(input_data = request.FILES['input_data'])
-            #form.output_data = Testcase(output_data = request.FILES['output_data'])
+            # form.problem = Problem.objects.get(prob_id = prob_id)
+            # form.input_data = Testcase(input_data = request.FILES['input_data'])
+            # form.output_data = Testcase(output_data = request.FILES['output_data'])
             return redirect('koj:index')
 
-    context = {'form':form}
-    return render(request, 'koj/problem_write_addfile.html', context)
+    context = {'form': form}
+    return render(request, 'koj/problem_write_add_file.html', context)
+
 
 def ranking_list(request):
     page = request.GET.get('page', '1')
-
-
     users = CustomUser.objects.all().order_by('rank')
-
-
-
     paginator = Paginator(users, 15)
     page_obj = paginator.get_page(page)
 
     context = {'Users_list': page_obj, 'Users': users[int(page) * 15 - 15: int(page) * 15]}
     return render(request, 'koj/ranking_list.html', context)
 
-#------------------------------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------------------------------
 def koj_ide(request):
     return render(request, 'koj/koj_ide.html')
-#------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------
+
 
 def article_list(request):
     # 입력 파라미터
     page = request.GET.get('page', '1')
 
     # 조회
-    article_list = Article.objects.order_by('article_id')
+    articles = Article.objects.order_by('article_id')
 
     # 페이징 처리
-    paginator = Paginator(article_list, 10)
+    paginator = Paginator(articles, 10)
     page_obj = paginator.get_page(page)
 
-    context = {'article_list': page_obj, 'articles': article_list[int(page) * 10 - 10 : int(page) * 10]}
+    context = {'article_list': page_obj, 'articles': articles[int(page) * 10 - 10: int(page) * 10]}
     return render(request, 'koj/article_list.html', context)
+
 
 def article_detail(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
     comment = CommentForm()
-    context = {'article': article, 'comment':comment}
+    context = {'article': article, 'comment': comment}
     session_cookie = request.session.get('user_id')
     cookie_name = F'notice_hits:{session_cookie}'
 
@@ -164,6 +160,7 @@ def article_detail(request, article_id):
 
     return render(request, 'koj/article_detail.html', context)
 
+
 @login_required
 def article_write(request):
     if request.method == "GET":
@@ -180,60 +177,63 @@ def article_write(request):
 
         if form.is_valid():
             user_id = request.session.get('user_id')
-            user = CustomUser.objects.get(username = request.user.get_username())
+            user = CustomUser.objects.get(username=request.user.get_username())
             new_article = Article(
-                title = form.cleaned_data['title'],
-                head = form.cleaned_data['head'],
-                content = form.cleaned_data['content'],
-                author = user,
-                ip_address = ipaddress
+                title=form.cleaned_data['title'],
+                head=form.cleaned_data['head'],
+                content=form.cleaned_data['content'],
+                author=user,
+                ip_address=ipaddress
             )
             new_article.save()
-            #messages.success(request, '성공적으로 등록되었습니다.')
+            # messages.success(request, '성공적으로 등록되었습니다.')
             return redirect('koj:article_list')
 
-    return render(request, 'koj/article_write.html', {'form' :form})
+    return render(request, 'koj/article_write.html', {'form': form})
+
 
 def article_update(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
 
     if article.author != request.user.username:
-       messages.error(request, '작성자가 아니면 수정할 수 없습니다!')
-       return redirect('/article/' + str(article.article_id))
+        messages.error(request, '작성자가 아니면 수정할 수 없습니다!')
+        return redirect('/article/' + str(article.article_id))
 
     if request.method == 'POST':
         form = ArticleForm(request.POST or None, instance=article)
         if form.is_valid():
             post = form.save(commit=False)
             post.save()
-            #article.title = form.cleaned_data['title'],
-            #article.head = form.cleaned_data['head'],
-            #article.content = form.cleaned_data['content'],
-            #article.created_at =timezone.now()
-            #article.save()
+            # article.title = form.cleaned_data['title'],
+            # article.head = form.cleaned_data['head'],
+            # article.content = form.cleaned_data['content'],
+            # article.created_at =timezone.now()
+            # article.save()
             messages.success(request, '성공적으로 수정되었습니다.')
             return redirect('/article/' + str(article.article_id))
 
-    else :
+    else:
         form = ArticleForm(instance=article)
-        return render(request, 'koj/article_update.html', {'form':form})
+        return render(request, 'koj/article_update.html', {'form': form})
+
 
 @login_required
 def article_delete(request, article_id):
-     article = get_object_or_404(Article, article_id=article_id)
+    article = get_object_or_404(Article, article_id=article_id)
 
-     if article.author != request.user.username:
-         messages.error(request, '작성자가 아니면 삭제할 수 없습니다!')
-         return redirect('/article/' + str(article.article_id))
+    if article.author != request.user.username:
+        messages.error(request, '작성자가 아니면 삭제할 수 없습니다!')
+        return redirect('/article/' + str(article.article_id))
 
-     article.delete()
-     return redirect('koj:article_list')
+    article.delete()
+    return redirect('koj:article_list')
+
 
 def article_rcmd(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
     context = {'article': article}
     session_cookie = request.session.get('user_id')
-    cookie_name = F'recomended:{session_cookie}'
+    cookie_name = f'recomended:{session_cookie}'
 
     response = render(request, 'koj/article_detail.html', context)
 
@@ -247,24 +247,26 @@ def article_rcmd(request, article_id):
             article.save()
             return response
     else:
-        #messages.error(request, '여러번 추천할 수 없습니다!')
+        # messages.error(request, '여러번 추천할 수 없습니다!')
         response.set_cookie(cookie_name, article_id, expires=None)
         article.rcmd += 1
         article.save()
         return response
     return redirect('/article/' + str(article.article_id))
 
+
 def comment_write(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
     filled_form = CommentForm(request.POST)
-    user = CustomUser.objects.get(username = request.user.get_username())
+    user = CustomUser.objects.get(username=request.user.get_username())
     if filled_form.is_valid():
         temp_form = filled_form.save(commit=False)
-        temp_form.article = Article.objects.get(article_id = article_id)
+        temp_form.article = Article.objects.get(article_id=article_id)
         temp_form.author = user
-        temp_form.save();
+        temp_form.save()
 
         return redirect('/article/' + str(article.article_id))
+
 
 def comment_delete(request, com_id, article_id):
     article = get_object_or_404(Article, article_id=article_id)
@@ -272,47 +274,44 @@ def comment_delete(request, com_id, article_id):
         messages.error(request, '작성자가 아니면 삭제할 수 없습니다!')
         return redirect('/article/' + str(article.article_id))
 
-
-    mycom = Comment.objects.get(id = com_id)
+    mycom = Comment.objects.get(id=com_id)
     mycom.delete()
     return redirect('/article/' + str(article.article_id))
 
-def user_detail(request, username):
-    #user_id = request.session.get('user_id')
-    #user = CustomUser.objects.get(username = request.user.get_username())
 
-    user_id = get_object_or_404(CustomUser, username = username)
-    user = CustomUser.objects.get(username = username)
+def user_detail(request, username):
+    # user_id = request.session.get('user_id')
+    # user = CustomUser.objects.get(username = request.user.get_username())
+
+    user_id = get_object_or_404(CustomUser, username=username)
+    user = CustomUser.objects.get(username=username)
     submit = Submit()
 
-    submit_list_ac_d = Submit.objects.filter(author=user).filter(result='AC').order_by('problem').values('problem').distinct()
+    submit_list_ac_d = Submit.objects.filter(author=user).filter(result=AC).\
+        order_by('problem').values('problem').distinct()
 
-
-    submit_ac = Submit.objects.filter(author=user).filter(result='AC').values('problem').distinct()
-    submit_wa = Submit.objects.filter(author=user).filter(result='WA').values('problem').distinct()
+    submit_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
+    submit_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
     submit_list_wa_d = submit_wa.difference(submit_ac)
 
-
-    submit_count_ac = Submit.objects.filter(author=user).filter(result='AC').count()
+    submit_count_ac = Submit.objects.filter(author=user).filter(result=AC).count()
     submit_count_ac_d = submit_list_ac_d.count()
-    submit_count_wa = Submit.objects.filter(author=user).filter(result='WA').count()
+    submit_count_wa = Submit.objects.filter(author=user).filter(result=WA).count()
     submit_count_author = Submit.objects.filter(author=user).count()
 
     user.solved = submit_count_ac_d
     user.submited = Submit.objects.filter(author=user).count()
     user.save()
     ranking = CustomUser.objects.all().order_by('-solved')
-    counts=1
+    counts = 1
 
     for i in ranking:
         i.rank = counts
-        counts +=1
+        counts += 1
         i.save()
-
 
     submit_list_ac_e = []
     submit_list_wa_e = []
-
 
     for i in submit_list_ac_d:
         submit_list_ac_e.append(Problem.objects.get(pk=list(i.values())[0]))
@@ -320,49 +319,60 @@ def user_detail(request, username):
     for i in submit_list_wa_d:
         submit_list_wa_e.append(Problem.objects.get(pk=list(i.values())[0]))
 
-
-
-    context = {'User': user, 'submits_ac_d':submit_list_ac_e, 'submits_count_ac_d':submit_count_ac_d,
-        'submits_wa':submit_list_wa_e, 'submits_count_wa':submit_count_wa, 'submit_count_author':submit_count_author,
-        'submits_count_ac':submit_count_ac}
+    context = {'User': user,
+               'submits_ac_d': submit_list_ac_e,
+               'submits_count_ac_d': submit_count_ac_d,
+               'submits_wa': submit_list_wa_e,
+               'submits_count_wa': submit_count_wa,
+               'submit_count_author': submit_count_author,
+               'submits_count_ac': submit_count_ac
+               }
 
     return render(request, 'koj/user_detail.html', context)
 
 
 def status(request):
     if request.method == "POST":
-        POST_data = request.POST
+        post_data = request.POST
         submit = Submit()
-        submit.problem = Problem.objects.get(prob_id=POST_data.get('prob_id'))
+        submit.problem = Problem.objects.get(prob_id=post_data.get('prob_id'))
         submit.author = request.user
-        submit.lang = POST_data.get('lang')
-        submit.code = POST_data.get('code')
+        submit.lang = post_data.get('lang')
+        submit.code = post_data.get('code')
         submit.length = len(submit.code)
         submit.time = timezone.localtime()
         submit.save()
         judge.delay(submit.id)
 
-    submit_list = Submit.objects.all().order_by('-id')
+    submits = Submit.objects.all().order_by('-id')
 
     if request.GET.get('user_id'):
-        submit_list = submit_list.filter(author=CustomUser.objects.get(username=request.GET['user_id']))
+        submits = submits.filter(author=CustomUser.objects.get(username=request.GET['user_id']))
     if request.GET.get('prob_id'):
-        submit_list = submit_list.filter(problem=Problem.objects.get(prob_id=request.GET['prob_id']))
-    if request.GET.get('result')=='AC':
-        submit_list = submit_list.filter(result='AC')
-    if request.GET.get('result')=='WA':
-        submit_list = submit_list.filter(result='WA')
-
-
-    if request.GET.get('result')=='WA_d':
-        submit_list = submit_list.filter(result='WA')
+        submits = submits.filter(problem=Problem.objects.get(prob_id=request.GET['prob_id']))
+    if request.GET.get('result') == 'AC':
+        submits = submits.filter(result=AC)
+    if request.GET.get('result') == 'WA':
+        submits = submits.filter(result=WA)
 
     page = request.GET.get('page', '1')
-    paginator = Paginator(submit_list, 15)
+    paginator = Paginator(submits, 15)
     page_obj = paginator.get_page(page)
 
+    submit_info = []
+    for submit in submits[int(page) * 15 - 15: int(page) * 15]:
+        submit_info.append((submit.id,
+                            submit.author,
+                            submit.problem,
+                            submit_result[int(submit.result)] if submit.result is not None else '채점 중...',
+                            submit.memory,
+                            submit.runtime,
+                            submit_lang[int(submit.lang)],
+                            submit.length,
+                            submit.time,
+                            ))
 
-    context = {'submit_list': page_obj, 'submits': submit_list[int(page) * 15 - 15: int(page) * 15]}
+    context = {'submit_list': page_obj, 'submits': submit_info}
     return render(request, 'koj/status.html', context)
 
 def contest_list(request):

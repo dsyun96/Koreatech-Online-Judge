@@ -4,14 +4,13 @@ import os
 import fnmatch
 import json
 import _judger
+from .infos import *
 
 Result = namedtuple('Result', 'result memory runtime')
 
 
 class JudgeClass:
     DIR = '/Koreatech-OJ'
-    no_exe = False
-
     filename = [
         'Main.c',
         'Main.cc',
@@ -42,15 +41,13 @@ class JudgeClass:
 
     def compile_check(self):
         res = subprocess.call(self.compile_cmd[int(self._lang)])
-        print(os.listdir(os.getcwd()))
-        if res:
-            self.no_exe = True
+        # print(os.listdir(os.getcwd()))
         return res
 
     def __del__(self):
-        print(os.listdir(os.getcwd()))
+        # print(os.listdir(os.getcwd()))
         os.system('rm {0}/Main*'.format(self.DIR))
-        print(os.listdir(os.getcwd()))
+        # print(os.listdir(os.getcwd()))
 
     def output_comparison(self, o1, answer):
         with open(o1, 'r') as f1:
@@ -71,8 +68,8 @@ class JudgeClass:
         return True
 
     def run(self):
-        inputs = fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.in')
-        outputs = fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.out')
+        inputs = sorted(fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.in'))
+        outputs = sorted(fnmatch.filter(os.listdir('{0}/upload/{1}'.format(self.DIR, self._prob_id)), '*.out'))
 
         runtime = used_memory = 0
         for number in range(len(inputs)):
@@ -87,10 +84,10 @@ class JudgeClass:
 
                 res = _judger.run(max_cpu_time=self._time_limit * 1000,
                                   max_real_time=self._time_limit * 2000,
-                                  max_memory=2048 * 2 ** 20,
+                                  max_memory=self._memory_limit * 2 ** 20,
                                   max_process_number=200,
                                   max_output_size=16384,
-                                  max_stack=1024 * 1024 * 1024,
+                                  max_stack=self._memory_limit * 2 ** 20,
                                   exe_path=f"{self.run_cmd[self._lang]}",
                                   input_path=f"{self.DIR}/upload/{self._prob_id}/{inputs[number]}",
                                   output_path=f"{self.DIR}/output",
@@ -103,45 +100,42 @@ class JudgeClass:
                                   gid=0
                                   )
 
-                print(res)
-
                 result = res['result']
                 if 1 <= result <= 2:
-                    return Result('TLE', -1, -1)
+                    return Result(TLE, -1, -1)
                 elif result == 3:
-                    return Result('MLE', -1, -1)
+                    return Result(MLE, -1, -1)
                 elif result == 4:
                     if res['signal'] == 25:
-                        return Result('PE', -1, -1)
+                        return Result(OLE, -1, -1)
                     if res['signal'] == 31:
                         pass  # system call
-                    return Result('RE', -1, -1)
+                    return Result(RE, -1, -1)
                 elif result == 5:
-                    return Result('ER', -1, -1)
+                    return Result(ER, -1, -1)
 
                 if not self.output_comparison(f'{self.DIR}/output', answer_data):
-                    return Result('WA', -1, -1)
+                    return Result(WA, -1, -1)
 
                 runtime = max(runtime, res['cpu_time'])
                 used_memory = max(used_memory, res['memory'])
 
-        return Result('AC', used_memory // 1024 // 4 * 4, runtime // 4 * 4)
+        return Result(AC, used_memory // 1024 // 4 * 4, runtime // 4 * 4)
 
 
 def judge_c(code, lang, prob_id, time_limit, memory_limit):
     judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)
 
     if judger.compile_check():
-        return Result('CE', -1, -1)
+        return Result(CE, -1, -1)
 
     return judger.run()
-
 
 def judge_cpp(code, lang, prob_id, time_limit, memory_limit):
     judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)
 
     if judger.compile_check():
-        return Result('CE', -1, -1)
+        return Result(CE, -1, -1)
 
     return judger.run()
 
@@ -150,10 +144,10 @@ def judge_java(code, lang, prob_id, time_limit, memory_limit):
     judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)
 
     if judger.compile_check():
-        return Result('CE', -1, -1)
+        return Result(CE, -1, -1)
 
     return judger.run()
 
 
 def judge_python(submit):
-    return Result('UC', -1, -1)
+    return Result(-1, -1, -1)

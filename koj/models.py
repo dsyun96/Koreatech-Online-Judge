@@ -5,7 +5,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 # Create your models here.
 class Problem(models.Model):
-    prob_id = models.IntegerField('문제 번호', null=False, unique=True) #autofield?, (unique=True)
+    prob_id = models.IntegerField('문제 번호', null=False, unique=True) # autofield?, (unique=True)
     title = models.CharField('제목', max_length=256)
     body = models.TextField()
     input = models.TextField()
@@ -56,7 +56,7 @@ class Testcase(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     input_data = models.FileField(upload_to=prob_path)
     output_data = models.FileField(upload_to=prob_path)
-    #testinput, output
+    # testinput, output
 
     def __str__(self):
         return str(self.problem)
@@ -69,43 +69,41 @@ class Submit(models.Model):
     length = models.IntegerField(null=False)
     time = models.DateTimeField(null=False)
 
-    result = models.CharField(max_length=3, null=True)
+    result = models.IntegerField(null=True)
     memory = models.IntegerField(null=True)
     runtime = models.IntegerField(null=True)
 
     def __str__(self):
         return str(self.id)
 
+
 class Article(models.Model):
-
     HEAD_TYPES = (
-            ('N', '자유' ),
-            ('Q', '질문' ),
-            ('I', '정보'),)
+        ('N', '자유'),
+        ('Q', '질문'),
+        ('I', '정보'),
+    )
 
-    article_id = models.AutoField('글 번호',null=False, primary_key=True)
-    head       = models.CharField(max_length=16, choices=HEAD_TYPES)
-    title      = models.CharField(max_length=126, null=False)
-    #content    = models.TextField(null=False)
-    content    = RichTextUploadingField()
-    author     = models.CharField(max_length=32, null=False)
+    article_id = models.AutoField('글 번호', null=False, primary_key=True)
+    head = models.CharField(max_length=16, choices=HEAD_TYPES)
+    title = models.CharField(max_length=126, null=False)
+    # content = models.TextField(null=False)
+    content = RichTextUploadingField()
+    author = models.CharField(max_length=32, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    views      = models.IntegerField (null=False, default=0)
-    rcmd       = models.IntegerField (null=False, default=0)
-    ip_address  = models.GenericIPAddressField()
+    views = models.IntegerField(null=False, default=0)
+    rcmd = models.IntegerField(null=False, default=0)
+    ip_address = models.GenericIPAddressField()
 
     def __str__(self):
         return self.title
 
+
 class Comment(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete = models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add = True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.content
-
-
-class Fortest(models.Model):
-    ip_adress = models.CharField(max_length=126)
-    test = models.TextField()
