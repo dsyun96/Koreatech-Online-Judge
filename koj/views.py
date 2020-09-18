@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Problem, Submit, Contest, ConProblems, ConParticipants
+from .models import Problem, Submit, Testcase
 from common.models import CustomUser
 from django.utils import timezone
 # from django.contrib.auth.models import User
@@ -66,7 +66,7 @@ def problem_write_for_user(request):
 
             if form_t.is_valid():
                 temp_form = form_t.save(commit=False)
-                temp_form.problem = Problem.objects.get(prob_id = new_problem.prob_id)
+                temp_form.problem = Problem.objects.get(prob_id=new_problem.prob_id)
                 temp_form.save()
                 # form_t.input_data = Testcase(input_data = request.FILES['input_data'])
                 # form_t.output_data = Testcase(output_data = request.FILES['output_data'])
@@ -80,7 +80,7 @@ def problem_write_for_user(request):
     return render(request, 'koj/problem_write_for_user.html', context)
 
 
-def problem_write_addfile(request, prob_id):
+def problem_write_add_file(request, prob_id):
     if request.method == "GET":
         form = TestcaseForm()
 
