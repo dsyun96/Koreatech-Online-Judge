@@ -1,13 +1,14 @@
 from django.contrib import admin
-from django import forms
 from .models import Problem, Testcase, Submit
+from django_summernote.admin import SummernoteModelAdmin
 
 
 class TestcaseAdmin(admin.StackedInline):
     model = Testcase
 
 
-class ProblemAdmin(admin.ModelAdmin):
+class ProblemAdmin(SummernoteModelAdmin):
+    summernote_fields = '__all__'
     search_fields = ['title']
     inlines = [TestcaseAdmin]
 

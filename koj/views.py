@@ -37,7 +37,14 @@ def problem_detail(request, prob_id):
         # code = Submit.objects.all().filter(id=request.GET['id'])
         code = get_object_or_404(Submit, id=request.GET['id'])
 
-    context = {'problem': problem, 'code': code}
+    examples = Testcase.objects.filter(problem=Problem.objects.get(prob_id=prob_id)).filter(is_example=True)
+    example_texts = []
+    for example in examples:
+        with open(f'media/{example.input_data}', 'r') as input_file,\
+             open(f'media/{example.output_data}', 'r') as output_file:
+            example_texts.append(('\n'.join(input_file.readlines()), '\n'.join(output_file.readlines())))
+
+    context = {'problem': problem, 'code': code, 'examples': example_texts}
     return render(request, 'koj/problem_detail.html', context)
 
 
@@ -47,6 +54,7 @@ def problem_write_for_user(request):
         form_t = TestcaseForm()
 
     if request.method == "POST":
+        print(request.POST.getlist('is_example'))
         form = ProblemForm(request.POST)
         form_t = TestcaseForm(request.POST, request.FILES)
 
@@ -65,12 +73,18 @@ def problem_write_for_user(request):
             new_problem.save()
 
             if form_t.is_valid():
-                temp_form = form_t.save(commit=False)
-                temp_form.problem = Problem.objects.get(prob_id=new_problem.prob_id)
-                temp_form.save()
-                # form_t.input_data = Testcase(input_data = request.FILES['input_data'])
-                # form_t.output_data = Testcase(output_data = request.FILES['output_data'])
-                temp_form.save()
+                for input_data, output_data, is_example in zip(
+                        request.FILES.getlist('input_data'),
+                        request.FILES.getlist('output_data'),
+                        request.POST.getlist('example_flag')
+                ):
+                    testcase = Testcase(
+                        problem=new_problem,
+                        input_data=input_data,
+                        output_data=output_data,
+                        is_example=(is_example == '1')
+                    )
+                    testcase.save()
                 return redirect('koj:problemset')
 
             # return redirect('koj:problem_write_addfile', new_problem.prob_id)
