@@ -9,7 +9,7 @@ services:
             - backend
 
     koj:
-        image: ubuntu:editor
+        image: ubuntu:clean
         volumes:
             - .:/Koreatech-OJ
         ports:

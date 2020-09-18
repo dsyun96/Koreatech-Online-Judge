@@ -20,77 +20,75 @@
         <div class="table-responsive">
             <table class="table">
                 <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>말머리</th>
-                        <th style="width: 450px;">제목</th>
-                        <th>작성자</th>
-                        <th>작성일</th>
-                        <th>조회수</th>
-                        <th>추천</th>
-                    </tr>
+                <tr>
+                    <th>번호</th>
+                    <th>말머리</th>
+                    <th style="width: 450px;">제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
+                    <th>추천</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-					{% for article in articles %}
-						<td>{{ article.article_id }}</td>
-            <td>{{ article.get_head_display }}</td>
-						<td><a href="{% url 'board:article_detail' article.article_id %}">{{ article.title }}</a></td>
-            <td>{{ article.author }}</td>
-            <td>{{ article.created_at }}</td>
-            <td>{{ article.views }}</td>
-            <td>{{ article.rcmd }}</td>
-                    </tr>
-					{% endfor %}
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{ article.article_id }}</td>
+                            <td>{{ article.get_head_display }}</td>
+                            <td><a href="{% url 'board:article_detail' article.article_id %}">{{ article.title }}</a></td>
+                            <td>{{ article.author }}</td>
+                            <td>{{ article.created_at }}</td>
+                            <td>{{ article.views }}</td>
+                            <td>{{ article.rcmd }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'board:article_write' %}"><button class="btn btn-primary" type="button">새 게시글 작성</button></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'board:article_write' %}">
+                    <button class="btn btn-primary" type="button">새 게시글 작성</button>
+                </a>
+            {% endif %}
 
-      <!-- 페이징처리 시작 -->
+            <!-- 페이징처리 시작 -->
 
             <ul class="pagination justify-content-center">
                 <!-- 이전페이지 -->
                 {% if article_list.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ article_list.previous_page_number }}">이전</a>
-                </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ article_list.previous_page_number }}">이전</a>
+                    </li>
                 {% else %}
-                <li class="page-item disabled">
-        			<a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
-				</li>
-				{% endif %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                    </li>
+                {% endif %}
 
+                <!-- 페이지리스트 -->
+                {% for page_number in article_list.paginator.page_range %}
+                    {% if page_number == article_list.number %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
 
-
-				<!-- 페이지리스트 -->
-
-				{% for page_number in article_list.paginator.page_range %}
-					{% if page_number == article_list.number %}
-					<li class="page-item active" aria-current="page">
-						<a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-					</li>
-					{% else %}
-					<li class="page-item">
-						<a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-					</li>
-					{% endif %}
-				{% endfor %}
-
-
-
-				<!-- 다음페이지 -->
-
-				{% if article_list.has_next %}
-				<li class="page-item">
-					<a class="page-link" href="?page={{ article_list.next_page_number }}">다음</a>
-				<li>
-				{% else %}
-				<li class="page-item disabled">
-					<a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
-				</li>
-				{% endif %}
-			</ul>
-			<!-- 페이징처리 끝 -->
+                <!-- 다음페이지 -->
+                {% if article_list.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ article_list.next_page_number }}">다음</a>
+                    <li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <!-- 페이징처리 끝 -->
         </div>
     </div>
 </section>

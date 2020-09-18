@@ -3,6 +3,7 @@ asgiref==3.2.10
 billiard==3.6.3.0
 celery==4.4.6
 Django==3.0.8
+django-cleanup==5.1.0
 django-js-asset==1.2.2
 django-mathfilters==1.0.0
 django-summernote==0.8.11.6

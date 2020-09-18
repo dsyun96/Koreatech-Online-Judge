@@ -30,76 +30,91 @@
 <script src="{% static '/codemirror-5.51.0/addon/lint/css-lint.js' %}"></script>
 -->
 
-    <div class="container">
+<div class="container">
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="table-responsive" style="margin-top: 15px;">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>문제</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br>{{ problem.body|linebreaksbr }}<br></td>
-                            </tr>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>입력</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br>{{ problem.input|linebreaksbr }}<br></td>
-                            </tr>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>출력</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br>{{ problem.output|linebreaksbr }}<br></td>
-                            </tr>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="table-responsive" style="margin-top: 15px;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>문제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><br>
+                            {% with content=problem.body|safe %}
+                            {{ content|linebreaksbr }}
+                            {% endwith %}
+                        <br></td>
+                    </tr>
+                    <tr></tr>
+                    </tbody>
+                </table>
             </div>
-            {% if user.is_authenticated %}
-            <div class="col-md-6">
-                <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}" method="POST">
-                    {% csrf_token %}
-                    <li class = "active"><a href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내 소스</a></li>
-                    <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                        <option value="0" selected>C</option>
-                        <option value="1">C++</option>
-                        <option value="2">Java</option>
-                        <option value="3">Python</option>
-                    </select>
-                    <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-                        <option value="0" selected>default</option>
-                        <option value="1">abcdef</option>
-                        <option value="2">duotone-dark</option>
-                        <option value="3">dracula</option>
-                        <option value="4">darcula</option>
-                    </select>
-                    <textarea name="code" id="code" style="margin: 30px;height: 350px;width: 500px;margin-top: 15px;">{{ code.code }}</textarea>
-                    <script>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>입력</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><br>
+                            {% with content=problem.input|safe %}
+                            {{ content|linebreaksbr }}
+                            {% endwith %}
+                        <br></td>
+                    </tr>
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>출력</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><br>
+                            {% with content=problem.output|safe %}
+                            {{ content|linebreaksbr }}
+                            {% endwith %}
+                        <br></td>
+                    </tr>
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="col-md-6">
+            <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
+                  method="POST">
+                {% csrf_token %}
+                <li class="active"><a
+                        href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내
+                    소스</a></li>
+                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                    <option value="0" selected>C</option>
+                    <option value="1">C++</option>
+                    <option value="2">Java</option>
+                    <option value="3">Python</option>
+                </select>
+                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
+                    <option value="0" selected>default</option>
+                    <option value="1">abcdef</option>
+                    <option value="2">duotone-dark</option>
+                    <option value="3">dracula</option>
+                    <option value="4">darcula</option>
+                </select>
+                <textarea name="code" id="code" style="margin: 30px;height: 350px;width: 500px;margin-top: 15px;">{{ code.code }}</textarea>
+                <script>
 
                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                         lineNumbers: true,
@@ -175,17 +190,20 @@
                         if (theme) { input_theme.value = theme; selectTheme(); }
                       });
 
-                      </script>
-                    <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
-                    <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 470px;margin-bottom: 15px;min-width: 45px;">제출</button>
-                </form>
-            </div>
-            {% else %}
-            <div class="col-md-6">
-                로그인을 먼저 해주시기 바랍니다!
-            </div>
-            {% endif %}
+
+                </script>
+                <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
+                <button class="btn btn-primary btn-sm" type="submit"
+                        style="margin-left: 470px;margin-bottom: 15px;min-width: 45px;">제출
+                </button>
+            </form>
         </div>
+        {% else %}
+        <div class="col-md-6">
+            로그인을 먼저 해주시기 바랍니다!
+        </div>
+        {% endif %}
     </div>
+</div>
 </div>
 {% endblock %}
