@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import Article, Comment
+from django_summernote.admin import SummernoteModelAdmin
 
 
 # Register your models here.
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(SummernoteModelAdmin):
+    summernote_fields = '__all__'
     search_fields = ['title']
 
 

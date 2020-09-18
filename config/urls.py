@@ -13,11 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.shortcuts import redirect
 from django.urls import path
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.conf import settings
+
+
+def protected_file(request, path, document_root=None):
+    messages.error(request, 'Access Denied')
+    return redirect('/')
 
 
 urlpatterns = [
@@ -29,4 +35,4 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, protected_file, document_root=settings.MEDIA_ROOT)

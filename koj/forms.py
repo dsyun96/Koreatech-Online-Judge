@@ -24,8 +24,9 @@ class ProblemForm(forms.ModelForm):
 
 
 class TestcaseForm(forms.ModelForm):
-    is_example = forms.BooleanField(label='예시로 쓸까요?')
+    is_example = forms.BooleanField(label='예시로 쓸까요?', required=False)
+    example_flag = forms.CharField(widget=forms.HiddenInput, required=False)
 
     class Meta:
         model = Testcase
-        fields = ['input_data', 'output_data', 'is_example']
+        fields = ['input_data', 'output_data', 'is_example', 'example_flag']
