@@ -18,9 +18,9 @@
                 </thead>
                 <tbody>
                     <tr>
-					{% for con in Contest %}
+					{% for con in contest %}
 						<td>{{ con.contest_id }}</td>
-            <td><a href="{% url 'koj:contest_detail' con.contest_id %}">{{ con.title }}</a></td>
+            <td><a href="{% url 'contest:contest_detail' con.contest_id %}">{{ con.title }}</a></td>
             <td>{{ con.winner }}</td>
             <td>{{ con.start_time }}</td>
             <td>{{ con.end_time }}</td>

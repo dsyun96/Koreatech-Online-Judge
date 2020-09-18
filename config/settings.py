@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'koj.apps.KojConfig',
     'common.apps.CommonConfig',
     'board.apps.BoardConfig',
+    'contest.apps.ContestConfig',
     'core',
     'django.contrib.admin',
     'django.contrib.auth',
