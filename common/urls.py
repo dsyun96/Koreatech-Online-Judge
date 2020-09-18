@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     path('signup', views.signup.as_view(), name='signup'),
     path('signup_success', TemplateView.as_view(template_name='common/signup_success.html'), name='signup_success'),
+    path('user_detail/<str:username>', views.user_detail, name='user_detail'),
 ]
