@@ -3,15 +3,17 @@
 {% block content %}
 
 <div class = "container">
-
-  <br>
+    <br>
     <form enctype="multipart/form-data" method = "POST" >
-    {% csrf_token %}
-    {{ form.as_p }}
-    {{ form_t.as_p }}
-
-    <button type="submit" class="btn btn-primary" style = "float:right;">다음</button>
-  </form>
+        {% if user.is_authenticated %}
+            {% csrf_token %}
+            {{ form.as_p }}
+            {{ form_t.as_p }}
+            <button type="submit" class="btn btn-primary" style = "float:right;">다음</button>
+        {% else %}
+            로그인을 먼저 해주시기 바랍니다!
+        {% endif %}
+    </form>
 </div>
 
 {% endblock %}

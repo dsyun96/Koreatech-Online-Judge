@@ -14,6 +14,5 @@ urlpatterns = [
     path('problem_write_add_file/<int:prob_id>', views.problem_write_add_file, name='problem_write_add_file'),
     path('ranking_list', views.ranking_list, name='ranking_list'),
     path('koj_ide', views.koj_ide, name='koj_ide'),
-
     path('status', views.status, name='status'),
 ]

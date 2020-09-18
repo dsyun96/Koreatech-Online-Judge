@@ -1,15 +1,22 @@
 from django import forms
 from .models import Problem, Testcase
+from django_summernote.widgets import SummernoteWidget
 
 
 class ProblemForm(forms.ModelForm):
     prob_id = forms.IntegerField(label='문제 번호')
     title = forms.CharField(label='제목')
-    body = forms.CharField()
-    input = forms.CharField()
-    output = forms.CharField()
-    time_limit = forms.IntegerField()
-    memory_limit = forms.IntegerField()
+    body = forms.CharField(label='본문',
+                           widget=SummernoteWidget()
+                           )
+    input = forms.CharField(label='입력',
+                            widget=SummernoteWidget()
+                            )
+    output = forms.CharField(label='출력',
+                             widget=SummernoteWidget()
+                             )
+    time_limit = forms.IntegerField(label='시간 제한')
+    memory_limit = forms.IntegerField(label='메모리 제한')
 
     class Meta:
         model = Problem
@@ -17,6 +24,8 @@ class ProblemForm(forms.ModelForm):
 
 
 class TestcaseForm(forms.ModelForm):
+    is_example = forms.BooleanField(label='예시로 쓸까요?')
+
     class Meta:
         model = Testcase
-        fields = ['input_data', 'output_data']
+        fields = ['input_data', 'output_data', 'is_example']
