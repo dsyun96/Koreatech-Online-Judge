@@ -21,11 +21,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 
-def protected_file(request, path, document_root=None):
-    messages.error(request, 'Access Denied')
-    return redirect('/')
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('koj.urls')),
@@ -35,4 +30,4 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, protected_file, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
