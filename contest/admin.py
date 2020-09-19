@@ -1,27 +1,22 @@
 from django.contrib import admin
 from .models import Contest, ConParticipants, ConProblems
 
+
 # Register your models here.
-
-class Con_Participants(admin.StackedInline):
+class ConParticipantsAdmin(admin.StackedInline):
     model = ConParticipants
+    extra = 1
 
 
-class Con_Problems(admin.StackedInline):
+class ConProblemsAdmin(admin.StackedInline):
     model = ConProblems
+    extra = 1
 
 
 class ContestAdmin(admin.ModelAdmin):
     search_fields = ['title']
-    inlines = [Con_Participants, Con_Problems]
-
-
-class Con_Participants(admin.ModelAdmin):
-    pass
-
-
-class Con_Problems(admin.ModelAdmin):
-    pass
+    list_display = ['title', 'winner', 'start_time', 'end_time']
+    inlines = [ConParticipantsAdmin, ConProblemsAdmin]
 
 
 admin.site.register(Contest, ContestAdmin)

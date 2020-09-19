@@ -35,7 +35,7 @@ def user_detail(request, username):
     submit_count_author = Submit.objects.filter(author=user).count()
 
     user.solved = submit_count_ac_d
-    user.submited = Submit.objects.filter(author=user).count()
+    user.submitted = Submit.objects.filter(author=user).count()
     user.save()
     ranking = CustomUser.objects.all().order_by('-solved')
     counts = 1
@@ -64,6 +64,7 @@ def user_detail(request, username):
                }
 
     return render(request, 'common/user_detail.html', context)
+
 
 """
 def signup(request):
