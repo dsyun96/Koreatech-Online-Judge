@@ -1,0 +1,109 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: arial;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#window {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#left-pane {
+  position: absolute;
+  float: left;
+  width: 33%;
+  height: 100%;
+  border-right: 6px groove rgba(255, 255, 255, 0.1);
+  box-shadow: -3px 0px 18px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  color: whitesmoke;
+}
+
+#left-pane:before {
+  position: absolute;
+  background-image: url(http://bradjasper.com/subtle-patterns-bookmarklet/patterns/binding_dark.png);
+  opacity: 0.9;
+  width: 100%;
+  height: 100%;
+  content: "";
+  z-index: -1;
+}
+
+#right-pane {
+  float: left;
+  width: 100%;
+  height: 100%;
+  background-image: url(http://bradjasper.com/subtle-patterns-bookmarklet/patterns/textured_paper.png);
+}
+
+.inner {
+  padding: 12px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+#left-pane ul {
+  width: auto;
+  margin-right: -12px;
+  text-align: justify;
+  font-size: 0.1px;
+  /*hide whitespace between elements*/
+}
+#left-pane ul:after {
+  content: '';
+  display: inline-block;
+}
+
+#left-pane ul li {
+  display: inline-block;
+  width: 33.33333%;
+  font-size: 16px;
+  padding-right: 12px;
+  margin-bottom: 12px;
+}
+
+#left-pane ul li .inner {
+  background: #e67e22;
+  height: 50px;
+  width: 100%;
+  display: inline-block;
+  font-size: 1.3em;
+  text-align: left;
+}
+
+.shadow, .shadow-3 {
+  padding: 5px 24px;
+  color: #F9EEE8;
+  display: inline-block;
+  font-family: sans-serif;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YxZjhmOSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjZTZlYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f8f9), color-stop(100%, #cce6eb));
+  background-image: -moz-linear-gradient(#f1f8f9, #cce6eb);
+  background-image: -webkit-linear-gradient(#f1f8f9, #cce6eb);
+  background-image: linear-gradient(#f1f8f9, #cce6eb);
+  font-weight: bold;
+  font-size: 2em;
+  text-shadow: 0px 0px 0 #bdbdbd,1px 1px 0 #bdbdbd,2px 2px 0 #bdbdbd,3px 3px 0 #bdbdbd,4px 4px 0 #bdbdbd,5px 5px 0 #bdbdbd,6px 6px 0 #bdbdbd,7px 7px 0 #bdbdbd,8px 8px 0 #bdbdbd,9px 9px 0 #bdbdbd,10px 10px 0 #bdbdbd,11px 11px 0 #bdbdbd,12px 12px 0 #bdbdbd,13px 13px 0 #bdbdbd,14px 14px 0 #bdbdbd,15px 15px 0 #bdbdbd,16px 16px 0 #bdbdbd,17px 17px 0 #bdbdbd,18px 18px 0 #bdbdbd,19px 19px 0 #bdbdbd,20px 20px 0 #bdbdbd,21px 21px 0 #bdbdbd,22px 22px 0 #bdbdbd,23px 23px 0 #bdbdbd,24px 24px 0 #bdbdbd,25px 25px 0 #bdbdbd,26px 26px 0 #bdbdbd,27px 27px 0 #bdbdbd,28px 28px 0 #bdbdbd,29px 29px 0 #bdbdbd,30px 30px 0 #bdbdbd,31px 31px 0 #bdbdbd,32px 32px 0 #bdbdbd,33px 33px 0 #bdbdbd,34px 34px 0 #bdbdbd,35px 35px 0 #bdbdbd,36px 36px 0 #bdbdbd,37px 37px 0 #bdbdbd,38px 38px 0 #bdbdbd,39px 39px 0 #bdbdbd,40px 40px 0 #bdbdbd,41px 41px 0 #bdbdbd,42px 42px 0 #bdbdbd,43px 43px 0 #bdbdbd,44px 44px 0 #bdbdbd,45px 45px 0 #bdbdbd,46px 46px 0 #bdbdbd,47px 47px 0 #bdbdbd,48px 48px 0 #bdbdbd,1px 1px 0 rgba(189, 189, 189, 0.98),2px 2px 0 rgba(189, 189, 189, 0.96),3px 3px 0 rgba(189, 189, 189, 0.94),4px 4px 0 rgba(189, 189, 189, 0.92),5px 5px 0 rgba(189, 189, 189, 0.9),6px 6px 0 rgba(189, 189, 189, 0.88),7px 7px 0 rgba(189, 189, 189, 0.86),8px 8px 0 rgba(189, 189, 189, 0.84),9px 9px 0 rgba(189, 189, 189, 0.82),10px 10px 0 rgba(189, 189, 189, 0.8),11px 11px 0 rgba(189, 189, 189, 0.78),12px 12px 0 rgba(189, 189, 189, 0.76),13px 13px 0 rgba(189, 189, 189, 0.74),14px 14px 0 rgba(189, 189, 189, 0.72),15px 15px 0 rgba(189, 189, 189, 0.7),16px 16px 0 rgba(189, 189, 189, 0.68),17px 17px 0 rgba(189, 189, 189, 0.66),18px 18px 0 rgba(189, 189, 189, 0.64),19px 19px 0 rgba(189, 189, 189, 0.62),20px 20px 0 rgba(189, 189, 189, 0.6),21px 21px 0 rgba(189, 189, 189, 0.58),22px 22px 0 rgba(189, 189, 189, 0.56),23px 23px 0 rgba(189, 189, 189, 0.54),24px 24px 0 rgba(189, 189, 189, 0.52),25px 25px 0 rgba(189, 189, 189, 0.5),26px 26px 0 rgba(189, 189, 189, 0.48),27px 27px 0 rgba(189, 189, 189, 0.46),28px 28px 0 rgba(189, 189, 189, 0.44),29px 29px 0 rgba(189, 189, 189, 0.42),30px 30px 0 rgba(189, 189, 189, 0.4),31px 31px 0 rgba(189, 189, 189, 0.38),32px 32px 0 rgba(189, 189, 189, 0.36),33px 33px 0 rgba(189, 189, 189, 0.34),34px 34px 0 rgba(189, 189, 189, 0.32),35px 35px 0 rgba(189, 189, 189, 0.3),36px 36px 0 rgba(189, 189, 189, 0.28),37px 37px 0 rgba(189, 189, 189, 0.26),38px 38px 0 rgba(189, 189, 189, 0.24),39px 39px 0 rgba(189, 189, 189, 0.22),40px 40px 0 rgba(189, 189, 189, 0.2),41px 41px 0 rgba(189, 189, 189, 0.18),42px 42px 0 rgba(189, 189, 189, 0.16),43px 43px 0 rgba(189, 189, 189, 0.14),44px 44px 0 rgba(189, 189, 189, 0.12),45px 45px 0 rgba(189, 189, 189, 0.1),46px 46px 0 rgba(189, 189, 189, 0.08),47px 47px 0 rgba(189, 189, 189, 0.06),48px 48px 0 rgba(189, 189, 189, 0.04),50px 50px 0 rgba(189, 189, 189, 0);
+}
+
+.shadow-3 {
+  overflow: hidden;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ViOTk1MCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2U2N2UyMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eb9950), color-stop(100%, #e67e22));
+  background-image: -moz-linear-gradient(#eb9950, #e67e22);
+  background-image: -webkit-linear-gradient(#eb9950, #e67e22);
+  background-image: linear-gradient(#eb9950, #e67e22);
+  text-shadow: 0px 0px 0 #d35400,-1px 1px 0 #d35400,-2px 2px 0 #d35400,-3px 3px 0 #d35400,-4px 4px 0 #d35400,-5px 5px 0 #d35400,-6px 6px 0 #d35400,-7px 7px 0 #d35400,-8px 8px 0 #d35400,-9px 9px 0 #d35400,-10px 10px 0 #d35400,-11px 11px 0 #d35400,-12px 12px 0 #d35400,-13px 13px 0 #d35400,-14px 14px 0 #d35400,-15px 15px 0 #d35400,-16px 16px 0 #d35400,-17px 17px 0 #d35400,-18px 18px 0 #d35400,-19px 19px 0 #d35400,-20px 20px 0 #d35400,-21px 21px 0 #d35400,-22px 22px 0 #d35400,-23px 23px 0 #d35400,-24px 24px 0 #d35400,-25px 25px 0 #d35400,-26px 26px 0 #d35400,-27px 27px 0 #d35400,-28px 28px 0 #d35400,-29px 29px 0 #d35400,-30px 30px 0 #d35400,-31px 31px 0 #d35400,-32px 32px 0 #d35400,-33px 33px 0 #d35400,-34px 34px 0 #d35400,-35px 35px 0 #d35400,-36px 36px 0 #d35400,-37px 37px 0 #d35400,-38px 38px 0 #d35400,-39px 39px 0 #d35400,-40px 40px 0 #d35400,-41px 41px 0 #d35400,-42px 42px 0 #d35400,-43px 43px 0 #d35400,-44px 44px 0 #d35400,-45px 45px 0 #d35400,-46px 46px 0 #d35400,-47px 47px 0 #d35400,-48px 48px 0 #d35400,-49px 49px 0 #d35400,-50px 50px 0 #d35400,-51px 51px 0 #d35400,-52px 52px 0 #d35400,-53px 53px 0 #d35400,-54px 54px 0 #d35400,-55px 55px 0 #d35400,-56px 56px 0 #d35400,-57px 57px 0 #d35400,-58px 58px 0 #d35400,-59px 59px 0 #d35400,-60px 60px 0 #d35400,-61px 61px 0 #d35400,-62px 62px 0 #d35400,-63px 63px 0 #d35400,-64px 64px 0 #d35400,-65px 65px 0 #d35400,-66px 66px 0 #d35400,-67px 67px 0 #d35400,-68px 68px 0 #d35400,-69px 69px 0 #d35400,-70px 70px 0 #d35400,-71px 71px 0 #d35400,-72px 72px 0 #d35400,-73px 73px 0 #d35400,-74px 74px 0 #d35400,-75px 75px 0 #d35400,-76px 76px 0 #d35400,-77px 77px 0 #d35400,-78px 78px 0 #d35400,-79px 79px 0 #d35400,-80px 80px 0 #d35400,-81px 81px 0 #d35400,-82px 82px 0 #d35400,-83px 83px 0 #d35400,-84px 84px 0 #d35400,-85px 85px 0 #d35400,-86px 86px 0 #d35400,-87px 87px 0 #d35400,-88px 88px 0 #d35400,-89px 89px 0 #d35400,-90px 90px 0 #d35400,-91px 91px 0 #d35400,-92px 92px 0 #d35400,-93px 93px 0 #d35400,-94px 94px 0 #d35400,-95px 95px 0 #d35400,-96px 96px 0 #d35400,-97px 97px 0 #d35400,-98px 98px 0 #d35400,100px 100px 0 transparent;
+}
