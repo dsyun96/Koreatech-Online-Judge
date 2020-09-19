@@ -132,13 +132,13 @@ def article_rcmd(request, article_id):
         cookies_list = cookies.split('|')
         if str(article_id) not in cookies_list:
             response.set_cookie(cookie_name, cookies + f'|{article_id}', expires=None)
-            article.rcmd += 1
+            article.recommend += 1
             article.save()
             return response
     else:
         # messages.error(request, '여러번 추천할 수 없습니다!')
         response.set_cookie(cookie_name, article_id, expires=None)
-        article.rcmd += 1
+        article.recommend += 1
         article.save()
         return response
     return redirect(reverse('board:article_detail', args=(article.article_id,)))
