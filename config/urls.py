@@ -32,10 +32,7 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-<<<<<<< HEAD
-=======
 
 admin.site.site_header = '코리아텍 온라인저지 관리'
 admin.site.site_title = 'Koreatech Online Judge'
 admin.site.index_title = '관리 페이지'
->>>>>>> 6a76510337b99a707b91c57004a9288c531958cb
