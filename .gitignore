@@ -7,4 +7,5 @@ media
 *.log
 output
 error
+*.sh
 
