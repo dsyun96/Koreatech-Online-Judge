@@ -195,3 +195,5 @@ JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
         {'name': 'Comment', 'label': '댓글', 'url': '/admin/board/comment/'},
     ]},
 ]
+
+JET_SIDE_MENU_COMPACT = True

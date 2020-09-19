@@ -2,8 +2,6 @@ from .models import Testcase, Problem
 from collections import namedtuple
 import subprocess
 import os
-import fnmatch
-import json
 import _judger
 from .infos import *
 
@@ -21,7 +19,7 @@ class JudgeClass:
     compile_cmd = [
         ['gcc', '{0}/{1}'.format(DIR, filename[0]), '-o', '{0}/Main'.format(DIR), '-O2', '-lm', '-std=c99'],
         ['g++', '{0}/{1}'.format(DIR, filename[1]), '-o', '{0}/Main'.format(DIR), '-O2', '-lm', '-std=gnu++98'],
-        ['javac', '-J-Xms1024m', '-J-Xmx1024m', '-J-Xss512m', '-encoding', 'UTF-8', '{0}/{1}'.format(DIR, filename[2])],
+        ['javac', '-encoding', 'UTF-8', '{0}/{1}'.format(DIR, filename[2])],
         ['python3', '-c', '"import py_compile; py_compile.compile(r\'{0}/{1}\')"'.format(DIR, filename[3])],
     ]
     run_cmd = [
@@ -49,6 +47,7 @@ class JudgeClass:
         # print(os.listdir(os.getcwd()))
         os.system('rm {0}/Main*'.format(self.DIR))
         # print(os.listdir(os.getcwd()))
+        # pass
 
     def output_comparison(self, o1, answer):
         with open(o1, 'r') as f1:
@@ -80,24 +79,63 @@ class JudgeClass:
                     output_len += len(line)
                     answer_data.append(line)
 
-            res = _judger.run(
-                max_cpu_time=self._time_limit * 1000,
-                max_real_time=self._time_limit * 2000,
-                max_memory=self._memory_limit * 2 ** 20,
-                max_process_number=200,
-                max_output_size=max(100, output_len * 2),
-                max_stack=self._memory_limit * 2 ** 20,
-                exe_path=f"{self.run_cmd[self._lang]}",
-                input_path=f"{self.DIR}/media/{tc.input_data}",
-                output_path=f"{self.DIR}/output",
-                error_path=f"{self.DIR}/error",
-                seccomp_rule_name="c_cpp",
-                args=[],
-                env=[],
-                log_path="judger.log",
-                uid=0,
-                gid=0
-            )
+            if self._lang == 2:
+                res = _judger.run(
+                    max_cpu_time=self._time_limit * 1000,
+                    max_real_time=self._time_limit * 2000,
+                    max_memory=_judger.UNLIMITED,
+                    max_process_number=200,
+                    max_output_size=max(100, output_len * 2),
+                    max_stack=_judger.UNLIMITED,
+                    exe_path=f"/usr/bin/java",
+                    input_path=f"{self.DIR}/media/{tc.input_data}",
+                    output_path=f"{self.DIR}/output",
+                    error_path=f"{self.DIR}/error",
+                    seccomp_rule_name=None,
+                    args=['Main'],
+                    env=[],
+                    log_path="judger.log",
+                    uid=0,
+                    gid=0
+                )
+            elif self._lang == 3:
+                res = _judger.run(
+                    max_cpu_time=self._time_limit * 1000,
+                    max_real_time=self._time_limit * 2000,
+                    max_memory=self._memory_limit * 2 ** 20,
+                    max_process_number=200,
+                    max_output_size=max(100, output_len * 2),
+                    max_stack=self._memory_limit * 2 ** 20,
+                    exe_path=f"/usr/bin/python3",
+                    input_path=f"{self.DIR}/media/{tc.input_data}",
+                    output_path=f"{self.DIR}/output",
+                    error_path=f"{self.DIR}/error",
+                    seccomp_rule_name="general",
+                    args=['Main.py'],
+                    env=[],
+                    log_path="judger.log",
+                    uid=0,
+                    gid=0
+                )
+            else:
+                res = _judger.run(
+                    max_cpu_time=self._time_limit * 1000,
+                    max_real_time=self._time_limit * 2000,
+                    max_memory=self._memory_limit * 2 ** 20,
+                    max_process_number=200,
+                    max_output_size=max(100, output_len * 2),
+                    max_stack=self._memory_limit * 2 ** 20,
+                    exe_path=f"{self.run_cmd[self._lang]}",
+                    input_path=f"{self.DIR}/media/{tc.input_data}",
+                    output_path=f"{self.DIR}/output",
+                    error_path=f"{self.DIR}/error",
+                    seccomp_rule_name="c_cpp",
+                    args=[],
+                    env=[],
+                    log_path="judger.log",
+                    uid=0,
+                    gid=0
+                )
 
             result = res['result']
             if 1 <= result <= 2:
@@ -149,5 +187,10 @@ def judge_java(code, lang, prob_id, time_limit, memory_limit):
     return judger.run()
 
 
-def judge_python(submit):
-    return Result(-1, -1, -1)
+def judge_python(code, lang, prob_id, time_limit, memory_limit):
+    judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)
+
+    # if judger.compile_check():
+    #     return Result(CE, -1, -1)
+
+    return judger.run()
