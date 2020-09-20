@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'contest.apps.ContestConfig',
 
     'mathfilters',
+    'multiselectfield',
     'django_summernote',
     'django_cleanup',
 ]

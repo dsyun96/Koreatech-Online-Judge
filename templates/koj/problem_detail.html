@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load split %}
 
 {% block content %}
 
@@ -47,7 +48,7 @@ position: relative;
 }
 </style>
 
-<
+
 <script type="text/javascript">
   var startpos, diffpos=0, range_d1=150, range_d2=150;
   var isEnable = false;
@@ -91,6 +92,7 @@ position: relative;
 
 <body onload="init()">
 
+{% if problem.is_closed == False %}
 <div class="container" >
     <div class="row" style="margin-left:10px">
         <div class="d1" id="d1">
@@ -191,18 +193,40 @@ position: relative;
         <div class="d3" id="hr"></div>
         {% if user.is_authenticated %}
         <div class="d2" id="d2">
+            {% if cid %}
+            <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}&contest_id={{ cid }}"
+                  method="POST">
+            {% else %}
             <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
                   method="POST">
+            {% endif %}
                 {% csrf_token %}
                 <li class="active"><a
                         href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내
                     소스</a></li>
+
+            {% if cid %}
+                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                    {% for i in con_lang %}
+                        {% if i == '0' %}
+                            <option value="0" selected>C</option>
+                        {% elif i == '1' %}
+                           <option value="1">C++</option>
+                        {% elif i == '2' %}
+                           <option value="2">Java</option>
+                        {% else %}
+                            <option value="3">Python</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            {% else %}
                 <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
                     <option value="0" selected>C</option>
                     <option value="1">C++</option>
                     <option value="2">Java</option>
                     <option value="3">Python</option>
                 </select>
+            {% endif %}
                 <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
                     <option value="0" selected>default</option>
                     <option value="1">abcdef</option>
@@ -290,8 +314,12 @@ position: relative;
                         if (theme) { input_theme.value = theme; selectTheme(); }
                       });
                 </script>
-
-                <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
+                {% if cid %}
+                    <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
+                    <input type="hidden" name="cid" id="cid" value="{{ cid }}">
+                {% else %}
+                    <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
+                {% endif %}
                 <button class="btn btn-primary btn-sm" type="submit"
                         style="float:right;margin-bottom: 15px;min-width: 45px;">제출
                 </button>
@@ -305,5 +333,9 @@ position: relative;
         {% endif %}
     </div>
   </div>
+{% else %}
+     <h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
+{% endif %}
 </body>
+
 {% endblock %}
