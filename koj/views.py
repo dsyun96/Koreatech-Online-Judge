@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from .models import Problem, Submit, Testcase
 from common.models import CustomUser
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.models import User
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
@@ -13,6 +14,8 @@ from .infos import *
 def index(request):
     return render(request, 'koj/index.html', {})
 
+def test(request):
+    return render(request, 'koj/test.html', {})
 
 def problemset(request):
     page = request.GET.get('page', '1')  # 입력 파라미터
@@ -47,7 +50,7 @@ def problem_detail(request, prob_id):
     context = {'problem': problem, 'code': code, 'examples': example_texts}
     return render(request, 'koj/problem_detail.html', context)
 
-
+@login_required(login_url='/common/login')
 def problem_write_for_user(request):
     if request.method == "GET":
         form = ProblemForm()
@@ -92,27 +95,6 @@ def problem_write_for_user(request):
 
     context = {'form_t': form_t, 'form': form}
     return render(request, 'koj/problem_write_for_user.html', context)
-
-
-def problem_write_add_file(request, prob_id):
-    if request.method == "GET":
-        form = TestcaseForm()
-
-    if request.method == "POST":
-        form = TestcaseForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            # form.save(commit=False)
-            temp_form = form.save(commit=False)
-            temp_form.problem = Problem.objects.get(prob_id=prob_id)
-            temp_form.save()
-            # form.problem = Problem.objects.get(prob_id = prob_id)
-            # form.input_data = Testcase(input_data = request.FILES['input_data'])
-            # form.output_data = Testcase(output_data = request.FILES['output_data'])
-            return redirect('koj:index')
-
-    context = {'form': form}
-    return render(request, 'koj/problem_write_add_file.html', context)
 
 
 def ranking_list(request):
