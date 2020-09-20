@@ -1,5 +1,7 @@
 from django.db import models
+#from contest.models import Contest
 from django.conf import settings
+
 
 
 # Create your models here.
@@ -12,6 +14,7 @@ class Problem(models.Model):
     time_limit = models.IntegerField('시간 제한 (초)', default=1)
     memory_limit = models.IntegerField('메모리 제한 (MB)', default=128)
     made_by = models.CharField('작성자', default='admin', max_length=32)
+    is_closed = models.BooleanField('비공개여부', default=False)
 
     def __str__(self):
         return str(self.prob_id)
@@ -48,6 +51,8 @@ class Submit(models.Model):
     result = models.IntegerField('결과', null=True)
     memory = models.IntegerField('메모리', null=True)
     runtime = models.IntegerField('시간', null=True)
+    for_contest = models.BooleanField('대회용 제출', default=False)
+    contest_id = models.IntegerField('대회 번호', null=True)
 
     def __str__(self):
         return str(self.id)

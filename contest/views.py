@@ -22,15 +22,24 @@ def contest_detail(request, contest_id):
 
     problem_info = []
     for prob in contest_probs:
-        # number = contest_probs.values_list('problems', flat=True)
-        problem_info.append((Problem.objects.get(prob_id=prob.problems.prob_id),
-                             Submit.objects.filter(problem=prob.problems).filter(result=AC).count(),
-                             Submit.objects.filter(problem=prob.problems).count()))
+        problem = Problem.objects.get(prob_id=prob.problems.prob_id)
+        problem_solved = Submit.objects.filter(problem=prob.problems).filter(result=AC).filter(for_contest=True).count()
+        problem_submitted = Submit.objects.filter(problem=prob.problems).filter(for_contest=True).count()
+
+        problem_info.append((problem, problem_solved, problem_submitted))
+
+    if contest.private:
+        is_available = 0
+        for i in contest_partis:
+            if request.user == i.participants:
+                is_available = 1
+    else:
+        is_available = 1
 
     context = {'con': contest,
                'con_prob': contest_probs,
                'con_partis': contest_partis,
-               'problem_info': problem_info
+               'problem_info': problem_info, 'is_available':is_available,
                }
 
     return render(request, 'contest/contest.html', context)
