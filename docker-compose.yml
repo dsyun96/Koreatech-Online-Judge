@@ -9,7 +9,7 @@ services:
             - backend
 
     koj:
-        image: ubuntu:channels
+        image: ubuntu:channels-reidis
         build:
             context: .
             dockerfile: Dockerfile

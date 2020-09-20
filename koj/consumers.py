@@ -1,31 +1,21 @@
 from channels.generic.websocket import WebsocketConsumer
 import json
-from .runs import *
+
+from .tasks import run
 
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
 
-    def disconnect(self, close_code):
-        pass
-
     def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        run_func = [run_c, ]
+        payload = json.loads(text_data)
 
         with open('test_input', 'w') as f:
-            f.write(text_data_json['input'])
+            f.write(payload['input'])
+        run.delay(self.channel_name, payload['code'], payload['lang'], payload['input'])
 
-        result = run_func[int(text_data_json['lang'])](text_data_json['code'], text_data_json['input'])
-
-        # task = run.delay(text_data_json['code'], text_data_json['lang'], text_data_json['input'])
-        # result = task.wait(timeout=None, interval=1)
-
+    def task_result(self, event):
         self.send(text_data=json.dumps({
-            'message': result
+            'message': event['message']
         }))
-
-        '''self.send(text_data=json.dumps({
-            'message': message
-        }))'''

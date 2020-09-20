@@ -1,5 +1,6 @@
 celery==4.4.6
 channels==2.4.0
+channels-redis==3.1.0
 Django==3.0.8
 django-cleanup==5.1.0
 django-mathfilters==1.0.0
