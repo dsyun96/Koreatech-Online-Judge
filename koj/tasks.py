@@ -1,6 +1,8 @@
 from config import celery_app
 from .models import Submit
 from .judges import *
+from .runs import *
+import json
 
 
 @celery_app.task
@@ -16,3 +18,13 @@ def judge(submit_id):
     submit.memory = res.memory
     submit.runtime = res.runtime
     submit.save()
+
+
+@celery_app.task
+def run(code, lang, input_data):
+    run_func = [run_c, judge_cpp, judge_java, judge_python, ]
+
+    with open('test_input', 'w') as f:
+        f.write(input_data)
+
+    return run_func[lang](code, lang)

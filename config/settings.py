@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'common.apps.CommonConfig',
     'board.apps.BoardConfig',
     'contest.apps.ContestConfig',
-    'chat',
 
     'mathfilters',
     'django_summernote',
