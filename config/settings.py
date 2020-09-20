@@ -33,8 +33,10 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'common.CustomUser'
 
 INSTALLED_APPS = [
+    'channels',
     'core',
     'jet',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,11 +48,14 @@ INSTALLED_APPS = [
     'common.apps.CommonConfig',
     'board.apps.BoardConfig',
     'contest.apps.ContestConfig',
+    'chat',
 
     'mathfilters',
     'django_summernote',
     'django_cleanup',
 ]
+
+ASGI_APPLICATION = 'config.routing.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

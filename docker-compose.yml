@@ -9,7 +9,7 @@ services:
             - backend
 
     koj:
-        image: ubuntu:clean
+        image: ubuntu:channels
         build:
             context: .
             dockerfile: Dockerfile
