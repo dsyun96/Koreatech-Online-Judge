@@ -113,7 +113,9 @@ def ranking_list(request):
 
 
 def ide(request):
-    return render(request, 'koj/ide.html')
+    return render(request, 'koj/ide.html', {
+        'room_name_json': 'asdf'
+    })
 
 
 def status(request):
