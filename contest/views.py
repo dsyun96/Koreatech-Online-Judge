@@ -24,7 +24,7 @@ def contest_detail(request, contest_id):
     for prob in contest_probs:
         # number = contest_probs.values_list('problems', flat=True)
         problem_info.append((Problem.objects.get(prob_id=prob.problems.prob_id),
-                             Submit.objects.filter(problem=prob.problems).filter(result='AC').count(),
+                             Submit.objects.filter(problem=prob.problems).filter(result=AC).count(),
                              Submit.objects.filter(problem=prob.problems).count()))
 
     context = {'con': contest,

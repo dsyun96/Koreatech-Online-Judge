@@ -9,7 +9,6 @@ class Article(models.Model):
         ('Q', '질문'),
         ('I', '정보'),
     )
-
     article_id = models.AutoField('글 번호', null=False, primary_key=True)
     head = models.CharField('분류', max_length=16, choices=HEAD_TYPES)
     title = models.CharField('제목', max_length=126, null=False)
