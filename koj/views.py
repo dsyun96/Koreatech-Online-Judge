@@ -8,14 +8,18 @@ from django.contrib.auth.decorators import login_required
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
+from django.utils.safestring import mark_safe
+import json
 
 
 # Create your views here.
 def index(request):
     return render(request, 'koj/index.html', {})
 
+
 def test(request):
     return render(request, 'koj/test.html', {})
+
 
 def problemset(request):
     page = request.GET.get('page', '1')  # 입력 파라미터
@@ -49,6 +53,7 @@ def problem_detail(request, prob_id):
 
     context = {'problem': problem, 'code': code, 'examples': example_texts}
     return render(request, 'koj/problem_detail.html', context)
+
 
 @login_required(login_url='/common/login')
 def problem_write_for_user(request):
@@ -107,10 +112,8 @@ def ranking_list(request):
     return render(request, 'koj/ranking_list.html', context)
 
 
-# ------------------------------------------------------------------------------------------------------------
-def koj_ide(request):
-    return render(request, 'koj/koj_ide.html')
-# ------------------------------------------------------------------------------------------------------------
+def ide(request):
+    return render(request, 'koj/ide.html')
 
 
 def status(request):
