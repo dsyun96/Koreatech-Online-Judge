@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from common.models import CustomUser
 from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
+from koj.infos import *
 
 
 # Create your views here.
@@ -50,7 +51,7 @@ def article_detail(request, article_id):
     return render(request, 'board/article_detail.html', context)
 
 
-@login_required
+@login_required(login_url='/common/login')
 def article_write(request):
     if request.method == "GET":
         form = ArticleForm()
@@ -81,10 +82,11 @@ def article_write(request):
     return render(request, 'board/article_write.html', {'form': form})
 
 
+@login_required(login_url='/common/login')
 def article_update(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
 
-    if article.author != request.user.username:
+    if article.author != request.user:
         messages.error(request, '작성자가 아니면 수정할 수 없습니다!')
         return redirect(reverse('board:article_detail', args=(article.article_id,)))
 
@@ -106,11 +108,11 @@ def article_update(request, article_id):
         return render(request, 'board/article_update.html', {'form': form})
 
 
-@login_required
+@login_required(login_url='/common/login')
 def article_delete(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
 
-    if article.author != request.user.username:
+    if article.author != request.user:
         messages.error(request, '작성자가 아니면 삭제할 수 없습니다!')
         return redirect(reverse('board:article_detail', args=(article.article_id,)))
 
@@ -118,6 +120,7 @@ def article_delete(request, article_id):
     return redirect(reverse('board:article_list'))
 
 
+@login_required(login_url='/common/login')
 def article_rcmd(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
     context = {'article': article}
@@ -132,18 +135,19 @@ def article_rcmd(request, article_id):
         cookies_list = cookies.split('|')
         if str(article_id) not in cookies_list:
             response.set_cookie(cookie_name, cookies + f'|{article_id}', expires=None)
-            article.rcmd += 1
+            article.recommend += 1
             article.save()
             return response
     else:
         # messages.error(request, '여러번 추천할 수 없습니다!')
         response.set_cookie(cookie_name, article_id, expires=None)
-        article.rcmd += 1
+        article.recommend += 1
         article.save()
         return response
     return redirect(reverse('board:article_detail', args=(article.article_id,)))
 
 
+@login_required(login_url='/common/login')
 def comment_write(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
     filled_form = CommentForm(request.POST)
@@ -153,13 +157,13 @@ def comment_write(request, article_id):
         temp_form.article = Article.objects.get(article_id=article_id)
         temp_form.author = user
         temp_form.save()
-
         return redirect(reverse('board:article_detail', args=(article.article_id,)))
 
 
+@login_required(login_url='/common/login')
 def comment_delete(request, com_id, article_id):
     article = get_object_or_404(Article, article_id=article_id)
-    if article.author != request.user.username:
+    if article.author != request.user:
         messages.error(request, '작성자가 아니면 삭제할 수 없습니다!')
         return redirect(reverse('board:article_detail', args=(article.article_id,)))
 

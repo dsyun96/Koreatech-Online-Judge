@@ -2,15 +2,24 @@
 
 {% block content %}
 {% load static %}
-
-    <div class = "container">
-      <form method = "POST" action=".">
+<!--
+{% if user.is_authenticated %}
+-->
+<div class="container">
+  <br>
+    <form method="POST" action="{% url 'board:article_write' %}">
         {% csrf_token %}
-        {{ form.media }}
         {{ form.as_p }}
+        <button type="submit" class="btn btn-primary" style="float:right;">글쓰기</button>
+    </form>
+</div>
+<!--
+{% else %}
+<div class="container">
 
-        <button type="submit" class="btn btn-primary" style = "float:right;">글쓰기</button>
-      </form>
-    </div>
-
+          로그인을 먼저 해주시기 바랍니다!
+          <br><br>
+</div>
+-->
+{% endif %}
 {% endblock %}

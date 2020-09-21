@@ -1,6 +1,6 @@
 from django import forms
 from .models import Article, Comment
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django_summernote.widgets import SummernoteWidget
 
 
 class ArticleForm(forms.ModelForm):
@@ -12,17 +12,25 @@ class ArticleForm(forms.ModelForm):
 
     title = forms.CharField(error_messages={'required': '제목을 입력해주세요'},
                             label='제목',
-                            max_length=128)
+                            max_length=128
+                            )
     # head =  forms.CharField(widget=forms.Select(choices=HEAD_TYPES))
-    head = forms.ChoiceField(required=True, choices=HEAD_TYPES)
+    head = forms.ChoiceField(required=True,
+                             label='분류',
+                             choices=HEAD_TYPES,
+                             )
     # content = forms.CharField(error_messages = {'required':"내용을 입력해주세요."}, label = "내용", widget = forms.Textarea)
     content = forms.CharField(error_messages={'required': '내용을 입력해주세요.'},
                               label='내용',
-                              widget=CKEditorUploadingWidget())
+                              widget=SummernoteWidget()
+                              )
 
     class Meta:
         model = Article
         fields = ['title', 'head', 'content']
+        widgets = {
+            'content': SummernoteWidget(),
+        }
 
 
 class CommentForm(forms.ModelForm):

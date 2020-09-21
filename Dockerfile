@@ -12,10 +12,7 @@ RUN mkdir build && cd build && cmake .. && make && make install
 WORKDIR /Judger/bindings/Python/
 RUN python3 setup.py install
 
-COPY requirements.txt /Koreatech-OJ/
 WORKDIR /Koreatech-OJ/
+COPY requirements.txt .
 RUN pip3 install -r requirements.txt
-
-WORKDIR /Koreatech-OJ/
-COPY . .
 

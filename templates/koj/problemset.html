@@ -27,17 +27,19 @@
                         <td> None </td>
                         <td>{{prob_ac}} </td>
                         <td>{{prob_sub}}</td>
-                       {% if prob_sub == 0 or prob_sub == None %}
-                        <td>None</td>
+                        {% if prob_sub == 0 or prob_sub == None %}
+                            <td>None</td>
                         {% else %}
-                        <td>{{ prob_ac|div:prob_sub|mul:100|floatformat:2 }}</td>
+                            <td>{{ prob_ac|div:prob_sub|mul:100|floatformat:2 }}</td>
                         {% endif %}
                     </tr>
 					{% endfor %}
                 </tbody>
             </table>
-            <button type ="button" class = "btn btn-primary" style = "float:left;"
-                  onclick = "location.href ='{% url 'koj:problem_write_for_user' %}'">문제 작성</button>
+            {% if user.is_authenticated %}
+                <button type ="button" class = "btn btn-primary" style = "float:left;"
+                      onclick = "location.href ='{% url 'koj:problem_write_for_user' %}'">문제 작성</button>
+            {% endif %}
 
 			<!-- 페이징처리 시작 -->
             <ul class="pagination justify-content-center">

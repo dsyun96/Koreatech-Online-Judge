@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load split %}
 
 {% block content %}
+
+
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/lib/codemirror.css' %}">
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/doc/docs.css' %}">
+
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/dracula.css' %}">
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/darcula.css' %}">
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/abcdef.css' %}">
@@ -20,7 +24,8 @@
 <script src="{% static '/codemirror-5.51.0/addon/selection/active-line.js' %}"></script>
 <script src="{% static '/codemirror-5.51.0/doc/activebookmark.js' %}"></script>
 
-<!--Lint
+<!--
+Lint
 <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
 <script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
 <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
@@ -30,76 +35,210 @@
 <script src="{% static '/codemirror-5.51.0/addon/lint/css-lint.js' %}"></script>
 -->
 
-    <div class="container">
+<style type="text/css">
+.d1 {float:left;width:50%;height:500px;border-right:1px solid #b8b8b8;margin-right:-1px;overflow-y:auto;}
+.d2 {float:left;width:49%;height:500px;overflow-y:auto;}
+.d3 {float:left;width:10px;height:500px;background-color:#888888;}
+#hr {cursor:pointer;}
+.container_pb{padding-right:15px;padding-left:15px;margin-right:80px;margin-left:80px;}
+.container {
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="table-responsive" style="margin-top: 15px;">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>문제</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br>{{ problem.body|linebreaksbr }}<br></td>
-                            </tr>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>입력</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br>{{ problem.input|linebreaksbr }}<br></td>
-                            </tr>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>출력</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br>{{ problem.output|linebreaksbr }}<br></td>
-                            </tr>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
+position: relative;
+
+}
+</style>
+
+
+<script type="text/javascript">
+  var startpos, diffpos=0, range_d1=150, range_d2=150;
+  var isEnable = false;
+  var container_width = document.querySelector('.container').offsetWidth;
+
+
+  function on_mouse_down(e) {
+    container_width = document.querySelector('.container').offsetWidth;
+   startpos = event.clientX + diffpos;
+   isEnable = true;
+   return false;
+  }
+
+
+  function on_mouse_up(e) {
+    container_width = document.querySelector('.container').offsetWidth;
+   isEnable = false;
+   return false;
+  }
+
+  function on_mouse_move(e) {
+    container_width = document.querySelector('.container').offsetWidth;
+   if (isEnable) {
+    pos = event.clientX;
+    diffpos = startpos-pos;
+    var width = (container_width-20)/2;
+    if (diffpos > -(width-50) && diffpos < (width-50)) {
+      document.getElementById("d1").style.width = width - diffpos + "px";
+      document.getElementById("d2").style.width = width - 20 + diffpos + "px";
+    }
+   }
+  }
+
+  function init() {
+   container_width = document.querySelector('.container').offsetWidth;
+   document.getElementById("hr").onmousedown = on_mouse_down;
+   document.onmouseup = on_mouse_up;
+   document.onmousemove = on_mouse_move;
+  }
+</script>
+
+<body onload="init()">
+
+{% if problem.is_closed == False %}
+<div class="container" >
+    <div class="row" style="margin-left:10px">
+        <div class="d1" id="d1">
+            <div class="table-responsive" style="margin-top: 15px;">
+                <p>시간 제한: {{ problem.time_limit }} 초</p>
+                <p>메모리 제한: {{ problem.memory_limit }} MB</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>문제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><br>
+                            {% with content=problem.body|safe %}
+                            {{ content }}
+                            {% endwith %}
+                        <br></td>
+                    </tr>
+                    <tr></tr>
+                    </tbody>
+                </table>
             </div>
-            {% if user.is_authenticated %}
-            <div class="col-md-6">
-                <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}" method="POST">
-                    {% csrf_token %}
-                    <li class = "active"><a href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내 소스</a></li>
-                    <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                        <option value="0" selected>C</option>
-                        <option value="1">C++</option>
-                        <option value="2">Java</option>
-                        <option value="3">Python</option>
-                    </select>
-                    <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-                        <option value="0" selected>default</option>
-                        <option value="1">abcdef</option>
-                        <option value="2">duotone-dark</option>
-                        <option value="3">dracula</option>
-                        <option value="4">darcula</option>
-                    </select>
-                    <textarea name="code" id="code" style="margin: 30px;height: 350px;width: 500px;margin-top: 15px;">{{ code.code }}</textarea>
-                    <script>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>입력</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><br>
+                            {% with content=problem.input|safe %}
+                            {{ content }}
+                            {% endwith %}
+                        <br></td>
+                    </tr>
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>출력</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><br>
+                            {% with content=problem.output|safe %}
+                            {{ content }}
+                            {% endwith %}
+                        <br></td>
+                    </tr>
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+            {% if examples %}
+                {% for input, output in examples %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>입력 예시 {{ forloop.counter }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><br>{{ input }}</td>
+                            </tr>
+                            <tr></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>출력 예시 {{ forloop.counter }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><br>{{ output }}<br></td>
+                            </tr>
+                            <tr></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="d3" id="hr"></div>
+        {% if user.is_authenticated %}
+        <div class="d2" id="d2">
+            {% if cid %}
+            <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}&contest_id={{ cid }}"
+                  method="POST">
+            {% else %}
+            <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
+                  method="POST">
+            {% endif %}
+                {% csrf_token %}
+                <li class="active"><a
+                        href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내
+                    소스</a></li>
+
+            {% if cid %}
+                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                    {% for i in con_lang %}
+                        {% if i == '0' %}
+                            <option value="0" selected>C</option>
+                        {% elif i == '1' %}
+                           <option value="1">C++</option>
+                        {% elif i == '2' %}
+                           <option value="2">Java</option>
+                        {% else %}
+                            <option value="3">Python</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            {% else %}
+                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                    <option value="0" selected>C</option>
+                    <option value="1">C++</option>
+                    <option value="2">Java</option>
+                    <option value="3">Python</option>
+                </select>
+            {% endif %}
+                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
+                    <option value="0" selected>default</option>
+                    <option value="1">abcdef</option>
+                    <option value="2">duotone-dark</option>
+                    <option value="3">dracula</option>
+                    <option value="4">darcula</option>
+                </select>
+                <textarea name="code" id="code"
+                  style="margin: 30px;height: 350px; width:100%;margin-top: 15px;">{{ code.code }}
+                </textarea>
+
+                <script>
 
                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                         lineNumbers: true,
@@ -174,18 +313,29 @@
                         var theme = location.hash.slice(1);
                         if (theme) { input_theme.value = theme; selectTheme(); }
                       });
-
-                      </script>
+                </script>
+                {% if cid %}
                     <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
-                    <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 470px;margin-bottom: 15px;min-width: 45px;">제출</button>
-                </form>
-            </div>
-            {% else %}
-            <div class="col-md-6">
-                로그인을 먼저 해주시기 바랍니다!
-            </div>
-            {% endif %}
+                    <input type="hidden" name="cid" id="cid" value="{{ cid }}">
+                {% else %}
+                    <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
+                {% endif %}
+                <button class="btn btn-primary btn-sm" type="submit"
+                        style="float:right;margin-bottom: 15px;min-width: 45px;">제출
+                </button>
+            </form>
         </div>
+        {% else %}
+        <div class="col-md-6">
+          <br>
+            로그인을 먼저 해주시기 바랍니다!
+        </div>
+        {% endif %}
     </div>
-</div>
+  </div>
+{% else %}
+     <h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
+{% endif %}
+</body>
+
 {% endblock %}

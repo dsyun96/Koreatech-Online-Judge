@@ -4,6 +4,22 @@
 
 {% block content %}
 
+<script type="text/javascript" language="javascript">
+  function update_article(){
+    var check = confirm("게시글을 수정하시겠습니까?");
+    if(check) location.href = '{% url 'board:article_update' article.article_id %}'
+  }
+  function delete_article(){
+    var check = confirm("게시글을 삭제하시겠습니까?");
+    if(check) location.href ='{% url 'board:article_delete' article.article_id %}'
+  }
+</script>
+
+<script type="text/javascript" language="javascript">
+
+</script>
+
+
 <div class="container">
     <div class="row">
         <div class="table-responsive" style="margin-top: 15px;">
@@ -28,8 +44,7 @@
                         {% with content=article.content|safe %}
                         {{ content|linebreaksbr }}
                         {% endwith %}
-                        <br></td>
-
+                    <br></td>
                 </tr>
                 <tr></tr>
                 </tbody>
@@ -40,18 +55,20 @@
             </button>
 
             <button type="button" class="btn btn-primary" style="float:left;"
-                    onclick="location.href = '{% url 'board:article_update' article.article_id %}'">수정하기
+                    onclick="update_article();">수정하기
             </button>
             <button type="button" class="btn btn-primary" style="float:left;"
-                    onclick="location.href ='{% url 'board:article_delete' article.article_id %}'">삭제하기
+                    onclick="delete_article();">삭제하기
             </button>
             <button type="button" class="btn btn-primary" style="float:left;"
-                    onclick="location.href ='/article_list/'">돌아가기
+                    onclick="location.href ='{% url 'board:article_list' %}'">돌아가기
             </button>
+            <!-- location.href ='{% url 'board:article_list' %}' -->
         </div>
     </div>
 </div>
 <br> <br>
+{% if user.is_authenticated %}
 <div class="container">
     <div class="row">
         <div class="table-responsive" style="margin-top: 15px;">
@@ -70,6 +87,12 @@
         </div>
     </div>
 </div>
-
+{% else %}
+<div class="container">
+  <hr>
+          로그인을 먼저 해주시기 바랍니다!
+          <br><br>
+</div>
+{% endif %}
 
 {% endblock %}

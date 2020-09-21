@@ -33,22 +33,25 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'common.CustomUser'
 
 INSTALLED_APPS = [
-    'koj.apps.KojConfig',
-    'common.apps.CommonConfig',
-    'board.apps.BoardConfig',
     'core',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ckeditor',
-    'ckeditor_uploader',
+
+    'koj.apps.KojConfig',
+    'common.apps.CommonConfig',
+    'board.apps.BoardConfig',
+    'contest.apps.ContestConfig',
+
     'mathfilters',
+    'multiselectfield',
+    'django_summernote',
+    'django_cleanup',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,7 +84,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -95,8 +97,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -112,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -138,6 +137,64 @@ STATICFILES_DIRS = [
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 
-MEDIA_URL = '/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '')
-CKEDITOR_UPLOAD_PATH = 'posts/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
+# jet setting
+# https://jet.readthedocs.io/en/latest/index.html
+
+JET_THEMES = [
+    {
+        'theme': 'default',  # theme folder name
+        'color': '#47bac1',  # color of the theme's button in user menu
+        'title': 'Default'   # theme title
+    },
+    {
+        'theme': 'green',
+        'color': '#44b78b',
+        'title': 'Green'
+    },
+    {
+        'theme': 'light-green',
+        'color': '#2faa60',
+        'title': 'Light Green'
+    },
+    {
+        'theme': 'light-violet',
+        'color': '#a464c4',
+        'title': 'Light Violet'
+    },
+    {
+        'theme': 'light-blue',
+        'color': '#5EADDE',
+        'title': 'Light Blue'
+    },
+    {
+        'theme': 'light-gray',
+        'color': '#222',
+        'title': 'Light Gray'
+    }
+]
+
+JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
+    {'label': '문제 관리', 'items': [
+        {'name': '문제', 'label': '문제', 'url': '/admin/koj/problem/'},
+        {'name': 'Submit', 'label': '제출 이력', 'url': '/admin/koj/submit/'},
+        {'name': 'Testcase', 'label': '테스트케이스', 'url': '/admin/koj/testcase/'},
+    ]},
+    {'label': '대회 관리', 'items': [
+        {'name': 'Contest', 'label': '대회', 'url': '/admin/contest/contest/'},
+    ]},
+    {'label': '사용자 관리', 'items': [
+        {'name': 'CustomUser', 'label': '사용자', 'url': '/admin/common/customuser/'},
+    ]},
+    {'label': '게시판 관리', 'items': [
+        {'name': 'Article', 'label': '게시글', 'url': '/admin/board/article/'},
+        {'name': 'Comment', 'label': '댓글', 'url': '/admin/board/comment/'},
+    ]},
+]
+
+JET_SIDE_MENU_COMPACT = True
