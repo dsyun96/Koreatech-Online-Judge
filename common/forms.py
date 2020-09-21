@@ -6,17 +6,17 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'email')
+        fields = ('username', 'password1', 'password2', 'email')
         widgets = {
-            'username' : forms.TextInput(attrs={'class': 'form-control item'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control item'})
+            'username' : forms.TextInput(attrs={'class': 'form-control item'})
         }
         labels = {
-            'username' : 'ID',
-            'email' : 'E - mail'
+            'username' : 'ID'
         }
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control item'}), label= 'Passwrod')
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control item'}), label= 'Confirm Password')
+
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control item'}), label= 'E - mail')
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
