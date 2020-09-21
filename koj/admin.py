@@ -40,6 +40,7 @@ class SubmitAdmin(admin.ModelAdmin):
         'runtime',
         'lang',
         'length',
+        'contest_id',
     ]
 
     def get_prob_id(self, obj):
