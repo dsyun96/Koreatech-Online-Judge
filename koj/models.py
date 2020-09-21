@@ -51,6 +51,7 @@ class Submit(models.Model):
     result = models.IntegerField('결과', null=True)
     memory = models.IntegerField('메모리', null=True)
     runtime = models.IntegerField('시간', null=True)
+
     for_contest = models.BooleanField('대회용 제출', default=False)
     contest_id = models.IntegerField('대회 번호', null=True)
 
