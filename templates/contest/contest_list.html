@@ -11,7 +11,7 @@
                     <tr>
                         <th>순번</th>
                         <th style="width: 450px;">대회제목</th>
-                        <th>우승자</th>
+                        <th style="width: 80px;">우승자</th>
                         <th>시작시간</th>
                         <th>종료시간</th>
                     </tr>
@@ -22,8 +22,8 @@
 						<td>{{ con.contest_id }}</td>
             <td><a href="{% url 'contest:contest_detail' con.contest_id %}">{{ con.title }}</a></td>
             <td>{{ con.winner }}</td>
-            <td>{{ con.start_time }}</td>
-            <td>{{ con.end_time }}</td>
+            <td style = "font-size:0.7em;"> {{ con.start_time }}</td>
+            <td style = "font-size:0.7em;">{{ con.end_time }}</td>
             </tr>
 					{% endfor %}
 

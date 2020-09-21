@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import Problem, Submit, Testcase
+from django import template
+from contest.models import Contest, ParticipantsSolved
 from common.models import CustomUser
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -8,25 +10,30 @@ from django.contrib.auth.decorators import login_required
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
+from django.utils.safestring import mark_safe
+import json
 
+register = template.Library()
 
 # Create your views here.
 def index(request):
     return render(request, 'koj/index.html', {})
 
+
 def test(request):
     return render(request, 'koj/test.html', {})
 
+
 def problemset(request):
     page = request.GET.get('page', '1')  # 입력 파라미터
-    problem_list = Problem.objects.order_by('prob_id')
+    problem_list = Problem.objects.filter(is_closed=False).order_by('prob_id')
     paginator = Paginator(problem_list, 15)  # 페이징 처리
     page_obj = paginator.get_page(page)
 
     problem_info = []
     for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
         problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=AC).count(),
-                            Submit.objects.filter(problem=prob).count()))
+                             Submit.objects.filter(problem=prob).count()))
 
     context = {'problem_list': page_obj, 'problems': problem_info}
     return render(request, 'koj/problemset.html', context)
@@ -35,20 +42,30 @@ def problemset(request):
 def problem_detail(request, prob_id):
     problem = get_object_or_404(Problem, prob_id=prob_id)
     code = ''
+    cid = ''
+    con_lang = ''
 
     if request.GET.get('id'):
         # code = Submit.objects.all().filter(id=request.GET['id'])
         code = get_object_or_404(Submit, id=request.GET['id'])
 
+    if request.GET.get('contest_id'):
+        cid = request.GET.get('contest_id')
+        con_lang = Contest.objects.get(contest_id=request.GET['contest_id']).lang
+
+
+
     examples = Testcase.objects.filter(problem=Problem.objects.get(prob_id=prob_id)).filter(is_example=True)
     example_texts = []
     for example in examples:
-        with open(f'media/{example.input_data}', 'r') as input_file,\
-             open(f'media/{example.output_data}', 'r') as output_file:
+        with open(f'media/{example.input_data}', 'r') as input_file, \
+                open(f'media/{example.output_data}', 'r') as output_file:
             example_texts.append(('\n'.join(input_file.readlines()), '\n'.join(output_file.readlines())))
 
-    context = {'problem': problem, 'code': code, 'examples': example_texts}
+    context = {'problem': problem, 'code': code, 'examples': example_texts,
+               'cid': cid, 'con_lang': con_lang}
     return render(request, 'koj/problem_detail.html', context)
+
 
 @login_required(login_url='/common/login')
 def problem_write_for_user(request):
@@ -71,7 +88,8 @@ def problem_write_for_user(request):
                 output=form.cleaned_data['output'],
                 time_limit=form.cleaned_data['time_limit'],
                 memory_limit=form.cleaned_data['memory_limit'],
-                made_by=user
+                made_by=user,
+                is_closed=True
             )
             new_problem.save()
 
@@ -99,18 +117,32 @@ def problem_write_for_user(request):
 
 def ranking_list(request):
     page = request.GET.get('page', '1')
-    users = CustomUser.objects.all().order_by('rank')
+    users = CustomUser.objects.all()
+
+    counts = 1
+    ranking_info = []
+
+    for i in users[int(page) * 15 - 15: int(page) * 15]:
+        submit_ac_d = Submit.objects.filter(author=i).filter(result=AC).values('problem').distinct().count()
+        submit_c = Submit.objects.filter(author=i).count()
+        ranking_info.append((i, submit_ac_d, submit_c))
+
+    ranking_info = sorted(ranking_info, key=lambda x: -x[1])
+
     paginator = Paginator(users, 15)
     page_obj = paginator.get_page(page)
 
-    context = {'Users_list': page_obj, 'Users': users[int(page) * 15 - 15: int(page) * 15]}
+    context = {'Users_list': page_obj, 'ranking_info': ranking_info}
     return render(request, 'koj/ranking_list.html', context)
 
 
-# ------------------------------------------------------------------------------------------------------------
-def koj_ide(request):
-    return render(request, 'koj/koj_ide.html')
-# ------------------------------------------------------------------------------------------------------------
+
+
+
+def ide(request):
+    return render(request, 'koj/ide.html', {
+        'room_name_json': 'asdf'
+    })
 
 
 def status(request):
@@ -123,8 +155,21 @@ def status(request):
         submit.code = post_data.get('code')
         submit.length = len(submit.code)
         submit.time = timezone.localtime()
+        if post_data.get('cid'):
+            submit.contest_id = post_data.get('cid')
+            submit.for_contest = True
         submit.save()
         judge.delay(submit.id)
+        """
+        if post_data.get('cid'):
+            k=ParticipantsSolved.objects.get(participants=ConParticipants.objects.get(participants=request.user)).\
+                    filter(contest__contest_id=post_data.get('cid')).\
+                    filter(problem__prob_id=post_data.get('prob_id'))
+            if submit.result == 'AC':
+                k.is_solved =True
+            else:
+                k.is_solved =False
+        """
 
     submits = Submit.objects.all().order_by('-id')
 
@@ -136,6 +181,10 @@ def status(request):
         submits = submits.filter(result=AC)
     if request.GET.get('result') == 'WA':
         submits = submits.filter(result=WA)
+    if request.GET.get('contest_id'):
+        submits = submits.filter(for_contest=True)
+    else:
+        submits = submits.filter(for_contest=False)
 
     page = request.GET.get('page', '1')
     paginator = Paginator(submits, 15)
