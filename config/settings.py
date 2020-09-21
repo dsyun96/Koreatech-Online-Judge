@@ -33,8 +33,10 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'common.CustomUser'
 
 INSTALLED_APPS = [
+    'channels',
     'core',
     'jet',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +53,17 @@ INSTALLED_APPS = [
     'django_summernote',
     'django_cleanup',
 ]
+
+ASGI_APPLICATION = 'config.routing.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
