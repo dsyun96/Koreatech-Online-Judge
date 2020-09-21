@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
+from django.utils.safestring import mark_safe
+import json
 
 register = template.Library()
 
@@ -64,10 +66,6 @@ def problem_detail(request, prob_id):
                'cid': cid, 'con_lang': con_lang}
     return render(request, 'koj/problem_detail.html', context)
 
-
-@register.filter(name='split')
-def split(value, key):
-    return value.split(key)
 
 @login_required(login_url='/common/login')
 def problem_write_for_user(request):
@@ -138,12 +136,13 @@ def ranking_list(request):
     return render(request, 'koj/ranking_list.html', context)
 
 
-# ------------------------------------------------------------------------------------------------------------
-def koj_ide(request):
-    return render(request, 'koj/koj_ide.html')
 
 
-# ------------------------------------------------------------------------------------------------------------
+
+def ide(request):
+    return render(request, 'koj/ide.html', {
+        'room_name_json': 'asdf'
+    })
 
 
 def status(request):

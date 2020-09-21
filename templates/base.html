@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="{% static 'css/Data-Table.css' %}">
+    <link rel="stylesheet" href="assets/css/Data-Table-1.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="{% static 'css/Navigation-with-Button.css' %}">
@@ -15,9 +16,12 @@
     <title>Koreatech Online Judge</title>
 </head>
 <body>
-	<nav class="navbar navbar-light navbar-expand-md sticky-top shadow-sm navigation-clean-button">
-        <div class="container"><img style="margin-right: 15px;height: 60px;" src="{% static 'img/kut_logo.gif' %}"><a class="navbar-brand" href="/">Koreatech Online Judge</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
+<nav class="navbar navbar-light navbar-expand-md sticky-top shadow-sm navigation-clean-button">
+    <div class="container"><img style="margin-right: 15px;height: 60px;" src="{% static 'img/kut_logo.gif' %}"><a
+            class="navbar-brand" href="/">Koreatech Online Judge</a>
+        <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span
+                class="navbar-toggler-icon"></span></button>
+        <div
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav mr-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:problemset' %}">문제</a></li>
@@ -25,73 +29,75 @@
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:ranking_list' %}">순위</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:status' %}">채점 현황</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'board:article_list' %}">게시판</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:koj_ide' %}">IDE</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:ide' %}">IDE</a></li>
                 </ul>
 
-                <span class="navbar-text actions">
+            <span class="navbar-text actions">
                     {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'common:logout' %}?next={{ request.path }}">{{ user.username }} (로그아웃)</a>
-                    <a class="nav-link" href="{% url 'common:user_detail' user.username %}">마이페이지</a>
+                    <a class="nav-link" role="button" href="{% url 'common:user_detail' user.username %}"
+                       style="display:inline">{{ user.username }}</a>
+                    <a class="btn btn-light action-button" href="{% url 'common:logout' %}?next={{ request.path }}"
+                       style="display:inline"> Log Out</a>
                     {% else %}
                     <a class="login" href="{% url 'common:login' %}?next={{ request.path }}">Log In</a>
                     <a class="btn btn-light action-button" role="button" href="{% url 'common:signup' %}">Sign Up</a>
                     {% endif %}
                 </span>
+        </div>
+    </div>
+</nav>
+<main class="page landing-page">
+    {% block content %}
+    {% endblock %}
+</main>
+<footer class="page-footer dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <h5>Koreatech Online Judge</h5>
+                <ul>
+                    <li><a href="{% url 'koj:index' %}">홈페이지</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'common:user_detail' user.username %}">마이페이지</a></li>
+                    {% else %}
+                    <li><a href="{% url 'common:login' %}?next={{ request.path }}">로그인</a></li>
+                    <li><a href="{% url 'common:signup' %}">회원 가입</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-sm-3">
+                <h5>주요 기능</h5>
+                <ul>
+                    <li><a href="{% url 'koj:problemset' %}">문제 풀이</a></li>
+                    <li><a href="{% url 'contest:contest_list' %}">대회</a></li>
+                    <li><a href="{% url 'koj:koj_ide' %}">IDE</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-3">
+                <h5>기타 기능</h5>
+                <ul>
+                    <li><a href="{% url 'koj:ranking_list' %}">순위</a></li>
+                    <li><a href="{% url 'koj:status' %}">채점 현황</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-3">
+                <h5>커뮤니티</h5>
+                <ul>
+                    <li><a href="{% url 'board:article_list' %}">게시판</a></li>
+                </ul>
             </div>
         </div>
-    </nav>
-    <main class="page landing-page">
-		{% block content %}
-        {% endblock %}
-    </main>
-	<footer class="page-footer dark">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3">
-                    <h5>Get started</h5>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Sign up</a></li>
-                        <li><a href="#">Downloads</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3">
-                    <h5>About us</h5>
-                    <ul>
-                        <li><a href="#">Company Information</a></li>
-                        <li><a href="#">Contact us</a></li>
-                        <li><a href="#">Reviews</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3">
-                    <h5>Support</h5>
-                    <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Help desk</a></li>
-                        <li><a href="#">Forums</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3">
-                    <h5>Legal</h5>
-                    <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <p>© 2018 Copyright Text</p>
-        </div>
-    </footer>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
-    <script src="{% static 'js/smoothproducts.min.js' %}"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
-    {% block script %} {% endblock %}
+    </div>
+    <div class="footer-copyright">
+        <p>© 2018 Copyright Text</p>
+    </div>
+</footer>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+<script src="{% static 'js/smoothproducts.min.js' %}"></script>
+<script src="{% static 'js/theme.js' %}"></script>
 </body>
 </html>
