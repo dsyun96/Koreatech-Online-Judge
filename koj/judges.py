@@ -159,6 +159,32 @@ class JudgeClass:
 
         return Result(AC, used_memory // 1024 // 4 * 4, runtime // 4 * 4)
 
+    def test_run(self):
+        res = _judger.run(
+            max_cpu_time=1000,
+            max_real_time=2000,
+            max_memory=128 * 2 ** 20,
+            max_process_number=200,
+            max_output_size=16384,
+            max_stack=128 * 2 ** 20,
+            exe_path=f"{self.run_cmd[self._lang]}",
+            input_path=f"{self.DIR}/test_input",
+            output_path=f"{self.DIR}/output",
+            error_path=f"{self.DIR}/error",
+            seccomp_rule_name="c_cpp",
+            args=[],
+            env=[],
+            log_path="judger.log",
+            uid=0,
+            gid=0
+        )
+
+        output = ''
+        with open(f'{self.DIR}/output', 'r') as f:
+            output = ''.join(f.readlines())
+
+        return output
+
 
 def judge_c(code, lang, prob_id, time_limit, memory_limit):
     judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)

@@ -1,8 +1,10 @@
 {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}  <!-- 필드 오류를 출력한다. -->
-            <div class="alert alert-danger">
-                <strong>{{ field.label }}</strong>
+            {% if field.label == 'Confirm Password'%}
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}</strong>
+            {% endif %}
                 {{ field.errors }}
             </div>
         {% endfor %}
