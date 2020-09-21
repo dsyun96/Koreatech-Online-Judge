@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class CustomUserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
+    class Meta(UserCreationForm):
         model = CustomUser
         fields = ('username', 'email')
         widgets = {
@@ -18,7 +18,8 @@ class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control item'}), label= 'Passwrod')
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control item'}), label= 'Confirm Password')
 
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'gender', 'birth_date')
+        fields = ('username', 'email', 'major', 'freetext')

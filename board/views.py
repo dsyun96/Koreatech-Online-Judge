@@ -81,6 +81,7 @@ def article_write(request):
 
     return render(request, 'board/article_write.html', {'form': form})
 
+
 @login_required(login_url='/common/login')
 def article_update(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
@@ -145,6 +146,7 @@ def article_rcmd(request, article_id):
         return response
     return redirect(reverse('board:article_detail', args=(article.article_id,)))
 
+
 @login_required(login_url='/common/login')
 def comment_write(request, article_id):
     article = get_object_or_404(Article, article_id=article_id)
@@ -156,6 +158,7 @@ def comment_write(request, article_id):
         temp_form.author = user
         temp_form.save()
         return redirect(reverse('board:article_detail', args=(article.article_id,)))
+
 
 @login_required(login_url='/common/login')
 def comment_delete(request, com_id, article_id):

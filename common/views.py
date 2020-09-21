@@ -22,45 +22,43 @@ def user_detail(request, username):
     user = CustomUser.objects.get(username=username)
     submit = Submit()
 
-    submit_list_ac_d = Submit.objects.filter(author=user).filter(result=AC).\
+    submit_ac_d = Submit.objects.filter(author=user).filter(result=AC).\
         order_by('problem').values('problem').distinct()
 
-    submit_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
-    submit_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
-    submit_list_wa_d = submit_wa.difference(submit_ac)
+    s_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
+    s_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
+    submit_wa_d = s_wa.difference(s_ac)
 
-    submit_count_ac = Submit.objects.filter(author=user).filter(result=AC).count()
-    submit_count_ac_d = submit_list_ac_d.count()
-    submit_count_wa = Submit.objects.filter(author=user).filter(result=WA).count()
-    submit_count_author = Submit.objects.filter(author=user).count()
+    submit_ac_c = Submit.objects.filter(author=user).filter(result=AC).count()
+    submit_ac_d_c = submit_ac_d.count()
+    submit_wa_c = Submit.objects.filter(author=user).filter(result=WA).count()
+    submit_c = Submit.objects.filter(author=user).count()
 
-    user.solved = submit_count_ac_d
-    user.submitted = Submit.objects.filter(author=user).count()
-    user.save()
-    ranking = CustomUser.objects.all().order_by('-solved')
+    ranking = CustomUser.objects.all()
     counts = 1
 
     for i in ranking:
-        i.rank = counts
-        counts += 1
-        i.save()
+        k = Submit.objects.filter(author=i).filter(result=AC).values('problem').distinct().count()
+        if submit_ac_d_c < k :
+            counts += 1
 
     submit_list_ac_e = []
     submit_list_wa_e = []
 
-    for i in submit_list_ac_d:
+    for i in submit_ac_d:
         submit_list_ac_e.append(Problem.objects.get(pk=list(i.values())[0]))
 
-    for i in submit_list_wa_d:
+    for i in submit_wa_d:
         submit_list_wa_e.append(Problem.objects.get(pk=list(i.values())[0]))
 
     context = {'User': user,
                'submits_ac_d': submit_list_ac_e,
-               'submits_count_ac_d': submit_count_ac_d,
                'submits_wa': submit_list_wa_e,
-               'submits_count_wa': submit_count_wa,
-               'submit_count_author': submit_count_author,
-               'submits_count_ac': submit_count_ac
+               'submits_count_ac_d': submit_ac_d_c,
+               'submits_count_wa': submit_wa_c,
+               'submit_count_author': submit_c,
+               'submits_count_ac': submit_ac_c,
+               'user_rank': counts,
                }
 
     return render(request, 'common/user_detail.html', context)
