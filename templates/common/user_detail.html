@@ -13,43 +13,51 @@
         <div class="col-md-3">
             <div class="table-responsive" style="margin-top: 15px;">
 
+                {% for rank, solved, submit, ac, wa, tle, ole, mle, ce, re in user_submits  %}
                 <table class="table">
-
                     <tr>
                         <th>랭킹</th>
-                        <th>{{ user_rank }}</th>
+                        <th>{{ rank }}</th>
                     </tr>
                     <tr>
                         <th>맞은 문제</th>
-                        <th>{{ submits_count_ac_d }}</th>
+                        <th>{{ solved }}</th>
                     </tr>
                     <tr>
                         <th>제출</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}">{{ submit_count_author }}</a>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}">{{ submit }}</a>
                         </th>
                     </tr>
                     <tr>
                         <th>AC</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=AC">{{ submits_count_ac }}</a></th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=0">{{ ac }}</a></th>
                     </tr>
                     <tr>
                         <th>WA</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=WA">{{ submits_count_wa }}</a></th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=1">{{ wa }}</a></th>
                     </tr>
                     <tr>
                         <th>시간초과</th>
-                        <th> A</th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=2">{{ tle }}</a></th>
                     </tr>
                     <tr>
                         <th>출력초과</th>
-                        <th> A</th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=3">{{ ole }}</a></th>
+                    </tr>
+                    <tr>
+                        <th>메모리 초과</th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=4">{{ mle }}</a></th>
                     </tr>
                     <tr>
                         <th>컴파일 에러</th>
-                        <th> A</th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=5">{{ ce }}</a></th>
                     </tr>
-
+                    <tr>
+                        <th>런타임 에러</th>
+                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=6">{{ re }}</a></th>
+                    </tr>
                 </table>
+                {% endfor %}
             </div>
         </div>
 

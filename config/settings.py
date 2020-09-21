@@ -35,7 +35,7 @@ AUTH_USER_MODEL = 'common.CustomUser'
 INSTALLED_APPS = [
     'channels',
     'core',
-    'jet',
+    #'jet',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -158,7 +158,7 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # jet setting
 # https://jet.readthedocs.io/en/latest/index.html
-
+"""
 JET_THEMES = [
     {
         'theme': 'default',  # theme folder name
@@ -211,3 +211,4 @@ JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
 ]
 
 JET_SIDE_MENU_COMPACT = True
+"""
