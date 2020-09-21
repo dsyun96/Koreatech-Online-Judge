@@ -7,9 +7,7 @@
 <div class="container">
     <br>
     <h2>이름 : {{ User.username }}</h2>
-    <h5>성별 : {{ User.get_gender_display }}</h5>
-    <h5>생일 : {{ User.birth_date }}</h5>
-    <h5>전공 : {{ User.major }}</h5>
+    <h5>전공 : {{ User.get_major_display }}</h5>
     <br>
     <div class="row">
         <div class="col-md-3">
@@ -19,11 +17,11 @@
 
                     <tr>
                         <th>랭킹</th>
-                        <th>{{ User.rank }}</th>
+                        <th>{{ user_rank }}</th>
                     </tr>
                     <tr>
                         <th>맞은 문제</th>
-                        <th>{{ User.solved }}</th>
+                        <th>{{ submits_count_ac_d }}</th>
                     </tr>
                     <tr>
                         <th>제출</th>

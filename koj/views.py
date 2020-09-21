@@ -1,29 +1,37 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Problem, Submit, Contest, ConProblems, ConParticipants
+from .models import Problem, Submit, Testcase
+from django import template
+from contest.models import Contest, ParticipantsSolved
 from common.models import CustomUser
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.models import User
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
 
+register = template.Library()
 
 # Create your views here.
 def index(request):
     return render(request, 'koj/index.html', {})
 
 
+def test(request):
+    return render(request, 'koj/test.html', {})
+
+
 def problemset(request):
     page = request.GET.get('page', '1')  # 입력 파라미터
-    problem_list = Problem.objects.order_by('prob_id')
+    problem_list = Problem.objects.filter(is_closed=False).order_by('prob_id')
     paginator = Paginator(problem_list, 15)  # 페이징 처리
     page_obj = paginator.get_page(page)
 
     problem_info = []
     for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
         problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=AC).count(),
-                            Submit.objects.filter(problem=prob).count()))
+                             Submit.objects.filter(problem=prob).count()))
 
     context = {'problem_list': page_obj, 'problems': problem_info}
     return render(request, 'koj/problemset.html', context)
@@ -32,21 +40,43 @@ def problemset(request):
 def problem_detail(request, prob_id):
     problem = get_object_or_404(Problem, prob_id=prob_id)
     code = ''
+    cid = ''
+    con_lang = ''
 
     if request.GET.get('id'):
         # code = Submit.objects.all().filter(id=request.GET['id'])
         code = get_object_or_404(Submit, id=request.GET['id'])
 
-    context = {'problem': problem, 'code': code}
+    if request.GET.get('contest_id'):
+        cid = request.GET.get('contest_id')
+        con_lang = Contest.objects.get(contest_id=request.GET['contest_id']).lang
+
+
+
+    examples = Testcase.objects.filter(problem=Problem.objects.get(prob_id=prob_id)).filter(is_example=True)
+    example_texts = []
+    for example in examples:
+        with open(f'media/{example.input_data}', 'r') as input_file, \
+                open(f'media/{example.output_data}', 'r') as output_file:
+            example_texts.append(('\n'.join(input_file.readlines()), '\n'.join(output_file.readlines())))
+
+    context = {'problem': problem, 'code': code, 'examples': example_texts,
+               'cid': cid, 'con_lang': con_lang}
     return render(request, 'koj/problem_detail.html', context)
 
 
+@register.filter(name='split')
+def split(value, key):
+    return value.split(key)
+
+@login_required(login_url='/common/login')
 def problem_write_for_user(request):
     if request.method == "GET":
         form = ProblemForm()
         form_t = TestcaseForm()
 
     if request.method == "POST":
+        print(request.POST.getlist('is_example'))
         form = ProblemForm(request.POST)
         form_t = TestcaseForm(request.POST, request.FILES)
 
@@ -60,17 +90,24 @@ def problem_write_for_user(request):
                 output=form.cleaned_data['output'],
                 time_limit=form.cleaned_data['time_limit'],
                 memory_limit=form.cleaned_data['memory_limit'],
-                made_by=user
+                made_by=user,
+                is_closed=True
             )
             new_problem.save()
 
             if form_t.is_valid():
-                temp_form = form_t.save(commit=False)
-                temp_form.problem = Problem.objects.get(prob_id = new_problem.prob_id)
-                temp_form.save()
-                # form_t.input_data = Testcase(input_data = request.FILES['input_data'])
-                # form_t.output_data = Testcase(output_data = request.FILES['output_data'])
-                temp_form.save()
+                for input_data, output_data, is_example in zip(
+                        request.FILES.getlist('input_data'),
+                        request.FILES.getlist('output_data'),
+                        request.POST.getlist('example_flag')
+                ):
+                    testcase = Testcase(
+                        problem=new_problem,
+                        input_data=input_data,
+                        output_data=output_data,
+                        is_example=(is_example == '1')
+                    )
+                    testcase.save()
                 return redirect('koj:problemset')
 
             # return redirect('koj:problem_write_addfile', new_problem.prob_id)
@@ -80,93 +117,33 @@ def problem_write_for_user(request):
     return render(request, 'koj/problem_write_for_user.html', context)
 
 
-def problem_write_addfile(request, prob_id):
-    if request.method == "GET":
-        form = TestcaseForm()
-
-    if request.method == "POST":
-        form = TestcaseForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            # form.save(commit=False)
-            temp_form = form.save(commit=False)
-            temp_form.problem = Problem.objects.get(prob_id=prob_id)
-            temp_form.save()
-            # form.problem = Problem.objects.get(prob_id = prob_id)
-            # form.input_data = Testcase(input_data = request.FILES['input_data'])
-            # form.output_data = Testcase(output_data = request.FILES['output_data'])
-            return redirect('koj:index')
-
-    context = {'form': form}
-    return render(request, 'koj/problem_write_add_file.html', context)
-
-
 def ranking_list(request):
     page = request.GET.get('page', '1')
-    users = CustomUser.objects.all().order_by('rank')
+    users = CustomUser.objects.all()
+
+    counts = 1
+    ranking_info = []
+
+    for i in users[int(page) * 15 - 15: int(page) * 15]:
+        submit_ac_d = Submit.objects.filter(author=i).filter(result=AC).values('problem').distinct().count()
+        submit_c = Submit.objects.filter(author=i).count()
+        ranking_info.append((i, submit_ac_d, submit_c))
+
+    ranking_info = sorted(ranking_info, key=lambda x: -x[1])
+
     paginator = Paginator(users, 15)
     page_obj = paginator.get_page(page)
 
-    context = {'Users_list': page_obj, 'Users': users[int(page) * 15 - 15: int(page) * 15]}
+    context = {'Users_list': page_obj, 'ranking_info': ranking_info}
     return render(request, 'koj/ranking_list.html', context)
 
 
 # ------------------------------------------------------------------------------------------------------------
 def koj_ide(request):
     return render(request, 'koj/koj_ide.html')
+
+
 # ------------------------------------------------------------------------------------------------------------
-
-
-def user_detail(request, username):
-    # user_id = request.session.get('user_id')
-    # user = CustomUser.objects.get(username = request.user.get_username())
-
-    user_id = get_object_or_404(CustomUser, username=username)
-    user = CustomUser.objects.get(username=username)
-    submit = Submit()
-
-    submit_list_ac_d = Submit.objects.filter(author=user).filter(result=AC).\
-        order_by('problem').values('problem').distinct()
-
-    submit_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
-    submit_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
-    submit_list_wa_d = submit_wa.difference(submit_ac)
-
-    submit_count_ac = Submit.objects.filter(author=user).filter(result=AC).count()
-    submit_count_ac_d = submit_list_ac_d.count()
-    submit_count_wa = Submit.objects.filter(author=user).filter(result=WA).count()
-    submit_count_author = Submit.objects.filter(author=user).count()
-
-    user.solved = submit_count_ac_d
-    user.submited = Submit.objects.filter(author=user).count()
-    user.save()
-    ranking = CustomUser.objects.all().order_by('-solved')
-    counts = 1
-
-    for i in ranking:
-        i.rank = counts
-        counts += 1
-        i.save()
-
-    submit_list_ac_e = []
-    submit_list_wa_e = []
-
-    for i in submit_list_ac_d:
-        submit_list_ac_e.append(Problem.objects.get(pk=list(i.values())[0]))
-
-    for i in submit_list_wa_d:
-        submit_list_wa_e.append(Problem.objects.get(pk=list(i.values())[0]))
-
-    context = {'User': user,
-               'submits_ac_d': submit_list_ac_e,
-               'submits_count_ac_d': submit_count_ac_d,
-               'submits_wa': submit_list_wa_e,
-               'submits_count_wa': submit_count_wa,
-               'submit_count_author': submit_count_author,
-               'submits_count_ac': submit_count_ac
-               }
-
-    return render(request, 'koj/user_detail.html', context)
 
 
 def status(request):
@@ -179,8 +156,21 @@ def status(request):
         submit.code = post_data.get('code')
         submit.length = len(submit.code)
         submit.time = timezone.localtime()
+        if post_data.get('cid'):
+            submit.contest_id = post_data.get('cid')
+            submit.for_contest = True
         submit.save()
         judge.delay(submit.id)
+        """
+        if post_data.get('cid'):
+            k=ParticipantsSolved.objects.get(participants=ConParticipants.objects.get(participants=request.user)).\
+                    filter(contest__contest_id=post_data.get('cid')).\
+                    filter(problem__prob_id=post_data.get('prob_id'))
+            if submit.result == 'AC':
+                k.is_solved =True
+            else:
+                k.is_solved =False
+        """
 
     submits = Submit.objects.all().order_by('-id')
 
@@ -192,6 +182,10 @@ def status(request):
         submits = submits.filter(result=AC)
     if request.GET.get('result') == 'WA':
         submits = submits.filter(result=WA)
+    if request.GET.get('contest_id'):
+        submits = submits.filter(for_contest=True)
+    else:
+        submits = submits.filter(for_contest=False)
 
     page = request.GET.get('page', '1')
     paginator = Paginator(submits, 15)
@@ -212,32 +206,3 @@ def status(request):
 
     context = {'submit_list': page_obj, 'submits': submit_info}
     return render(request, 'koj/status.html', context)
-
-
-def contest_list(request):
-    contest = Contest.objects.all().order_by('contest_id')
-    context = {'Contest': contest}
-    return render(request, 'koj/contest_list.html', context)
-
-
-def contest_detail(request, contest_id):
-    # prob = Contest.objects.values_list('Problems', 'p_list')
-
-    contest = get_object_or_404(Contest, contest_id=contest_id)
-    contest_probs = ConProblems.objects.filter(contest=contest)
-    contest_partis = ConParticipants.objects.filter(contest=contest)
-
-    problem_info = []
-    for prob in contest_probs:
-        # number = contest_probs.values_list('problems', flat=True)
-        problem_info.append((Problem.objects.get(prob_id=prob.problems.prob_id),
-                             Submit.objects.filter(problem=prob.problems).filter(result='AC').count(),
-                             Submit.objects.filter(problem=prob.problems).count()))
-
-    context = {'con': contest,
-               'con_prob': contest_probs,
-               'con_partis': contest_partis,
-               'problem_info': problem_info
-               }
-
-    return render(request, 'koj/contest.html', context)

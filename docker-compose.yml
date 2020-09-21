@@ -9,7 +9,10 @@ services:
             - backend
 
     koj:
-        image: ubuntu:java
+        image: ubuntu:clean
+        build:
+            context: .
+            dockerfile: Dockerfile
         volumes:
             - .:/Koreatech-OJ
         ports:
@@ -23,6 +26,7 @@ services:
             - -c
             - |
               nohup python3 manage.py celery &
+              python3 manage.py migrate
               python3 manage.py runserver 0.0.0.0:8000
 
 
