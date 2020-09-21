@@ -1,6 +1,5 @@
 from django import forms
 from .models import Contest
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class LangForm(forms.ModelForm):
@@ -11,5 +10,4 @@ class LangForm(forms.ModelForm):
 
     lang = forms.MultipleChoiceField(
         widget=forms.SelectMultiple, choices=LANG, initial="1")
-
 

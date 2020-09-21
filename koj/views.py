@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import Problem, Submit, Testcase
 from django import template
-from contest.models import Contest, ConParticipants, ConProblems, ParticipantsSolved
+from contest.models import Contest, ParticipantsSolved
 from common.models import CustomUser
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required

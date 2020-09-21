@@ -20,6 +20,10 @@
           <h5>Contest End Time : {{ con.end_time }}</h5>
           <h5>Available Language : {{ con.get_lang_display }}</h5>
 
+        {% for prob in con.problem.all %}
+            {{ prob }}
+        {% endfor %}
+
           <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -31,28 +35,31 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr>
-                {% for probs, prob_ac, prob_sub in problem_info %}
-                <td>{{ probs.prob_id }}</td>
-                <td><a href="{% url 'koj:problem_detail' probs.prob_id %}?contest_id={{ con.contest_id }}">{{ probs.title }}</a></td>
-                <td>{{ prob_ac }}</td>
-                <td>{{ prob_sub }}</td>
-                </tr>
-                {% endfor %}
 
-                </tbody>
             </table>
           </div>
+        <tbody>
+            <tr>
+        {% for prob, prob_ac, prob_sb in problem_info %}
+            {{ prob.title }}<br>
+            {{ prob_ac }}<br>
+            {{ prob_sb }}<br>
+            </tr>
+        {% endfor %}
+        <br><br>
 
-         {% for prob in con_prob %}
-          <h6>{{ prob.problems }}</h6>
-          {% endfor %}
-          <br>
 
-          {% for partis in con_partis %}
-          <h6>{{ partis.participants }}</h6>
-          {% endfor %}
+        {% for prob in con.problem.all %}
+            {{ prob.title }}
+        {% endfor %}
+        <br>
+        {% for parti in con.participant.all %}
+            {{ parti }}
+        {% endfor %}
+
+
+
+
           <br><br>
         </div>
     </section>

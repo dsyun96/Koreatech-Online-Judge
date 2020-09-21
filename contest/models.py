@@ -22,6 +22,8 @@ class Contest(models.Model):
     end_time = models.DateTimeField('종료 시간', null=False)
     ongoing = models.BooleanField('진행여부', default=False)
     private = models.BooleanField('비공개 대회 여부', default=False)
+    problem = models.ManyToManyField(Problem, related_name='contest_problems')
+    participant = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contest_participants')
 
 
     def __str__(self):
@@ -29,23 +31,6 @@ class Contest(models.Model):
 
     class Meta:
         verbose_name_plural = '대회'
-
-
-
-class ConParticipants(models.Model):
-    contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
-    participants = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='참가자', on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = '참가자 선택'
-
-
-class ConProblems(models.Model):
-    contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
-    problems = models.ForeignKey(Problem, verbose_name='사용할 문제', on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = '문제 선택'
 
 
 class ParticipantsSolved(models.Model):

@@ -58,7 +58,7 @@ def user_detail(request, username):
                'submits_count_wa': submit_wa_c,
                'submit_count_author': submit_c,
                'submits_count_ac': submit_ac_c,
-               'user_rank':counts,
+               'user_rank': counts,
                }
 
     return render(request, 'common/user_detail.html', context)
