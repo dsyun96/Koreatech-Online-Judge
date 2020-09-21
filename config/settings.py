@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'contest.apps.ContestConfig',
 
     'mathfilters',
+    'multiselectfield',
     'django_summernote',
     'django_cleanup',
 ]
@@ -200,8 +201,8 @@ JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
     {'label': '대회 관리', 'items': [
         {'name': 'Contest', 'label': '대회', 'url': '/admin/contest/contest/'},
     ]},
-    {'label': '유저 관리', 'items': [
-        {'name': 'CustomUser', 'label': '유저', 'url': '/admin/common/customuser/'},
+    {'label': '사용자 관리', 'items': [
+        {'name': 'CustomUser', 'label': '사용자', 'url': '/admin/common/customuser/'},
     ]},
     {'label': '게시판 관리', 'items': [
         {'name': 'Article', 'label': '게시글', 'url': '/admin/board/article/'},

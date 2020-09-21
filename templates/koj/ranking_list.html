@@ -15,18 +15,24 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for users in Users %}
+                {% for users, users_ac, users_submit in ranking_info %}
                     <tr>
+<<<<<<< HEAD
+                        <!-- <td>{{ users.rank }}</td> -->
+                        <td> {{ forloop.counter }} </td>
+                        <td><a class="nav-link" href="{% url 'common:user_detail' users.username %}">{{ users.username }}</a>
+=======
                         <td>{{ users.rank }}</td>
                         <td><a href="{% url 'common:user_detail' users.username %}">{{ users.username }}</a>
+>>>>>>> 91b2ff7dd0f81665a1f10d254ee073fabe89fd97
                         </td>
-                        <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=AC">{{ users.solved }}</a>
+                        <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=AC">{{ users_ac }}</a>
                         </td>
-                        <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}">{{ users.submited }}</a></td>
-                        {% if users.submited == 0 or users.submited == None %}
-                            <td>None</td>
+                        <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}">{{ users_submit }}</a></td>
+                        {% if users_submit == 0 or users_submit == None %}
+                            <td> None! </td>
                         {% else %}
-                            <td> {{ users.solved|div:users.submited|mul:100|floatformat:2 }}</td>
+                            <td> {{ users_ac|div:users_submit|mul:100|floatformat:2 }}% </td>
                         {% endif %}
                     </tr>
                 {% endfor %}
