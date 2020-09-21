@@ -11,3 +11,5 @@ class LangForm(forms.ModelForm):
     lang = forms.MultipleChoiceField(
         widget=forms.SelectMultiple, choices=LANG, initial="1")
 
+
+
