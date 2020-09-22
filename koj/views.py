@@ -136,9 +136,6 @@ def ranking_list(request):
     return render(request, 'koj/ranking_list.html', context)
 
 
-
-
-
 def ide(request):
     return render(request, 'koj/ide.html', {
         'room_name_json': 'asdf'
