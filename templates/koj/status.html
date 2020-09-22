@@ -43,7 +43,7 @@
                         {% ifnotequal author|stringformat:"s" user.username %}
                         <td> {{ user.username }} </td>
                         {% else %}
-                        <td><a href="{% url 'koj:problem_detail' problem %}?id={{ id }}">Edit</a></td>
+                        <td><a href="{% url 'koj:problem_detail' problem %}?id={{ id }}&lang={{ lang }}">Edit</a></td>
                         {% endifnotequal %}
                     </tr>
                     {% endfor %}

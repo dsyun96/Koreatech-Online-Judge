@@ -24,7 +24,7 @@
                         <td>{{prob_ac}} </td>
                         <td>{{prob_sub}}</td>
                         {% if prob_sub == 0 or prob_sub == None %}
-                            <td>None</td>
+                            <td> 0 %</td>
                         {% else %}
                             <td>{{ prob_ac|div:prob_sub|mul:100|floatformat:2 }} %</td>
                         {% endif %}

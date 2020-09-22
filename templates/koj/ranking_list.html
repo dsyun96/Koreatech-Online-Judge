@@ -18,7 +18,7 @@
                 {% for users, users_ac, users_submit in ranking_info %}
                     <tr>
                         <td> {{ forloop.counter }} </td>
-                        <td><a class="nav-link" href="{% url 'common:user_detail' users.username %}">{{ users.username }}</a>
+                        <td><a href="{% url 'common:user_detail' users.username %}">{{ users.username }}</a>
                         </td>
                         <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=AC">{{ users_ac }}</a>
                         </td>

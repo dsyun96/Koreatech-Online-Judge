@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/abcdef.css' %}">
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/duotone-dark.css' %}">
 
+
 <script src="{% static '/codemirror-5.51.0/lib/codemirror.js' %}"></script>
 <script src="{% static '/codemirror-5.51.0/mode/xml/xml.js' %}"></script>
 <script src="{% static '/codemirror-5.51.0/mode/javascript/javascript.js' %}"></script>
@@ -22,7 +23,6 @@
 <script src="{% static '/codemirror-5.51.0/addon/edit/matchbrackets.js' %}"></script>
 <script src="{% static '/codemirror-5.51.0/addon/selection/active-line.js' %}"></script>
 <script src="{% static '/codemirror-5.51.0/doc/activebookmark.js' %}"></script>
-
 <!--
 Lint
 <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
@@ -227,25 +227,54 @@ position: relative;
 
                       function selectLang() {
                         var values = input_lang.options[input_lang.selectedIndex].value;
-                        var theme;
                         var mode;
+                        mode = "text/x-csrc";
+                        editor.setOption("mode", mode);
 
-                        if(values == 0){
+
+                        {% for lang in langs %}
+                            if(values == {{ lang.id }}){
+                                Console.log('{{ lang.id }}')
+                                if("{{lang.name}}" == "C"){
+                                mode = "text/x-csrc";
+                                editor.setOption("mode", mode);
+                                }
+                                else if("{{lang.name}}" == "C++"){
+                                mode = "text/x-c++src";
+                                editor.setOption("mode", mode);
+                                }
+                                else if("{{lang.name}}" == "Java"){
+                                mode = "text/x-java";
+                                editor.setOption("mode", mode);
+                                }
+                                else if("{{lang.name}}" == "Python"){
+                                mode = "python";
+                                editor.setOption("mode", mode);
+                                }
+                            }
+                            else {
+                                Console.log('{{ lang.id }}')
+                            }
+                        {% endfor %}
+
+                      /*
+                        if(values == 1){
                         mode = "text/x-csrc";
                         editor.setOption("mode", mode);
                         }
-                        else if(values == 1){
+                        else if(values == 2){
                         mode = "text/x-c++src";
                         editor.setOption("mode", mode);
                         }
-                        else if(values == 2){
+                        else if(values == 3){
                         mode = "text/x-java";
                         editor.setOption("mode", mode);
                         }
-                        else if(values == 3){
+                        else if(values == 4){
                         mode = "python";
                         editor.setOption("mode", mode);
                         }
+                        */
                       }
 
                       function selectTheme() {
