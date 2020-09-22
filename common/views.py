@@ -23,10 +23,12 @@ def user_detail(request, username):
 def user_problem(request, username):
     user = CustomUser.objects.get(username=username)
 
-    submit_ac_d  = Submit.objects.filter(author=user).filter(result=AC).\
+
+    submit_ac_d = Submit.objects.filter(author=user).filter(result=AC). \
         order_by('problem').values('problem').distinct()
 
-    s_ac  = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
+    s_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
+    
     s_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
     submit_wa_d = s_wa.difference(s_ac)
 
@@ -34,11 +36,13 @@ def user_problem(request, username):
     submit_ac_d_c = submit_ac_d.count()
     submit_wa_c = Submit.objects.filter(author=user).filter(result=WA).count()
     submit_c = Submit.objects.filter(author=user).count()
+
     submit_tle_c = Submit.objects.filter(author=user).filter(result=TLE).count()
     submit_mle_c = Submit.objects.filter(author=user).filter(result=MLE).count()
     submit_ole_c = Submit.objects.filter(author=user).filter(result=OLE).count()
     submit_ce_c = Submit.objects.filter(author=user).filter(result=CE).count()
     submit_re_c = Submit.objects.filter(author=user).filter(result=RE).count()
+
 
     ranking = CustomUser.objects.all()
     counts = 1
@@ -65,6 +69,7 @@ def user_problem(request, username):
                'submits_ac_d': submit_list_ac_e,
                'submits_wa': submit_list_wa_e,
                'user_submits': user_submits,
+
                }
 
     return render(request, 'common/user_problem.html', context)
