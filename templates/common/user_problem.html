@@ -45,19 +45,19 @@
                         </th>
                     </tr>
                     <tr>
-                        <th>AC</th>
+                        <th>맞았습니다</th>
                         <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=0">{{ ac }}</a></th>
                     </tr>
                     <tr>
-                        <th>WA</th>
+                        <th>틀렸습니다</th>
                         <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=1">{{ wa }}</a></th>
                     </tr>
                     <tr>
-                        <th>시간초과</th>
+                        <th>시간 초과</th>
                         <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=2">{{ tle }}</a></th>
                     </tr>
                     <tr>
-                        <th>출력초과</th>
+                        <th>출력 초과</th>
                         <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=3">{{ ole }}</a></th>
                     </tr>
                     <tr>

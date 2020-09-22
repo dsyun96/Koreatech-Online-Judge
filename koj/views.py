@@ -1,27 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import Problem, Submit, Testcase, Language
-from django import template
-from contest.models import Contest, ParticipantsSolved
+from contest.models import Contest
 from common.models import CustomUser
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.models import User
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
-from django.utils.safestring import mark_safe
-
-register = template.Library()
 
 
 # Create your views here.
 def index(request):
     return render(request, 'koj/index.html', {})
-
-
-def test(request):
-    return render(request, 'koj/test.html', {})
 
 
 def problemset(request):
@@ -46,7 +37,6 @@ def problem_detail(request, prob_id):
     con_lang = ''
 
     if request.GET.get('id'):
-        # code = Submit.objects.all().filter(id=request.GET['id'])
         code = get_object_or_404(Submit, id=request.GET['id'])
 
     if request.GET.get('contest_id'):
@@ -76,7 +66,7 @@ def problem_detail(request, prob_id):
 
 
 @login_required(login_url='/common/login')
-def problem_write_for_user(request):
+def problem_create(request):
     if request.method == "GET":
         form = ProblemForm()
         form_t = TestcaseForm()
@@ -116,18 +106,13 @@ def problem_write_for_user(request):
                     testcase.save()
                 return redirect('koj:problemset')
 
-            # return redirect('koj:problem_write_addfile', new_problem.prob_id)
-    # context = {'form':form, 'form_t':form_t}
-
     context = {'form_t': form_t, 'form': form}
     return render(request, 'koj/problem_write_for_user.html', context)
 
 
-def ranking_list(request):
+def ranklist(request):
     page = request.GET.get('page', '1')
     users = CustomUser.objects.all()
-
-    counts = 1
     ranking_info = []
 
     for i in users[int(page) * 15 - 15: int(page) * 15]:
@@ -135,7 +120,7 @@ def ranking_list(request):
         submit_c = Submit.objects.filter(author=i).count()
         ranking_info.append((i, submit_ac_d, submit_c))
 
-    ranking_info = sorted(ranking_info, key=lambda x: -x[1])
+    ranking_info.sort(key=lambda x: -x[1])
 
     paginator = Paginator(users, 15)
     page_obj = paginator.get_page(page)

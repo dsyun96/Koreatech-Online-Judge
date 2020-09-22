@@ -26,7 +26,7 @@
                 <ul class="nav navbar-nav mr-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:problemset' %}">문제</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'contest:contest_list' %}">대회</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:ranking_list' %}">순위</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:ranklist' %}">순위</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:status' %}">채점 현황</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'board:article_list' %}">게시판</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'koj:ide' %}">IDE</a></li>
@@ -76,7 +76,7 @@
             <div class="col-sm-3">
                 <h5>기타 기능</h5>
                 <ul>
-                    <li><a href="{% url 'koj:ranking_list' %}">순위</a></li>
+                    <li><a href="{% url 'koj:ranklist' %}">순위</a></li>
                     <li><a href="{% url 'koj:status' %}">채점 현황</a></li>
                 </ul>
             </div>
