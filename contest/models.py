@@ -1,12 +1,9 @@
 from django.db import models
-
 from django.conf import settings
-from multiselectfield import MultiSelectField
 from koj.models import Problem, Submit
 
+
 # Create your models here.
-
-
 class Contest(models.Model):
 
     LANG = (('0', 'C'),
@@ -16,7 +13,6 @@ class Contest(models.Model):
 
     contest_id = models.AutoField('대회 번호', null=False, primary_key=True)
     title = models.CharField('제목', max_length=128)
-    lang = MultiSelectField(choices=LANG)
     winner = models.CharField('우승자', max_length=128, null=True, blank=True)
     start_time = models.DateTimeField('시작 시간', null=False)
     end_time = models.DateTimeField('종료 시간', null=False)
@@ -51,7 +47,3 @@ class ParticipantsSolved(models.Model):
 
     class Meta:
         verbose_name_plural = '참자가가 푼 문제'
-
-
-
-
