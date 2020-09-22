@@ -131,7 +131,7 @@ def ranking_list(request):
     ranking_info = []
 
     for i in users[int(page) * 15 - 15: int(page) * 15]:
-        submit_ac_d = Submit.objects.filter(author=i).filter(result=AC).values('problem').distinct().count()
+        submit_ac_d = Submit.objects.filter(author=i).filter(result=RESULT.AC).values('problem').distinct().count()
         submit_c = Submit.objects.filter(author=i).count()
         ranking_info.append((i, submit_ac_d, submit_c))
 
