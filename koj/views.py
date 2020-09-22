@@ -12,8 +12,6 @@ from .forms import ProblemForm, TestcaseForm
 from .infos import *
 from django.utils.safestring import mark_safe
 
-register = template.Library()
-
 
 # Create your views here.
 def index(request):
