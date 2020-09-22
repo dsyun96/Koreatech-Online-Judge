@@ -19,7 +19,7 @@ class CustomUser(AbstractUser):
     freetext = models.TextField(null=True, default='None')
 
     class Meta:
-        verbose_name_plural = '유저'
+        verbose_name_plural = '사용자'
 
 
 """

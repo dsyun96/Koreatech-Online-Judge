@@ -47,6 +47,8 @@ class JudgeClass:
         # print(os.listdir(os.getcwd()))
         os.system('rm {0}/Main*'.format(self.DIR))
         os.system('rm {0}/test_input'.format(self.DIR))
+        os.system('rm {0}/error'.format(self.DIR))
+        os.system('rm {0}/output'.format(self.DIR))
         # print(os.listdir(os.getcwd()))
         # pass
 
@@ -191,7 +193,7 @@ def judge_c(code, lang, prob_id, time_limit, memory_limit):
     judger = JudgeClass(code, lang, prob_id, time_limit, memory_limit)
 
     if judger.compile_check():
-        return Result(CE, -1, -1)
+        return Result(RESULT.CE, -1, -1)
 
     return judger.run()
 

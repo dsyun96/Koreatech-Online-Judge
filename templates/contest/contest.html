@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% load forloop_alphabet %}
 
 {% if is_available == 0 %}
     <br><br>
@@ -32,7 +32,7 @@
                 <tbody>
                 {% for prob, prob_ac, prob_sb in problem_info %}
                     <tr>
-                        <th>{{ forloop.counter }}</th>
+                        <th>{{forloop.counter|to_char}}</th>
                         <th><a href="{% url 'koj:problem_detail' prob.prob_id %}?contest_id={{ con.contest_id }}">{{ prob.title }}</a></th>
                         <th>{{ prob_ac }}</th>
                         <th>{{ prob_sb }}</th>

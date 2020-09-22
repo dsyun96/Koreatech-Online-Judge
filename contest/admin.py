@@ -11,7 +11,7 @@ class ConProblemAdmin(admin.StackedInline):
 
 
 class ContestAdmin(admin.ModelAdmin):
-    form = LangForm
+    #form = LangForm
     search_fields = ['title']
     list_display = ['title', 'winner', 'start_time', 'end_time']
     filter_horizontal = ['participant']
