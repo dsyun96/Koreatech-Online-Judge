@@ -4,6 +4,7 @@
 
 {% block content %}
 
+<<<<<<< HEAD
 <section class="d-xl-flex align-items-xl-start" style="max-width: 1100px;min-width: 0px; margin: 50px auto">
     <div style="width: 20%; margin-right: 3%">
         <div class="table-responsive">
@@ -13,12 +14,12 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="table-active"><a href="{% url 'common:user_detail' user.username %}"
+                    <td class="table-active"><a href="{% url 'common:user_detail' User.username %}"
                                                 style="display: block; color: rgb(0,0,0); text-decoration: none">회원
                         정보</a></td>
                 </tr>
                 <tr>
-                    <td><a href="{% url 'common:user_problem' user.username %}"
+                    <td><a href="{% url 'common:user_problem' User.username %}"
                            style="display: block; color: rgb(0,0,0); text-decoration: none">문제 풀이 기록</a></td>
                 </tr>
                 </tbody>
