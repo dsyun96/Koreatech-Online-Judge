@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from koj.models import Problem, Testcase, Submit
 from django.core.paginator import Paginator
-from .models import Contest
+from .models import Contest, ConProblem
 from django.conf import settings
 from koj.infos import *
 
@@ -16,15 +16,12 @@ def contest_list(request):
 def contest_detail(request, contest_id):
 
     contest = get_object_or_404(Contest, contest_id=contest_id)
-
-    contest_probs = contest.problem.all()
-    contest_partis = contest.participant
-
-
+    contest_prob = ConProblem.objects.filter(contest=contest).order_by('conp_id')
+    contest_parti = contest.participant
 
     problem_info = []
-    for con in contest_probs:
-        problem = Problem.objects.get(prob_id=con.prob_id)
+    for con in contest_prob:
+        problem = Problem.objects.get(prob_id=con.problem.prob_id)
         problem_solved = Submit.objects.filter(problem=problem).filter(result=AC).filter(for_contest=True).count()
         problem_submitted = Submit.objects.filter(problem=problem).filter(for_contest=True).count()
 
@@ -40,8 +37,6 @@ def contest_detail(request, contest_id):
         is_available = 1
     """
     context = {'con': contest,
-               #'con_prob': contest_probs,
-               #'con_partis': contest_partis,
                'problem_info': problem_info,
                # 'is_available':is_available,
                }

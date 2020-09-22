@@ -28,13 +28,22 @@ class Contest(models.Model):
         verbose_name_plural = '대회'
 
 
+class ConProblem(models.Model):
+    conp_id = models.AutoField(null=False, primary_key=True)
+    contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('contest', 'problem')
+
+
 class ParticipantsSolved(models.Model):
     contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
     participants = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     problems = models.ForeignKey(Problem, on_delete=models.CASCADE)
     is_solved = models.BooleanField('정답여부', default=False)
-    solved_time = models.TimeField('푼 시간')
-    mistakes = models.IntegerField('오답 횟수')
+    solved_time = models.TimeField('푼 시간', null=True)
+    mistakes = models.IntegerField('오답 횟수', default=0)
 
     class Meta:
         verbose_name_plural = '참자가가 푼 문제'

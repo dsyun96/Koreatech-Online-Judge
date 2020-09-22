@@ -11,7 +11,6 @@ from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
 from django.utils.safestring import mark_safe
-import json
 
 register = template.Library()
 
@@ -157,16 +156,6 @@ def status(request):
             submit.for_contest = True
         submit.save()
         judge.delay(submit.id)
-        """
-        if post_data.get('cid'):
-            k=ParticipantsSolved.objects.get(participants=ConParticipants.objects.get(participants=request.user)).\
-                    filter(contest__contest_id=post_data.get('cid')).\
-                    filter(problem__prob_id=post_data.get('prob_id'))
-            if submit.result == 'AC':
-                k.is_solved =True
-            else:
-                k.is_solved =False
-        """
 
     submits = Submit.objects.all().order_by('-id')
 
@@ -174,10 +163,8 @@ def status(request):
         submits = submits.filter(author=CustomUser.objects.get(username=request.GET['user_id']))
     if request.GET.get('prob_id'):
         submits = submits.filter(problem=Problem.objects.get(prob_id=request.GET['prob_id']))
-    if request.GET.get('result') == 'AC':
-        submits = submits.filter(result=AC)
-    if request.GET.get('result') == 'WA':
-        submits = submits.filter(result=WA)
+    if request.GET.get('result'):
+        submits = submits.filter(result=request.GET['result'])
     if request.GET.get('contest_id'):
         submits = submits.filter(for_contest=True)
     else:
