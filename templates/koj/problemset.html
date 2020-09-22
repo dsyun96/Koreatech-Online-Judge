@@ -11,8 +11,6 @@
                     <tr>
                         <th>번호</th>
                         <th style="width: 450px;">문제 이름</th>
-                        <th>태그</th>
-                        <th>난이도</th>
                         <th>맞은 사람</th>
                         <th>제출</th>
                         <th>정답률</th>
@@ -23,8 +21,6 @@
 					{% for prob, prob_ac, prob_sub in problems %}
 						<td>{{ prob.prob_id }}</td>
 						<td><a href="{% url 'koj:problem_detail' prob.prob_id %}">{{ prob.title }}</a></td>
-                        <td> None </td>
-                        <td> None </td>
                         <td>{{prob_ac}} </td>
                         <td>{{prob_sub}}</td>
                         {% if prob_sub == 0 or prob_sub == None %}
