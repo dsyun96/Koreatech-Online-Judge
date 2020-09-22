@@ -3,7 +3,6 @@ from django.db import models
 from django.conf import settings
 
 
-
 # Create your models here.
 class Problem(models.Model):
     prob_id = models.IntegerField('문제 번호', null=False, unique=True)  # autofield?, (unique=True)

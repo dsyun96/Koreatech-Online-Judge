@@ -42,3 +42,13 @@ def contest_detail(request, contest_id):
                }
 
     return render(request, 'contest/contest.html', context)
+
+
+def contest_ranking(request, contest_id):
+    contest = get_object_or_404(Contest, contest_id=contest_id)
+    contest_prob = ConProblem.objects.filter(contest=contest).order_by('conp_id')
+
+    context = {'con': contest,
+               'con_prob':contest_prob,
+               }
+    return render(request, 'contest/contest_ranking.html', context)
