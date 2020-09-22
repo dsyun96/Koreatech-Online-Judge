@@ -34,7 +34,7 @@
             </table>
             {% if user.is_authenticated %}
                 <button type ="button" class = "btn btn-light" style = "border-color: #E6E6E6;"
-                      onclick = "location.href ='{% url 'koj:problem_write_for_user' %}'">문제 작성</button>
+                      onclick = "location.href ='{% url 'koj:problem_create' %}'">문제 작성</button>
             {% endif %}
 
 			<!-- 페이징처리 시작 -->

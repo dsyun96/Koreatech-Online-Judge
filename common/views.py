@@ -16,7 +16,7 @@ class signup(generic.CreateView):
 
 def user_detail(request, username):
     user = CustomUser.objects.get(username=username)
-    context = {'User': user,}
+    context = {'User': user}
     return render(request, 'common/user_detail.html', context)
 
 
@@ -64,28 +64,11 @@ def user_problem(request, username):
     user_submits.append((counts, submit_ac_d_c, submit_c, submit_ac_c, submit_wa_c,
                          submit_tle_c, submit_ole_c, submit_mle_c, submit_ce_c, submit_re_c))
 
-    context = {'User': user,
-               'submits_ac_d': submit_list_ac_e,
-               'submits_wa': submit_list_wa_e,
-               'user_submits': user_submits,
-
-               }
+    context = {
+        'User': user,
+        'submits_ac_d': submit_list_ac_e,
+        'submits_wa': submit_list_wa_e,
+        'user_submits': user_submits,
+    }
 
     return render(request, 'common/user_problem.html', context)
-
-"""
-def signup(request):
-
-    if request.method == "POST":
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('koj:index')
-    else:
-        form = UserForm()
-    return render(request, 'common/signup.html', {'form': form})
-"""
