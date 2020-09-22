@@ -1,27 +1,86 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <br>
-    <form enctype="multipart/form-data" method="POST" >
+<div class="container" style="max-width: 1100px;min-width: 0px; margin: 50px auto">
+    <form enctype="multipart/form-data" method="POST">
         {% if user.is_authenticated %}
-            {% csrf_token %}
-            {{ form.as_p }}
-            {{ form_t.as_p }}
-            <button id="btn-add-testcase" type="button" class="btn btn-info">추가</button>
-            <button type="submit" class="btn btn-primary" style="float:right;">다음</button>
+        {% csrf_token %}
+        <div class="table-responsive" style="margin-top: 15px;">
+            <table class="table table-sm" style="max-width: 850px; margin: 0 auto 0 auto; ">
+                <tbody>
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">문제 이름</td>
+                    <td colspan="5">{{form.title}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right; vertical-align:middle;">문제 번호</td>
+                    <td style="text-align:right;">{{form.prob_id}}</td>
+                    <td style="text-align:right; vertical-align:middle;">시간 제한 (초)</td>
+                    <td>{{form.time_limit}}</td>
+                    <td style="text-align:right; vertical-align:middle;">메모리 제한 (MB)</td>
+                    <td>{{form.memory_limit}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">본문</td>
+                    <td colspan="5">{{form.body}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">입력</td>
+                    <td colspan="5">{{form.input}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">출력</td>
+                    <td colspan="5">{{form.output}}</td>
+                </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm" style="max-width: 850px; margin: 30px auto 0 auto; ">
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">테스트케이스</td>
+                    <td></td>
+                </tr>
+            </table>
+            <table class="table table-sm table-borderless" style="max-width: 850px; margin: 30px auto 0 auto; ">
+
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">입력 데이터</td>
+                    <td style="width: 110px;">{{form_t.input_data}}</td>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;" rowspan="2">예시 여부</td>
+                    <td rowspan="2" style="vertical-align:middle;">{{form_t.is_example}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;vertical-align:middle;">출력 데이터</td>
+                    <td>{{form_t.output_data}}</td>
+                </tr>
+            </table>
+        </div>
+        <button id="btn-add-testcase" type="button" class="btn btn-info" style="margin-left:150px;">+</button>
+        <button type="submit" class="btn btn-light" style="float:right; margin-right:110px;">다음</button>
         {% else %}
-            로그인을 먼저 해주시기 바랍니다!
+        로그인을 먼저 해주시기 바랍니다!
         {% endif %}
     </form>
 </div>
+
 <template id="form-template">
-    {{ form_t.as_p }}
+    <table class="table table-sm table-borderless" style="max-width: 850px; margin: 30px auto 0 auto; ">
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">입력 데이터</td>
+                    <td style="width: 110px;">{{form_t.input_data}}</td>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;" rowspan="2">예시 여부</td>
+                    <td rowspan="2" style="vertical-align:middle;">{{form_t.is_example}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">출력 데이터</td>
+                    <td>{{form_t.output_data}}</td>
+                </tr>
+            </table>
 </template>
 {% endblock %}
 
 {% block script %}
-    <script>
+<script>
         document.querySelector("#btn-add-testcase").addEventListener('click', function(e) {
             const html = document.querySelector('#form-template').innerHTML;
             this.insertAdjacentHTML('beforebegin', html);
@@ -32,5 +91,5 @@
                 e.target.nextElementSibling.value = (+e.target.checked ? 1 : 0);
             }
         });
-    </script>
+</script>
 {% endblock %}

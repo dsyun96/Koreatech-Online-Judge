@@ -18,7 +18,6 @@ class Contest(models.Model):
     end_time = models.DateTimeField('종료 시간', null=False)
     ongoing = models.BooleanField('진행여부', default=False)
     private = models.BooleanField('비공개 대회 여부', default=False)
-    problem = models.ManyToManyField(Problem, related_name='contest_problems')
     participant = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contest_participants')
 
     def __str__(self):

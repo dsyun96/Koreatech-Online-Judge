@@ -22,7 +22,7 @@ def contest_detail(request, contest_id):
     problem_info = []
     for con in contest_prob:
         problem = Problem.objects.get(prob_id=con.problem.prob_id)
-        problem_solved = Submit.objects.filter(problem=problem).filter(result=AC).filter(for_contest=True).count()
+        problem_solved = Submit.objects.filter(problem=problem).filter(result=RESULT.AC).filter(for_contest=True).count()
         problem_submitted = Submit.objects.filter(problem=problem).filter(for_contest=True).count()
 
         problem_info.append((problem, problem_solved, problem_submitted))
@@ -42,3 +42,13 @@ def contest_detail(request, contest_id):
                }
 
     return render(request, 'contest/contest.html', context)
+
+
+def contest_ranking(request, contest_id):
+    contest = get_object_or_404(Contest, contest_id=contest_id)
+    contest_prob = ConProblem.objects.filter(contest=contest).order_by('conp_id')
+
+    context = {'con': contest,
+               'con_prob': contest_prob,
+               }
+    return render(request, 'contest/contest_ranking.html', context)
