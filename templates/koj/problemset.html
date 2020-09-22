@@ -30,7 +30,7 @@
                         {% if prob_sub == 0 or prob_sub == None %}
                             <td>None</td>
                         {% else %}
-                            <td>{{ prob_ac|div:prob_sub|mul:100|floatformat:2 }}</td>
+                            <td>{{ prob_ac|div:prob_sub|mul:100|floatformat:2 }} %</td>
                         {% endif %}
                     </tr>
 					{% endfor %}
