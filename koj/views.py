@@ -62,6 +62,7 @@ def problem_detail(request, prob_id):
     langs = []
     for lang in Language.objects.all():
         langs.append(lang)
+    langs.sort(key=lambda x: x.name)
 
     context = {
         'problem': problem,
@@ -144,8 +145,13 @@ def ranking_list(request):
 
 
 def ide(request):
+    langs = []
+    for lang in Language.objects.all():
+        langs.append(lang)
+    langs.sort(key=lambda x: x.name)
+
     return render(request, 'koj/ide.html', {
-        'room_name_json': 'asdf'
+        'langs': langs
     })
 
 
