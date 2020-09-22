@@ -1,0 +1,44 @@
+<!doctype html>
+
+<title>CodeMirror</title>
+<meta charset="utf-8"/>
+
+<link rel=stylesheet href="lib/codemirror.css">
+<link rel=stylesheet href="doc/docs.css">
+<script src="lib/codemirror.js"></script>
+<script src="mode/xml/xml.js"></script>
+<script src="mode/javascript/javascript.js"></script>
+<script src="mode/css/css.js"></script>
+<script src="mode/htmlmixed/htmlmixed.js"></script>
+<script src="addon/edit/matchbrackets.js"></script>
+
+<script src="doc/activebookmark.js"></script>
+
+<!--
+<style>
+  .CodeMirror { height: auto; border: 1px solid #ddd; }
+  .CodeMirror-scroll { max-height: 200px; }
+  .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
+  .banner { background: #ffc; padding: 6px; border-bottom: 2px solid silver;  }
+  .banner div { margin: 0 auto; max-width: 700px; text-align: center; }
+</style>
+-->
+
+
+<body>
+  <h2>This is CodeMirror</h2>
+  <form style="position: relative; margin-top: .5em;">
+
+<textarea id=demotext>
+<!-- Create a simple CodeMirror instance -->
+<h1>Wow</h1>
+</textarea>
+</form>
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("demotext"), {
+      lineNumbers: true,
+      mode: "text/html",
+      matchBrackets: true
+    });
+  </script>
+</body>

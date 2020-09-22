@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+{% if is_available == 0 %}
+    <br><br>
+    <h4 style="text-align: center;"> 대회 참가가 허용되지 않은 사용자입니다! </h4>
+    <br><br>
+{% else %}
+    <section class="clean-block features">
+        <div style="padding: 30px;margin: 28px;">
+          <div style="text-align:center">
+                <h3>{{ con.title }}</h3>
+          </div>
+
+          <h5>Contest Start Time : {{ con.start_time }}</h5>
+          <h5>Contest End Time : {{ con.end_time }}</h5>
+          <h5>Available Language : {{ con.get_lang_display }}</h5>
+
+          <div class="table-responsive">
+              <table class="table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th style="width: 350px;">문제 제목</th>
+                        <th>정답</th>
+                        <th>제출</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for prob, prob_ac, prob_sb in problem_info %}
+                    <tr>
+                        <th>{{ forloop.counter }}</th>
+                        <th><a href="{% url 'koj:problem_detail' prob.prob_id %}?contest_id={{ con.contest_id }}">{{ prob.title }}</a></th>
+                        <th>{{ prob_ac }}</th>
+                        <th>{{ prob_sb }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+          </div>
+
+
+        <br>
+        {% for parti in con.participant.all %}
+            {{ parti }}
+        {% endfor %}
+
+
+
+
+          <br><br>
+        </div>
+    </section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="static/js/split.js"></script>
+<script
+    type="text/javascript"
+    src="//code.jquery.com/jquery-1.6.js"
+
+  ></script>
+<style>
+  body,html{width:100%;height:100%;padding:0;margin:0;}
+  #main{
+   background-color: BurlyWood;
+   float: right;
+   position: absolute;
+   height:200px;
+   right: 0;
+   left:200px;
+   margin-top:10px;
+
+  }
+  #sidebar{
+   background-color: IndianRed;
+
+   margin-top:10px;
+   width:200px;
+   float: left;
+   position: absolute;
+   height:200px;
+   overflow-y: hidden;
+  }
+
+  #dragbar{
+   background-color:black;
+   height:100%;
+   float: right;
+   width: 3px;
+   cursor: col-resize;
+  }
+  #ghostbar{
+    width:3px;
+    background-color:#000;
+    opacity:0.5;
+    position:absolute;
+    cursor: col-resize;
+    z-index:999}
+</style>
+
+<script type="text/javascript">
+var i = 0;
+var dragging = false;
+ $('#dragbar').mousedown(function(e){
+     e.preventDefault();
+
+     dragging = true;
+     var main = $('#main');
+     var ghostbar = $('<div>',
+                      {id:'ghostbar',
+                       css: {
+                              height: main.outerHeight(),
+                              top: main.offset().top,
+                              left: main.offset().left
+                             }
+                      }).appendTo('body');
+
+      $(document).mousemove(function(e){
+        ghostbar.css("left",e.pageX+2);
+     });
+  });
+
+ $(document).mouseup(function(e){
+     if (dragging)
+     {
+         $('#sidebar').css("width",e.pageX+2);
+         $('#main').css("left",e.pageX+2);
+         $('#ghostbar').remove();
+         $(document).unbind('mousemove');
+         dragging = false;
+     }
+  });
+
+</script>
+
+<div id="sidebar">
+     <span id="position"></span>
+    <div id="dragbar"></div>
+    sidebar
+</div>
+<div id="main">
+    main
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}
