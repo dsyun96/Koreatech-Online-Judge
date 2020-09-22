@@ -23,32 +23,31 @@ def user_detail(request, username):
 def user_problem(request, username):
     user = CustomUser.objects.get(username=username)
 
-
-    submit_ac_d = Submit.objects.filter(author=user).filter(result=AC). \
+    submit_ac_d = Submit.objects.filter(author=user).filter(result=RESULT.AC). \
         order_by('problem').values('problem').distinct()
 
-    s_ac = Submit.objects.filter(author=user).filter(result=AC).values('problem').distinct()
+    s_ac = Submit.objects.filter(author=user).filter(result=RESULT.AC).values('problem').distinct()
     
-    s_wa = Submit.objects.filter(author=user).filter(result=WA).values('problem').distinct()
+    s_wa = Submit.objects.filter(author=user).filter(result=RESULT.WA).values('problem').distinct()
     submit_wa_d = s_wa.difference(s_ac)
 
-    submit_ac_c = Submit.objects.filter(author=user).filter(result=AC).count()
+    submit_ac_c = Submit.objects.filter(author=user).filter(result=RESULT.AC).count()
     submit_ac_d_c = submit_ac_d.count()
-    submit_wa_c = Submit.objects.filter(author=user).filter(result=WA).count()
+    submit_wa_c = Submit.objects.filter(author=user).filter(result=RESULT.WA).count()
     submit_c = Submit.objects.filter(author=user).count()
 
-    submit_tle_c = Submit.objects.filter(author=user).filter(result=TLE).count()
-    submit_mle_c = Submit.objects.filter(author=user).filter(result=MLE).count()
-    submit_ole_c = Submit.objects.filter(author=user).filter(result=OLE).count()
-    submit_ce_c = Submit.objects.filter(author=user).filter(result=CE).count()
-    submit_re_c = Submit.objects.filter(author=user).filter(result=RE).count()
+    submit_tle_c = Submit.objects.filter(author=user).filter(result=RESULT.TLE).count()
+    submit_mle_c = Submit.objects.filter(author=user).filter(result=RESULT.MLE).count()
+    submit_ole_c = Submit.objects.filter(author=user).filter(result=RESULT.OLE).count()
+    submit_ce_c = Submit.objects.filter(author=user).filter(result=RESULT.CE).count()
+    submit_re_c = Submit.objects.filter(author=user).filter(result=RESULT.RE).count()
 
 
     ranking = CustomUser.objects.all()
     counts = 1
 
     for i in ranking:
-        k = Submit.objects.filter(author=i).filter(result=AC).values('problem').distinct().count()
+        k = Submit.objects.filter(author=i).filter(result=RESULT.AC).values('problem').distinct().count()
         if submit_ac_d_c < k:
             counts += 1
 
