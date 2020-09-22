@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Problem, Testcase, Submit
+from .models import Problem, Testcase, Submit, Language
 from django_summernote.admin import SummernoteModelAdmin
+from django.forms import TextInput
+from django.db import models
 
 
 class TestcaseAdmin(admin.StackedInline):
@@ -56,6 +58,15 @@ class SubmitAdmin(admin.ModelAdmin):
     get_author.short_description = '아이디'
 
 
+class LanguageAdmin(admin.ModelAdmin):
+    list_display = ['name']
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '50'})},
+    }
+
+
 admin.site.register(Problem, ProblemAdmin)
 admin.site.register(Testcase, TestcaseAdmin)
 admin.site.register(Submit, SubmitAdmin)
+admin.site.register(Language, LanguageAdmin)
