@@ -15,4 +15,3 @@ RUN python3 setup.py install
 WORKDIR /Koreatech-OJ/
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
-

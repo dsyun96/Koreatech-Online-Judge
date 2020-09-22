@@ -37,10 +37,10 @@
                     <a class="nav-link" role="button" href="{% url 'common:user_detail' user.username %}"
                        style="display:inline">{{ user.username }}</a>
                     <a class="btn btn-light action-button" href="{% url 'common:logout' %}?next={{ request.path }}"
-                       style="display:inline"> Log Out</a>
+                       style="display:inline"> LogOut</a>
                     {% else %}
-                    <a class="login" href="{% url 'common:login' %}?next={{ request.path }}">Log In</a>
-                    <a class="btn btn-light action-button" role="button" href="{% url 'common:signup' %}">Sign Up</a>
+                    <a class="login" href="{% url 'common:login' %}?next={{ request.path }}">LogIn</a>
+                    <a class="btn btn-light action-button" role="button" href="{% url 'common:signup' %}">SignUp</a>
                     {% endif %}
                 </span>
         </div>
@@ -99,5 +99,7 @@
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 <script src="{% static 'js/smoothproducts.min.js' %}"></script>
 <script src="{% static 'js/theme.js' %}"></script>
+{% block script %}
+{% endblock %}
 </body>
 </html>
