@@ -185,28 +185,12 @@ position: relative;
                         <tr>
                             <th style="vertical-align:middle; width: 50px;">언어</th>
                             <th style="width: 50px;">
-                                {% if cid %}
                                 <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                                {% for i in con_lang %}
-                                {% if i == '0' %}
-                                    <option value="0" selected>C</option>
-                                    {% elif i == '1' %}
-                                    <option value="1">C++</option>
-                                    {% elif i == '2' %}
-                                    <option value="2">Java</option>
-                                    {% else %}
-                                    <option value="3">Python</option>
-                                    {% endif %}
+                                    {% for lang in langs %}
+                                    <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
                                     {% endfor %}
                                 </select>
-                                {% else %}
-                                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                                    <option class="" value="0" selected>C</option>
-                                    <option value="1">C++</option>
-                                    <option value="2">Java</option>
-                                    <option value="3">Python</option>
-                                </select>
-                                {% endif %}
+
                             </th>
                             <th style="vertical-align:middle; width: 50px;">테마</th>
                             <th style=" width: 50px;">
@@ -223,18 +207,7 @@ position: relative;
                     </thead>
                     </table>
 
-                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                    {% for lang in langs %}
-                    <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
-                    {% endfor %}
-                </select>
-                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-                    <option value="0" selected>default</option>
-                    <option value="1">abcdef</option>
-                    <option value="2">duotone-dark</option>
-                    <option value="3">dracula</option>
-                    <option value="4">darcula</option>
-                </select>
+
                 <textarea name="code" id="code"
                   style="margin: 30px;height: 350px; width:100%;margin-top: 15px;">{{ code.code }}
                 </textarea>
@@ -322,11 +295,8 @@ position: relative;
                     {% else %}
                     <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
                     {% endif %}
-                <button class="btn btn-light" style="margin: 10px 10px 10px 940px; min-width: 45px; border-color: #E6E6E6">
-                    <a href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
-                        style="color: rgb(0, 0, 0);  text-decoration : none;">내 소스</a></button>
                 <button class="btn btn-light" type="submit"
-                        style="margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">제출</button>
+                        style="float:right; margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">제출</button>
             </form>
         </div>
         {% else %}
