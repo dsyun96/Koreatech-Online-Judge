@@ -32,26 +32,40 @@
 <script src="{% static '/codemirror-5.51.0/addon/lint/css-lint.js' %}"></script>
 -->
 
-<div class="container">
+<div class="container" style="margin: 15px auto">
 
     {% if user.is_authenticated %}
     <form action="{% url 'koj:ide' %}" id="ide-form" method="POST">
         {% csrf_token %}
-        <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-            <option value="0" selected>C</option>
-            <option value="1">C++</option>
-            <option value="2">Java</option>
-            <option value="3">Python</option>
-        </select>
-        <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-            <option value="0" selected>default</option>
-            <option value="1">abcdef</option>
-            <option value="2">duotone-dark</option>
-            <option value="3">dracula</option>
-            <option value="4">darcula</option>
-        </select>
+        <table class="table table-sm table-active" tellspacing="0"
+               style=" height : auto; word-break:break-all;">
+            <thead>
+            <tr>
+                <th style="vertical-align:middle; width: 50px;">언어</th>
+                <th style="width: 50px;">
+                    <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                        <option class="" value="0" selected>C</option>
+                        <option value="1">C++</option>
+                        <option value="2">Java</option>
+                        <option value="3">Python</option>
+                    </select>
+                </th>
+                <th style="vertical-align:middle; width: 50px;">테마</th>
+                <th style=" width: 50px;">
+                    <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
+                        <option value="0" selected>default</option>
+                        <option value="1">abcdef</option>
+                        <option value="2">duotone-dark</option>
+                        <option value="3">dracula</option>
+                        <option value="4">darcula</option>
+                    </select>
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+        </table>
 
-        <textarea name="code" id="code" style="margin: 30px;height:250px;margin-top: 15px;"></textarea>
+        <textarea name="code" id="code" style="height:250px;"></textarea>
         <script>
 
             var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
@@ -123,19 +137,24 @@
                 }
             });
 
+
         </script>
-        <button class="btn btn-primary btn-sm" type="submit"
-                style="float: right;margin-top:15px; margin-bottom: 30px;min-width: 45px;">Test
-        </button>
+
     </form>
-    <br><br>
-    <h4 style="margin-left: 30px;">입력</h4>
-    <textarea name="code" id="input" style="margin-left: 30px; margin-right:30px;height:100px; width:900px;"></textarea>
-    <br>
-    <h4 style="margin-left: 30px;">출력</h4>
-    <textarea name="code" id="output" style="margin-left: 30px; margin-right:30px;height:100px; width:900px;"></textarea>
-    <br>
-    <br>
+    <table class="table table-sm table-active" tellspacing="0"
+               style=" height : auto; word-break:break-all;">
+            <thead>
+            <tr>
+                <th style="vertical-align:middle; width: 25px;">입력</th>
+                <td style="vertical-align:middle; width: 800px;"><textarea class="form-control" name="code" id="input" style="height:100px; width:900px;"></textarea></td>
+                <td style="text-align: center; vertical-align: middle;"><button class="btn btn-primary btn-lg" type="submit">RUN</button></td>
+            </tr>
+            <tr>
+                <th style="vertical-align:middle; width: 25px;">출력</th>
+                <td><textarea class="form-control" name="code" id="output" style="height:100px; width:900px;"></textarea></td>
+            </tr>
+            </thead>
+        </table>
     {% else %}
     <div class="col-md-6">
         로그인을 먼저 해주시기 바랍니다!
@@ -176,6 +195,7 @@
 
         return false;
     });
+
 </script>
 
 {% endblock %}
