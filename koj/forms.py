@@ -4,8 +4,8 @@ from django_summernote.widgets import SummernoteWidget
 
 
 class ProblemForm(forms.ModelForm):
-    prob_id = forms.IntegerField(label='문제 번호')
-    title = forms.CharField(label='제목')
+    prob_id = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control item', 'style': 'width: 10ch'}), label='문제 번호')
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control item'}), label='제목')
 
     body = forms.CharField(
         label='본문',
@@ -20,8 +20,8 @@ class ProblemForm(forms.ModelForm):
         widget=SummernoteWidget()
     )
 
-    time_limit = forms.IntegerField(label='시간 제한 (초)')
-    memory_limit = forms.IntegerField(label='메모리 제한 (MB)')
+    time_limit = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control item', 'style': 'width: 10ch'}), label='시간 제한 (초)')
+    memory_limit = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control item', 'style': 'width: 10ch'}), label='메모리 제한 (MB)')
 
     class Meta:
         model = Problem
@@ -29,7 +29,8 @@ class ProblemForm(forms.ModelForm):
 
 
 class TestcaseForm(forms.ModelForm):
-    is_example = forms.BooleanField(label='예시로 쓸까요?', required=False)
+
+    is_example = forms.BooleanField(label='예시 여부', required=False)
     example_flag = forms.CharField(widget=forms.HiddenInput, required=False)
 
     class Meta:

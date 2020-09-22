@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load split %}
 
 {% block content %}
 
@@ -104,6 +103,18 @@ position: relative;
                 <table class="table table-sm table-bordered" id="table1" cellspacing="0" style="width:550px; height : auto; word-break:break-all;">
                     <thead>
                     <tr>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">시간 제한</th>
+                    </tr>
+                    <tr>
+                        <td style="world-break:break-all;">{{ problem.time_limit }} 초</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">메모리 제한</th>
+                    </tr>
+                    <tr>
+                        <td style="world-break:break-all;">{{ problem.memory_limit }} MB</td>
+                    </tr>
+                    <tr>
                         <th class="table-active" style="world-break:break-all; text-decoration:none;">문제 이름</th>
                     </tr>
                     </thead>
@@ -154,18 +165,7 @@ position: relative;
                     </tbody>
                     {% endfor %}
                     {% endif %}
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">시간 제한</th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;">{{ problem.time_limit }} 초</td>
-                    </tr>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">메모리 제한</th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;">{{ problem.memory_limit }} MB</td>
-                    </tr>
+
                 </table>
             </div>
         </div>
@@ -224,7 +224,7 @@ position: relative;
                     </table>
 
                     <textarea name="code" id="code"
-                              style="margin: 30px;height: 500px; width:100%;margin-top: 15px;">{{ code.code }}
+                              style="margin: 30px;height: 250px; width:100%;margin-top: 15px;">{{ code.code }}
                 </textarea>
 
                     <script>
