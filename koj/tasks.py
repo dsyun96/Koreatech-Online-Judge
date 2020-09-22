@@ -73,7 +73,7 @@ class Judge:
                     max_real_time=self.problem.time_limit * 2000,
                     max_memory=self.problem.memory_limit * 2 ** 20,
                     max_process_number=200,
-                    max_output_size=16384,
+                    max_output_size=output_len*2,
                     max_stack=self.problem.memory_limit * 2 ** 20,
                     exe_path=f'{self.DIR}/{self.lang.exe}',
                     input_path=f'media/{tc.input_data}',
