@@ -1,0 +1,12 @@
+.idea
+db.sqlite3
+*.pyc
+__pycache__
+
+media
+upload
+*.log
+output
+error
+*.sh
+
