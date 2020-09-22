@@ -29,9 +29,8 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="table-responsive" style="margin-top: 15px;">
-
                 {% for rank, solved, submit, ac, wa, tle, ole, mle, ce, re in user_submits  %}
-                <table class="table">
+                <table class="table table-sm">
                     <tr>
                         <th>랭킹</th>
                         <th>{{ rank }}</th>
@@ -75,7 +74,6 @@
                     </tr>
                 </table>
                 {% endfor %}
-
                 </div>
             </div>
             <div class="col-md-9" style="margin-top: 15px;">
