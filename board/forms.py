@@ -10,7 +10,8 @@ class ArticleForm(forms.ModelForm):
         ('I', '정보'),
     ]
 
-    title = forms.CharField(error_messages={'required': '제목을 입력해주세요'},
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control item'}),
+                            error_messages={'required': '제목을 입력해주세요'},
                             label='제목',
                             max_length=128
                             )

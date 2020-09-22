@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load split %}
 
 {% block content %}
 
 
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/lib/codemirror.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/doc/docs.css' %}">
+<!--<link rel="stylesheet" href="{% static '/codemirror-5.51.0/doc/docs.css' %}">-->
 
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/dracula.css' %}">
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/darcula.css' %}">
@@ -46,6 +45,7 @@ Lint
 position: relative;
 
 }
+
 </style>
 
 
@@ -75,9 +75,11 @@ position: relative;
     pos = event.clientX;
     diffpos = startpos-pos;
     var width = (container_width-20)/2;
-    if (diffpos > -(width-50) && diffpos < (width-50)) {
+    if (diffpos > -(width-430) && diffpos < (width)) {
       document.getElementById("d1").style.width = width - diffpos + "px";
+      document.getElementById("table1").style.width = width - 7 - diffpos + "px";
       document.getElementById("d2").style.width = width - 20 + diffpos + "px";
+      document.getElementById("table2").style.width = width - 21 + diffpos + "px";
     }
    }
   }
@@ -88,157 +90,144 @@ position: relative;
    document.onmouseup = on_mouse_up;
    document.onmousemove = on_mouse_move;
   }
+
 </script>
 
 <body onload="init()">
 
 {% if problem.is_closed == False %}
-<div class="container" >
-    <div class="row" style="margin-left:10px">
-        <div class="d1" id="d1">
-            <div class="table-responsive" style="max-width:1100px; margin: 0 auto;">
-                <p>시간 제한: {{ problem.time_limit }} 초</p>
-                <p>메모리 제한: {{ problem.memory_limit }} MB</p>
-                <table class="table table-striped table-hover" cellspacing="0" width="100%">
+<div class="container">
+    <div class="row" style="margin:50px auto 10px auto;">
+        <div class="d1" id="d1" style="height: 600px;">
+            <div class="table-responsive" style="margin: 0 auto;">
+                <table class="table table-sm table-bordered" id="table1" cellspacing="0" style="width:550px; height : auto; word-break:break-all;">
                     <thead>
                     <tr>
-                        <th>문제</th>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">시간 제한</th>
+                    </tr>
+                    <tr>
+                        <td style="world-break:break-all;">{{ problem.time_limit }} 초</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">메모리 제한</th>
+                    </tr>
+                    <tr>
+                        <td style="world-break:break-all;">{{ problem.memory_limit }} MB</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">문제 이름</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td><br>
+                        <td style="world-break:break-all;"><br>
                             {% with content=problem.body|safe %}
                             {{ content }}
                             {% endwith %}
-                        <br></td>
+                            <br></td>
                     </tr>
-                    <tr></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
                     <tr>
-                        <th>입력</th>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">입력</th>
                     </tr>
-                    </thead>
-                    <tbody>
                     <tr>
-                        <td><br>
+                        <td style="world-break:break-all;"><br>
                             {% with content=problem.input|safe %}
                             {{ content }}
                             {% endwith %}
-                        <br></td>
+                            <br></td>
                     </tr>
-                    <tr></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
                     <tr>
-                        <th>출력</th>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">출력</th>
                     </tr>
-                    </thead>
-                    <tbody>
                     <tr>
-                        <td><br>
+                        <td style="world-break:break-all;"><br>
                             {% with content=problem.output|safe %}
                             {{ content }}
                             {% endwith %}
-                        <br></td>
+                            <br></td>
                     </tr>
-                    <tr></tr>
+                    {% if examples %}
+                    {% for input, output in examples %}
+                    <tr>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">입력 예시 {{ forloop.counter }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td style="world-break:break-all;"><br>{{ input }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active" style="world-break:break-all; text-decoration:none;">출력 예시 {{ forloop.counter }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td style="world-break:break-all;"><br>{{ output }}<br></td>
+                    </tr>
                     </tbody>
+                    {% endfor %}
+                    {% endif %}
+
                 </table>
             </div>
-            {% if examples %}
-                {% for input, output in examples %}
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>입력 예시 {{ forloop.counter }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><br>{{ input }}</td>
-                            </tr>
-                            <tr></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>출력 예시 {{ forloop.counter }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><br>{{ output }}<br></td>
-                            </tr>
-                            <tr></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                {% endfor %}
-            {% endif %}
         </div>
-        <div class="d3" id="hr"></div>
+        <div class="d3" id="hr" style="height: 600px;"></div>
         {% if user.is_authenticated %}
-        <div class="d2" id="d2">
+        <div class="d2" id="d2" style="height: 600px; margin: 0 auto;" >
             {% if cid %}
             <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}&contest_id={{ cid }}"
                   method="POST">
-            {% else %}
-            <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
-                  method="POST">
-            {% endif %}
-                {% csrf_token %}
-                <li class="active"><a
-                        href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내
-                    소스</a></li>
+                {% else %}
+                <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
+                      method="POST">
+                    {% endif %}
+                    {% csrf_token %}
+                    <table class="table table-sm table-active" id = "table2" tellspacing="0" style="width:544px; height : auto; word-break:break-all;">
+                    <thead>
+                        <tr>
+                            <th style="vertical-align:middle; width: 50px;">언어</th>
+                            <th style="width: 50px;">
+                                {% if cid %}
+                                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                                {% for i in con_lang %}
+                                {% if i == '0' %}
+                                    <option value="0" selected>C</option>
+                                    {% elif i == '1' %}
+                                    <option value="1">C++</option>
+                                    {% elif i == '2' %}
+                                    <option value="2">Java</option>
+                                    {% else %}
+                                    <option value="3">Python</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                                {% else %}
+                                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                                    <option class="" value="0" selected>C</option>
+                                    <option value="1">C++</option>
+                                    <option value="2">Java</option>
+                                    <option value="3">Python</option>
+                                </select>
+                                {% endif %}
+                            </th>
+                            <th style="vertical-align:middle; width: 50px;">테마</th>
+                            <th style=" width: 50px;">
+                                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
+                                    <option value="0" selected>default</option>
+                                    <option value="1">abcdef</option>
+                                    <option value="2">duotone-dark</option>
+                                    <option value="3">dracula</option>
+                                    <option value="4">darcula</option>
+                                </select>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    </table>
 
-            {% if cid %}
-                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                    {% for i in con_lang %}
-                        {% if i == '0' %}
-                            <option value="0" selected>C</option>
-                        {% elif i == '1' %}
-                           <option value="1">C++</option>
-                        {% elif i == '2' %}
-                           <option value="2">Java</option>
-                        {% else %}
-                            <option value="3">Python</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            {% else %}
-                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                    <option value="0" selected>C</option>
-                    <option value="1">C++</option>
-                    <option value="2">Java</option>
-                    <option value="3">Python</option>
-                </select>
-            {% endif %}
-                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-                    <option value="0" selected>default</option>
-                    <option value="1">abcdef</option>
-                    <option value="2">duotone-dark</option>
-                    <option value="3">dracula</option>
-                    <option value="4">darcula</option>
-                </select>
-                <textarea name="code" id="code"
-                  style="margin: 30px;height: 350px; width:100%;margin-top: 15px;">{{ code.code }}
+                    <textarea name="code" id="code"
+                              style="margin: 30px;height: 250px; width:100%;margin-top: 15px;">{{ code.code }}
                 </textarea>
 
-                <script>
+                    <script>
 
                       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                         lineNumbers: true,
@@ -313,28 +302,28 @@ position: relative;
                         var theme = location.hash.slice(1);
                         if (theme) { input_theme.value = theme; selectTheme(); }
                       });
-                </script>
-                {% if cid %}
+
+                    </script>
+                    {% if cid %}
                     <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
                     <input type="hidden" name="cid" id="cid" value="{{ cid }}">
-                {% else %}
+                    {% else %}
                     <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
-                {% endif %}
-                <button class="btn btn-primary btn-sm" type="submit"
-                        style="float:right;margin-bottom: 15px;min-width: 45px;">제출
-                </button>
-            </form>
+                    {% endif %}
+                </form>
         </div>
         {% else %}
         <div class="col-md-6">
-          <br>
+            <br>
             로그인을 먼저 해주시기 바랍니다!
         </div>
         {% endif %}
     </div>
-  </div>
+        <button class="btn btn-light" style="margin: 10px 10px 10px 940px; min-width: 45px; border-color: #E6E6E6"><a href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}" style="color: rgb(0, 0, 0);  text-decoration : none;">내 소스</a></button>
+        <button class="btn btn-light" type="submit" style="margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">제출</button>
+</div>
 {% else %}
-     <h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
+<h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
 {% endif %}
 </body>
 

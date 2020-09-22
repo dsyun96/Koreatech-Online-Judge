@@ -46,6 +46,7 @@ class JudgeClass:
     def __del__(self):
         # print(os.listdir(os.getcwd()))
         os.system('rm {0}/Main*'.format(self.DIR))
+        os.system('rm {0}/test_input'.format(self.DIR))
         # print(os.listdir(os.getcwd()))
         # pass
 
