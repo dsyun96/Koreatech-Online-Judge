@@ -223,8 +223,20 @@ position: relative;
                     </thead>
                     </table>
 
-                    <textarea name="code" id="code"
-                              style="margin: 30px;height: 250px; width:100%;margin-top: 15px;">{{ code.code }}
+                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                    {% for lang in langs %}
+                    <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+                    {% endfor %}
+                </select>
+                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
+                    <option value="0" selected>default</option>
+                    <option value="1">abcdef</option>
+                    <option value="2">duotone-dark</option>
+                    <option value="3">dracula</option>
+                    <option value="4">darcula</option>
+                </select>
+                <textarea name="code" id="code"
+                  style="margin: 30px;height: 350px; width:100%;margin-top: 15px;">{{ code.code }}
                 </textarea>
 
                     <script>
