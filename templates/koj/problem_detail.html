@@ -319,8 +319,12 @@ position: relative;
         </div>
         {% endif %}
     </div>
-        <button class="btn btn-light" style="margin: 10px 10px 10px 940px; min-width: 45px; border-color: #E6E6E6"><a href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}" style="color: rgb(0, 0, 0);  text-decoration : none;">내 소스</a></button>
-        <button class="btn btn-light" type="submit" style="margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">제출</button>
+        <button class="btn btn-light" style="margin: 10px 10px 10px 940px; min-width: 45px; border-color: #E6E6E6">
+            <a href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
+               style="color: rgb(0, 0, 0);  text-decoration : none;">내 소스</a></button>
+
+        <button class="btn btn-light" type="submit"
+                style="margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">제출</button>
 </div>
 {% else %}
 <h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
