@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% load forloop_alphabet %}
 
 {% if is_available == 0 %}
     <br><br>
@@ -26,6 +26,14 @@
                         <th style="width: 20px;">아이디 </th>
                         <th style="width: 20px;">푼 문제 </th>
                         <th style="width: 20px;">걸린 시간</th>
+                        {% for prob in con_prob %}
+                            <th style="width: 30px;">
+                                <a href="{% url 'koj:problem_detail' prob.problem %}?contest_id={{ con.contest_id }}">
+
+                                {{forloop.counter|to_char}}
+                                </a>
+                            </th>
+                        {% endfor %}
 
 
                     </tr>
