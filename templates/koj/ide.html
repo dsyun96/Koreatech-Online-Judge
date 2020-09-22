@@ -38,10 +38,9 @@
     <form action="{% url 'koj:ide' %}" id="ide-form" method="POST">
         {% csrf_token %}
         <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-            <option value="0" selected>C</option>
-            <option value="1">C++</option>
-            <option value="2">Java</option>
-            <option value="3">Python</option>
+            {% for lang in langs %}
+            <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+            {% endfor %}
         </select>
         <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
             <option value="0" selected>default</option>
@@ -151,8 +150,8 @@
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var message = data['message'];
-        document.querySelector('#output').value = message;
+        var output = data['output'];
+        document.querySelector('#output').value = output;
     };
 
     chatSocket.onclose = function(e) {
@@ -166,16 +165,17 @@
         e.preventDefault();
 
         var code = document.querySelector('#code').value;
-        var input = document.querySelector('#input').value;
         var lang = document.querySelector('#lang').value;
+        var input = document.querySelector('#input').value;
         chatSocket.send(JSON.stringify({
             'code': code,
-            'input': input,
             'lang': lang,
+            'input': input,
         }));
 
         return false;
     });
+
 </script>
 
 {% endblock %}
