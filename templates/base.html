@@ -37,7 +37,7 @@
                     <a class="nav-link" role="button" href="{% url 'common:user_detail' user.username %}"
                        style="display:inline">{{ user.username }}</a>
                     <a class="btn btn-light action-button" href="{% url 'common:logout' %}?next={{ request.path }}"
-                       style="display:inline"> LogOut</a>
+                       style="display:inline"> Logout</a>
                     {% else %}
                     <a class="login" href="{% url 'common:login' %}?next={{ request.path }}">LogIn</a>
                     <a class="btn btn-light action-button" role="button" href="{% url 'common:signup' %}">SignUp</a>
