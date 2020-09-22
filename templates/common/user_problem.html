@@ -12,11 +12,11 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td><a href="{% url 'common:user_detail' user.username %}"
+                    <td><a href="{% url 'common:user_detail' User.username %}"
                            style="display: block; color: rgb(0,0,0); text-decoration: none">회원 정보</a></td>
                 </tr>
                 <tr>
-                    <td class="table-active"><a href="{% url 'common:user_problem' user.username %}"
+                    <td class="table-active"><a href="{% url 'common:user_problem' User.username %}"
                                                 style="display: block; color: rgb(0,0,0); text-decoration: none">문제 풀이
                         기록</a></td>
                 </tr>
@@ -32,11 +32,11 @@
                     <table class="table table-sm">
                         <tr>
                             <th>랭킹</th>
-                            <th>{{ User.rank }}</th>
+                            <th>{{ user_rank }}</th>
                         </tr>
                         <tr>
                             <th>맞은 문제</th>
-                            <th>{{ User.solved }}</th>
+                            <th>{{ submits_count_ac_d }}</th>
                         </tr>
                         <tr>
                             <th>제출</th>
