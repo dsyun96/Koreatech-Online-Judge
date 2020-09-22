@@ -13,12 +13,12 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="table-active"><a href="{% url 'common:user_detail' user.username %}"
+                    <td class="table-active"><a href="{% url 'common:user_detail' User.username %}"
                                                 style="display: block; color: rgb(0,0,0); text-decoration: none">회원
                         정보</a></td>
                 </tr>
                 <tr>
-                    <td><a href="{% url 'common:user_problem' user.username %}"
+                    <td><a href="{% url 'common:user_problem' User.username %}"
                            style="display: block; color: rgb(0,0,0); text-decoration: none">문제 풀이 기록</a></td>
                 </tr>
                 </tbody>
@@ -39,7 +39,7 @@
                 </tr>
                 <tr>
                     <td style="max-width: 30px;">전공</td>
-                    <td>{{ User.major }}</td>
+                    <td>{{ User.get_major_display }}</td>
                 </tr>
                 </tbody>
             </table>
