@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load split %}
 
 {% block content %}
 
@@ -205,28 +204,11 @@ position: relative;
                         href="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}">내
                     소스</a></li>
 
-            {% if cid %}
                 <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                    {% for i in con_lang %}
-                        {% if i == '0' %}
-                            <option value="0" selected>C</option>
-                        {% elif i == '1' %}
-                           <option value="1">C++</option>
-                        {% elif i == '2' %}
-                           <option value="2">Java</option>
-                        {% else %}
-                            <option value="3">Python</option>
-                        {% endif %}
+                    {% for lang in langs %}
+                    <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
                     {% endfor %}
                 </select>
-            {% else %}
-                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                    <option value="0" selected>C</option>
-                    <option value="1">C++</option>
-                    <option value="2">Java</option>
-                    <option value="3">Python</option>
-                </select>
-            {% endif %}
                 <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
                     <option value="0" selected>default</option>
                     <option value="1">abcdef</option>

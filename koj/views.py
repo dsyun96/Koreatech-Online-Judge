@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Problem, Submit, Testcase
+from .models import Problem, Submit, Testcase, Language
 from django import template
 from contest.models import Contest, ParticipantsSolved
 from common.models import CustomUser
@@ -13,6 +13,7 @@ from .infos import *
 from django.utils.safestring import mark_safe
 
 register = template.Library()
+
 
 # Create your views here.
 def index(request):
@@ -31,7 +32,7 @@ def problemset(request):
 
     problem_info = []
     for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
-        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=AC).count(),
+        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=RESULT.AC).count(),
                              Submit.objects.filter(problem=prob).count()))
 
     context = {'problem_list': page_obj, 'problems': problem_info}
@@ -52,17 +53,24 @@ def problem_detail(request, prob_id):
         cid = request.GET.get('contest_id')
         con_lang = Contest.objects.get(contest_id=request.GET['contest_id']).lang
 
-
-
-    examples = Testcase.objects.filter(problem=Problem.objects.get(prob_id=prob_id)).filter(is_example=True)
-    example_texts = []
-    for example in examples:
+    examples = []
+    for example in Testcase.objects.filter(problem=Problem.objects.get(prob_id=prob_id)).filter(is_example=True):
         with open(f'media/{example.input_data}', 'r') as input_file, \
                 open(f'media/{example.output_data}', 'r') as output_file:
-            example_texts.append(('\n'.join(input_file.readlines()), '\n'.join(output_file.readlines())))
+            examples.append(('\n'.join(input_file.readlines()), '\n'.join(output_file.readlines())))
 
-    context = {'problem': problem, 'code': code, 'examples': example_texts,
-               'cid': cid, 'con_lang': con_lang}
+    langs = []
+    for lang in Language.objects.all():
+        langs.append(lang)
+
+    context = {
+        'problem': problem,
+        'code': code,
+        'examples': examples,
+        'cid': cid,
+        'con_lang': con_lang,
+        'langs': langs
+    }
     return render(request, 'koj/problem_detail.html', context)
 
 
@@ -147,7 +155,7 @@ def status(request):
         submit = Submit()
         submit.problem = Problem.objects.get(prob_id=post_data.get('prob_id'))
         submit.author = request.user
-        submit.lang = post_data.get('lang')
+        submit.lang = Language.objects.get(id=post_data.get('lang'))
         submit.code = post_data.get('code')
         submit.length = len(submit.code)
         submit.time = timezone.localtime()
@@ -176,16 +184,17 @@ def status(request):
 
     submit_info = []
     for submit in submits[int(page) * 15 - 15: int(page) * 15]:
-        submit_info.append((submit.id,
-                            submit.author,
-                            submit.problem,
-                            submit_result[int(submit.result)] if submit.result is not None else '채점 중...',
-                            submit.memory,
-                            submit.runtime,
-                            submit_lang[int(submit.lang)],
-                            submit.length,
-                            submit.time,
-                            ))
+        submit_info.append((
+            submit.id,
+            submit.author,
+            submit.problem,
+            results_ko[int(submit.result)] if submit.result is not None else '채점 중...',
+            submit.memory,
+            submit.runtime,
+            submit.lang,
+            submit.length,
+            submit.time,
+        ))
 
     context = {'submit_list': page_obj, 'submits': submit_info}
     return render(request, 'koj/status.html', context)

@@ -1,10 +1,22 @@
 from django.db import models
-#from contest.models import Contest
 from django.conf import settings
 
 
-
 # Create your models here.
+class Language(models.Model):
+    name = models.CharField('언어', max_length=20)
+    filename = models.CharField('파일명', default='', max_length=32)
+    compile_option = models.CharField('컴파일 옵션', default='', max_length=256)
+    exe = models.CharField('실행 바이너리', default='', max_length=32)
+    args = models.CharField('명령 인수', default='', max_length=256, blank=True)
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        verbose_name_plural = '언어'
+
+
 class Problem(models.Model):
     prob_id = models.IntegerField('문제 번호', null=False, unique=True)  # autofield?, (unique=True)
     title = models.CharField('제목', max_length=256)
@@ -14,7 +26,7 @@ class Problem(models.Model):
     time_limit = models.IntegerField('시간 제한 (초)', default=1)
     memory_limit = models.IntegerField('메모리 제한 (MB)', default=128)
     made_by = models.CharField('작성자', default='admin', max_length=32)
-    is_closed = models.BooleanField('비공개여부', default=False)
+    is_closed = models.BooleanField('비공개 여부', default=False)
 
     def __str__(self):
         return str(self.prob_id)
@@ -43,7 +55,7 @@ class Testcase(models.Model):
 class Submit(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    lang = models.IntegerField('언어', null=False)
+    lang = models.ForeignKey(Language, verbose_name='언어', null=False, on_delete=models.DO_NOTHING)
     code = models.TextField('코드', null=False)
     length = models.IntegerField('길이', null=False)
     time = models.DateTimeField('제출 시간', null=False)

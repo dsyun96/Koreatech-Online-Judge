@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class = "container">
+<div class="container">
     <br>
-    <form enctype="multipart/form-data" method = "POST" >
+    <form enctype="multipart/form-data" method="POST" >
         {% if user.is_authenticated %}
             {% csrf_token %}
             {{ form.as_p }}
             {{ form_t.as_p }}
             <button id="btn-add-testcase" type="button" class="btn btn-info">추가</button>
-            <button type="submit" class="btn btn-primary" style = "float:right;">다음</button>
+            <button type="submit" class="btn btn-primary" style="float:right;">다음</button>
         {% else %}
             로그인을 먼저 해주시기 바랍니다!
         {% endif %}

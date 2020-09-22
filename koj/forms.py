@@ -29,7 +29,7 @@ class ProblemForm(forms.ModelForm):
 
 
 class TestcaseForm(forms.ModelForm):
-    is_example = forms.BooleanField(label='예시로 쓸까요?', required=False)
+    is_example = forms.BooleanField(label='예시로 사용', required=False)
     example_flag = forms.CharField(widget=forms.HiddenInput, required=False)
 
     class Meta:
