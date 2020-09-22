@@ -228,53 +228,25 @@ position: relative;
                       function selectLang() {
                         var values = input_lang.options[input_lang.selectedIndex].value;
                         var mode;
-                        mode = "text/x-csrc";
-                        editor.setOption("mode", mode);
-
 
                         {% for lang in langs %}
                             if(values == {{ lang.id }}){
-                                Console.log('{{ lang.id }}')
-                                if("{{lang.name}}" == "C"){
+                                if('{{lang}}' == 'C'){
                                 mode = "text/x-csrc";
-                                editor.setOption("mode", mode);
                                 }
-                                else if("{{lang.name}}" == "C++"){
+                                else if('{{lang}}' == 'C++'){
                                 mode = "text/x-c++src";
-                                editor.setOption("mode", mode);
                                 }
-                                else if("{{lang.name}}" == "Java"){
+                                else if('{{lang}}' == 'Java'){
                                 mode = "text/x-java";
-                                editor.setOption("mode", mode);
                                 }
-                                else if("{{lang.name}}" == "Python"){
+                                else if('{{lang}}' == 'Python'){
                                 mode = "python";
-                                editor.setOption("mode", mode);
                                 }
-                            }
-                            else {
-                                Console.log('{{ lang.id }}')
                             }
                         {% endfor %}
+                        editor.setOption("mode", mode);
 
-                      /*
-                        if(values == 1){
-                        mode = "text/x-csrc";
-                        editor.setOption("mode", mode);
-                        }
-                        else if(values == 2){
-                        mode = "text/x-c++src";
-                        editor.setOption("mode", mode);
-                        }
-                        else if(values == 3){
-                        mode = "text/x-java";
-                        editor.setOption("mode", mode);
-                        }
-                        else if(values == 4){
-                        mode = "python";
-                        editor.setOption("mode", mode);
-                        }
-                        */
                       }
 
                       function selectTheme() {
