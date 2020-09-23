@@ -204,8 +204,7 @@ Lint
                 <div class="d3" id="hr" style="height: 600px;"></div>
                 {% if user.is_authenticated %}
                     <div class="d2" id="d2" style="height: 600px; margin: 0 auto;">
-                        <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id=
-                                {{ problem.prob_id }}{% if cid %}&contest_id={{ cid }}{% endif %}" method="POST">
+                        <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}{% if cid %}&contest_id={{ cid }}{% endif %}" method="POST">
                             {% csrf_token %}
                             <table class="table table-sm table-active" id="table2" tellspacing="0"
                                    style="width:544px; height : auto; word-break:break-all;">
