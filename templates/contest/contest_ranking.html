@@ -1,63 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load forloop_alphabet %}
+    {% load forloop_alphabet %}
 
-{% if is_available == 0 %}
-    <br><br>
-    <h4 style="text-align: center;"> 대회 참가가 허용되지 않은 사용자입니다! </h4>
-    <br><br>
-{% else %}
-    <section class="clean-block features">
-        <div style="padding: 30px;margin: 28px;">
-          <div style="text-align:center">
-                <h3>{{ con.title }}</h3>
-          </div>
+    {% if is_available == 0 %}
+        <br><br>
+        <h4 style="text-align: center;"> 대회 참가가 허용되지 않은 사용자입니다! </h4>
+        <br><br>
+    {% else %}
+        <section class="clean-block features">
+            <div style="padding: 30px;margin: 28px;">
+                <div style="text-align:center">
+                    <h3>{{ con.title }}</h3>
+                </div>
 
-          <h5>Contest Start Time : {{ con.start_time }}</h5>
-          <h5>Contest End Time : {{ con.end_time }}</h5>
-          <h5>Available Language : {{ con.get_lang_display }}</h5>
+                <h5>Contest Start Time : {{ con.start_time }}</h5>
+                <h5>Contest End Time : {{ con.end_time }}</h5>
+                <h5>Available Language : {{ con.get_lang_display }}</h5>
 
-          <div class="table-responsive">
-              <table class="table">
-                <thead>
-                    <tr>
-                        <th style="width: 20px;">순위 </th>
-                        <th style="width: 20px;">아이디 </th>
-                        <th style="width: 20px;">푼 문제 </th>
-                        <th style="width: 20px;">걸린 시간</th>
-                        {% for prob in con_prob %}
-                            <th style="width: 30px;">
-                                <a href="{% url 'koj:problem_detail' prob.problem %}?contest_id={{ con.contest_id }}">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="width: 20px;">순위</th>
+                            <th style="width: 20px;">아이디</th>
+                            <th style="width: 20px;">푼 문제</th>
+                            <th style="width: 20px;">걸린 시간</th>
+                            {% for prob in con_prob %}
+                                <th style="width: 30px;">
+                                    <a href="{% url 'koj:problem_detail' prob.problem %}?contest_id={{ con.contest_id }}">
 
-                                {{forloop.counter|to_char}}
-                                </a>
-                            </th>
-                        {% endfor %}
-
-
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-
-                </tbody>
-            </table>
-          </div>
+                                        {{ forloop.counter|to_char }}
+                                    </a>
+                                </th>
+                            {% endfor %}
 
 
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
 
 
-
-
-          <br><br>
-        </div>
-    </section>
-{% endif %}
+                <br><br>
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}
