@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+import hashlib
+import time
 
 
 # Create your models here.
@@ -36,7 +38,7 @@ class Problem(models.Model):
 
 
 def prob_path(instance, filename):
-    return 'testcase/{0}/{1}'.format(instance.problem, filename)
+    return f'testcase/{instance.problem}/{hashlib.sha256(str(time.time()).encode()).hexdigest()}.txt'
 
 
 class Testcase(models.Model):
