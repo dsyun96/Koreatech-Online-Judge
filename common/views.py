@@ -26,13 +26,14 @@ def user_problem(request, username):
     user = CustomUser.objects.get(username=username)
     submits = Submit.objects.filter(author=user).values('problem', 'result')
 
-    counts = [0] * len(results_en)
+    counts = [0] * len(Submit.SubmitResult)
     for submit in submits:
-        counts[submit['result']] += 1
+        if submit['result'] is not None:
+            counts[submit['result']] += 1
 
     tried_problems = submits.values_list('problem', flat=True).distinct()
 
-    ac_problems = submits.filter(result=RESULT.AC).values_list('problem', flat=True).distinct()
+    ac_problems = submits.filter(result=Submit.SubmitResult.AC).values_list('problem', flat=True).distinct()
     wa_problems = tried_problems.difference(ac_problems)
 
     rank = 1
@@ -51,8 +52,9 @@ def user_problem(request, username):
     for i in wa_problems:
         wa_problems_id.append(Problem.objects.get(id=i))
 
+
     context = {
-        **{results_en[e]: res for e, res in enumerate(counts)},
+        **{Submit.SubmitResult.names[e]: res for e, res in enumerate(counts)},
         **{
             'User': user,
             'ac_problems': ac_problems_id,
