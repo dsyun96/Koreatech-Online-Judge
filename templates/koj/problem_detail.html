@@ -185,14 +185,14 @@ Lint
                                             예시 {{ forloop.counter }}</th>
                                     </tr>
                                     <tr>
-                                        <td style="world-break:break-all;"><br>{{ input }}</td>
+                                        <td style="world-break:break-all;"><br>{{ input|linebreaks }}</td>
                                     </tr>
                                     <tr>
                                         <th class="table-active" style="world-break:break-all; text-decoration:none;">출력
                                             예시 {{ forloop.counter }}</th>
                                     </tr>
                                     <tr>
-                                        <td style="world-break:break-all;"><br>{{ output }}<br></td>
+                                        <td style="world-break:break-all;"><br>{{ output|linebreaks }}<br></td>
                                     </tr>
                                     </tbody>
                                 {% endfor %}
