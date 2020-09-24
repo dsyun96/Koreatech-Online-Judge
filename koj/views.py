@@ -23,7 +23,7 @@ def problemset(request):
 
     problem_info = []
     for prob in problem_list[int(page) * 15 - 15: int(page) * 15]:
-        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=RESULT.AC).count(),
+        problem_info.append((prob, Submit.objects.filter(problem=prob).filter(result=Submit.SubmitResult.AC).count(),
                              Submit.objects.filter(problem=prob).count()))
 
     context = {'problem_list': page_obj, 'problems': problem_info}
@@ -116,7 +116,7 @@ def ranklist(request):
     ranking_info = []
 
     for i in users[int(page) * 15 - 15: int(page) * 15]:
-        submit_ac_d = Submit.objects.filter(author=i).filter(result=RESULT.AC).values('problem').distinct().count()
+        submit_ac_d = Submit.objects.filter(author=i).filter(result=Submit.SubmitResult.AC).values('problem').distinct().count()
         submit_c = Submit.objects.filter(author=i).count()
         ranking_info.append((i, submit_ac_d, submit_c))
 
@@ -179,7 +179,7 @@ def status(request):
             submit.id,
             submit.author,
             submit.problem,
-            results_ko[int(submit.result)] if submit.result is not None else '채점 중...',
+            results_ko[int(submit.result)] if submit.result is not None else '대기 중',
             submit.memory,
             submit.runtime,
             submit.lang,

@@ -16,7 +16,7 @@ def restart_celery():
     env = os.environ.copy()  # 현재의 환경변수 Copy
     env.update({"C_FORCE_ROOT": "1"})  # 사용할 환경 변수 Update
 
-    cmd = 'celery -A config worker'
+    cmd = 'celery -A config worker --concurrency=3'
     subprocess.call(shlex.split(cmd), env=env)  # 환경 변수를 적용하여 Celery 실행
 
 

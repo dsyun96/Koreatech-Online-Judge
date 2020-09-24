@@ -3,5 +3,6 @@ from . import consumers
 
 
 websocket_urlpatterns = [
-    path('ws/ide', consumers.ChatConsumer),
+    path('ws/ide', consumers.IdeConsumer),
+    path('ws/status', consumers.StatusConsumer),
 ]

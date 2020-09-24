@@ -3,9 +3,9 @@ from celery import shared_task
 from channels.layers import get_channel_layer
 from config import celery_app
 from .models import Submit, Language, Testcase
+from .infos import *
 import subprocess
 import os
-from .infos import RESULT
 import _judger
 import shlex
 import time
@@ -15,9 +15,21 @@ class Judge:
 
     def __init__(self, submit_id):
         self.DIR = f'judge/{submit_id}'
+        self.channel_name = f'judge_{submit_id}'
+        self.channel_layer = get_channel_layer()
+        async_to_sync(self.channel_layer.group_add)(str(submit_id), self.channel_name)
         os.system(f'mkdir -p {self.DIR}')
 
         self.submit = Submit.objects.get(id=submit_id)
+        self.submit.result = Submit.SubmitResult.ING
+        async_to_sync(self.channel_layer.group_send)(
+            str(self.submit.id), {
+                'type': 'task_result',
+                'result': f'{results_ko[self.submit.result]}',
+                'id': self.submit.id
+            }
+        )
+
         self.problem = self.submit.problem
         self.lang = Language.objects.get(id=self.submit.lang.id)
         self.compile_option = []
@@ -32,6 +44,7 @@ class Judge:
             f.write(self.submit.code)
 
     def __del__(self):
+        async_to_sync(self.channel_layer.group_discard)(str(self.submit.id), self.channel_name)
         os.system(f'rm -rf {self.DIR}')
 
     def compile(self):
@@ -59,7 +72,10 @@ class Judge:
         runtime = 0
         used_memory = 0
 
-        for tc in Testcase.objects.filter(problem=self.problem):
+        testcases = Testcase.objects.filter(problem=self.problem)
+        testcase_count = testcases.count()
+
+        for current, tc in enumerate(testcases, 1):
             output_len = 0
             answer_data = []
             with open(f'media/{tc.output_data}', 'r') as answer:
@@ -129,30 +145,37 @@ class Judge:
 
             result = res['result']
             if 1 <= result <= 2:
-                return RESULT.TLE,
+                return Submit.SubmitResult.TLE,
             elif result == 3:
-                return RESULT.MLE,
+                return Submit.SubmitResult.MLE,
             elif result == 4:
                 if res['signal'] == 25:
-                    return RESULT.OLE,
+                    return Submit.SubmitResult.OLE,
                 if res['signal'] == 31:
                     pass  # system call
-                return RESULT.RE,
+                return Submit.SubmitResult.RE,
             elif result == 5:
-                return RESULT.ER,
+                return Submit.SubmitResult.ER,
 
             if not self.answer_check(answer_data):
-                return RESULT.WA,
+                return Submit.SubmitResult.WA,
 
             runtime = max(runtime, res['cpu_time'])
             used_memory = max(used_memory, res['memory'])
+            async_to_sync(self.channel_layer.group_send)(
+                str(self.submit.id), {
+                    'type': 'task_result',
+                    'result': f'채점 중 ({current * 100 // testcase_count}%)',
+                    'id': self.submit.id
+                }
+            )
 
-        return RESULT.AC, runtime // 4 * 4, used_memory // 4096 * 4
+        return Submit.SubmitResult.AC, runtime // 4 * 4, used_memory // 4096 * 4
 
 
 class Run:
 
-    def __init__(self, langid, code, data):
+    def __init__(self, code, langid, data):
         self.DIR = f'run/{time.time()}'
         os.system(f'mkdir -p {self.DIR}')
 
@@ -241,26 +264,49 @@ class Run:
 
 @celery_app.task
 def judge(submit_id):
+    channel_layer = get_channel_layer()
+    channel_name = f'pre_judge_{submit_id}'
     judge_object = Judge(submit_id)
 
+    def _disconnect():
+        async_to_sync(channel_layer.group_discard)(str(submit_id), channel_name)
+
     if judge_object.compile():
-        judge_object.submit.result = RESULT.CE
+        async_to_sync(channel_layer.group_send)(
+            str(submit_id), {
+                'type': 'task_result',
+                'result': f'{results_ko[Submit.SubmitResult.CE]}',
+                'id': submit_id
+            }
+        )
+        judge_object.submit.result = Submit.SubmitResult.CE
         judge_object.submit.save()
+        _disconnect()
         return
 
     judge_res = judge_object.run()
 
-    if judge_res[0] == RESULT.AC:
+    if judge_res[0] == Submit.SubmitResult.AC:
         judge_object.submit.result, judge_object.submit.runtime, judge_object.submit.memory = judge_res
     else:
         judge_object.submit.result = judge_res[0]
 
+    async_to_sync(channel_layer.group_send)(
+        str(submit_id), {
+            'type': 'task_result',
+            'result': f'{results_ko[judge_object.submit.result]}',
+            'id': submit_id,
+            'memory': judge_object.submit.memory,
+            'runtime': judge_object.submit.runtime,
+        }
+    )
     judge_object.submit.save()
+    _disconnect()
 
 
 @shared_task
 def run(channel_name, code, langid, data):
-    run_object = Run(langid, code, data)
+    run_object = Run(code, langid, data)
 
     if run_object.compile():
         return
