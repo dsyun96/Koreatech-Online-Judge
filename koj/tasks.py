@@ -71,7 +71,7 @@ class Judge:
             if str(self.lang) == 'C' or str(self.lang) == 'C++':
                 res = _judger.run(
                     max_cpu_time=self.problem.time_limit * 1000,
-                    max_real_time=self.problem.time_limit * 2000,
+                    max_real_time=self.problem.time_limit * 10000,
                     max_memory=self.problem.memory_limit * 2 ** 20,
                     max_process_number=200,
                     max_output_size=max(1000, output_len * 2),
@@ -105,10 +105,10 @@ class Judge:
                 res = _judger.run(
                     max_cpu_time=self.problem.time_limit * 1000,
                     max_real_time=self.problem.time_limit * 2000,
-                    max_memory=_judger.UNLIMITED if str(self.lang) == 'Java' else self.problem.memory_limit * 2 ** 20,
+                    max_memory=self.problem.memory_limit * 2 ** 20,
                     max_process_number=200,
                     max_output_size=max(1000, output_len * 2),
-                    max_stack=_judger.UNLIMITED if str(self.lang) == 'Java' else self.problem.memory_limit * 2 ** 20,
+                    max_stack=self.problem.memory_limit * 2 ** 20,
                     exe_path=f'/usr/bin/{self.lang.exe}',
                     input_path=f'media/{tc.input_data}',
                     output_path=f'{self.DIR}/output',
