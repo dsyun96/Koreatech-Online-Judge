@@ -22,7 +22,7 @@ def contest_detail(request, contest_id):
     problem_info = []
     for con in contest_prob:
         problem = Problem.objects.get(prob_id=con.problem.prob_id)
-        problem_solved = Submit.objects.filter(problem=problem).filter(result=RESULT.AC).filter(for_contest=True).count()
+        problem_solved = Submit.objects.filter(problem=problem).filter(result=Submit.SubmitResult.AC).filter(for_contest=True).count()
         problem_submitted = Submit.objects.filter(problem=problem).filter(for_contest=True).count()
 
         problem_info.append((problem, problem_solved, problem_submitted))

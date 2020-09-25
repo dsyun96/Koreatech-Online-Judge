@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
+import hashlib
+import time
 
 
 # Create your models here.
@@ -36,7 +39,7 @@ class Problem(models.Model):
 
 
 def prob_path(instance, filename):
-    return 'testcase/{0}/{1}'.format(instance.problem, filename)
+    return f'testcase/{instance.problem}/{hashlib.sha256(str(time.time()).encode()).hexdigest()}.txt'
 
 
 class Testcase(models.Model):
@@ -53,6 +56,18 @@ class Testcase(models.Model):
 
 
 class Submit(models.Model):
+
+    class SubmitResult(models.IntegerChoices):
+        AC = 0
+        WA = 1
+        TLE = 2
+        MLE = 3
+        OLE = 4
+        CE = 5
+        RE = 6
+        ER = 7
+        ING = 8
+
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     lang = models.ForeignKey(Language, verbose_name='언어', null=False, on_delete=models.DO_NOTHING)
@@ -60,7 +75,7 @@ class Submit(models.Model):
     length = models.IntegerField('길이', null=False)
     time = models.DateTimeField('제출 시간', null=False)
 
-    result = models.IntegerField('결과', null=True)
+    result = models.IntegerField('결과', null=True, choices=SubmitResult.choices)
     memory = models.IntegerField('메모리', null=True)
     runtime = models.IntegerField('시간', null=True)
 

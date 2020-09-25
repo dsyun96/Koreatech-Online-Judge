@@ -16,76 +16,53 @@ class signup(generic.CreateView):
 
 def user_detail(request, username):
     user = CustomUser.objects.get(username=username)
-    context = {'User': user,}
+    context = {'User': user}
     return render(request, 'common/user_detail.html', context)
 
 
 def user_problem(request, username):
+    """나중에 사용자가 많아지면 CustomUser 모델에 맞은 문제 리스트, 각 결과의 개수, 랭크 등을 관리할 예정"""
+
     user = CustomUser.objects.get(username=username)
+    submits = Submit.objects.filter(author=user).values('problem', 'result')
 
-    submit_ac_d = Submit.objects.filter(author=user).filter(result=RESULT.AC). \
-        order_by('problem').values('problem').distinct()
+    counts = [0] * len(Submit.SubmitResult)
+    for submit in submits:
+        if submit['result'] is not None:
+            counts[submit['result']] += 1
 
-    s_ac = Submit.objects.filter(author=user).filter(result=RESULT.AC).values('problem').distinct()
-    
-    s_wa = Submit.objects.filter(author=user).filter(result=RESULT.WA).values('problem').distinct()
-    submit_wa_d = s_wa.difference(s_ac)
+    tried_problems = submits.values_list('problem', flat=True).distinct()
 
-    submit_ac_c = Submit.objects.filter(author=user).filter(result=RESULT.AC).count()
-    submit_ac_d_c = submit_ac_d.count()
-    submit_wa_c = Submit.objects.filter(author=user).filter(result=RESULT.WA).count()
-    submit_c = Submit.objects.filter(author=user).count()
+    ac_problems = submits.filter(result=Submit.SubmitResult.AC).values_list('problem', flat=True).distinct()
+    wa_problems = tried_problems.difference(ac_problems)
 
-    submit_tle_c = Submit.objects.filter(author=user).filter(result=RESULT.TLE).count()
-    submit_mle_c = Submit.objects.filter(author=user).filter(result=RESULT.MLE).count()
-    submit_ole_c = Submit.objects.filter(author=user).filter(result=RESULT.OLE).count()
-    submit_ce_c = Submit.objects.filter(author=user).filter(result=RESULT.CE).count()
-    submit_re_c = Submit.objects.filter(author=user).filter(result=RESULT.RE).count()
+    rank = 1
+    for other in CustomUser.objects.all():
+        other_submits = Submit.objects.filter(author=other)
+        other_ac_problems = other_submits.values_list('problem', flat=True).distinct()
+        if ac_problems.count() < other_ac_problems.count() or \
+           ac_problems.count() == other_ac_problems.count() and submits.count() > other_submits.count():
+            rank += 1
+
+    ac_problems_id = []
+    for i in ac_problems:
+        ac_problems_id.append(Problem.objects.get(id=i))
+
+    wa_problems_id = []
+    for i in wa_problems:
+        wa_problems_id.append(Problem.objects.get(id=i))
 
 
-    ranking = CustomUser.objects.all()
-    counts = 1
-
-    for i in ranking:
-        k = Submit.objects.filter(author=i).filter(result=RESULT.AC).values('problem').distinct().count()
-        if submit_ac_d_c < k:
-            counts += 1
-
-    submit_list_ac_e = []
-    submit_list_wa_e = []
-
-    for i in submit_ac_d:
-        submit_list_ac_e.append(Problem.objects.get(pk=list(i.values())[0]))
-
-    for i in submit_wa_d:
-        submit_list_wa_e.append(Problem.objects.get(pk=list(i.values())[0]))
-
-    user_submits = []
-    user_submits.append((counts, submit_ac_d_c, submit_c, submit_ac_c, submit_wa_c,
-                         submit_tle_c, submit_ole_c, submit_mle_c, submit_ce_c, submit_re_c))
-
-    context = {'User': user,
-               'submits_ac_d': submit_list_ac_e,
-               'submits_wa': submit_list_wa_e,
-               'user_submits': user_submits,
-
-               }
+    context = {
+        **{Submit.SubmitResult.names[e]: res for e, res in enumerate(counts)},
+        **{
+            'User': user,
+            'ac_problems': ac_problems_id,
+            'wa_problems': wa_problems_id,
+        },
+        'rank': rank,
+        'solved': ac_problems.count(),
+        'submit': submits.count()
+    }
 
     return render(request, 'common/user_problem.html', context)
-
-"""
-def signup(request):
-
-    if request.method == "POST":
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('koj:index')
-    else:
-        form = UserForm()
-    return render(request, 'common/signup.html', {'form': form})
-"""
