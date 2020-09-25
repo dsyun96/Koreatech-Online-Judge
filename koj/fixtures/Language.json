@@ -1,0 +1,46 @@
+[
+  {
+    "model": "koj.language",
+    "pk": 1,
+    "fields": {
+      "name": "C",
+      "filename": "Main.c",
+      "compile_option": "gcc Main.c -o Main -lm -O2 -std=c99",
+      "exe": "Main",
+      "args": ""
+    }
+  },
+  {
+    "model": "koj.language",
+    "pk": 2,
+    "fields": {
+      "name": "C++",
+      "filename": "Main.cc",
+      "compile_option": "g++ Main.cc -o Main -lm -O2 -std=gnu++98",
+      "exe": "Main",
+      "args": ""
+    }
+  },
+  {
+    "model": "koj.language",
+    "pk": 3,
+    "fields": {
+      "name": "Java",
+      "filename": "Main.java",
+      "compile_option": "javac -J-Xms256m -J-Xmx256m -J-Xss128m -encoding UTF-8 Main.java",
+      "exe": "java",
+      "args": "-Djava.security.manager -Xms128m -Xmx128m -Xss64m -Dfile.encoding=UTF-8 Main"
+    }
+  },
+  {
+    "model": "koj.language",
+    "pk": 4,
+    "fields": {
+      "name": "Python",
+      "filename": "Main.py",
+      "compile_option": "python3 -c \"import py_compile; py_compile.compile(r'Main.py')\"",
+      "exe": "python3",
+      "args": "Main.py"
+    }
+  }
+]

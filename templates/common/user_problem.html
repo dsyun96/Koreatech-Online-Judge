@@ -3,122 +3,135 @@
 {% load static %}
 
 {% block content %}
-<section class="d-xl-flex align-items-xl-start" style="max-width: 1100px;min-width: 0px; margin: 50px auto">
-    <div style="width: 20%; margin-right: 3%">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr></tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><a href="{% url 'common:user_detail' User.username %}"
-                           style="display: block; color: rgb(0,0,0); text-decoration: none">회원 정보</a></td>
-                </tr>
-                <tr>
-                    <td class="table-active"><a href="{% url 'common:user_problem' User.username %}"
-                                                style="display: block; color: rgb(0,0,0); text-decoration: none">문제 풀이
-                        기록</a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div style="width: 76%;">
-        <h3>문제 풀이 기록</h3>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="table-responsive" style="margin-top: 15px;">
-                {% for rank, solved, submit, ac, wa, tle, ole, mle, ce, re in user_submits  %}
-                <table class="table table-sm">
+    <section class="d-xl-flex align-items-xl-start" style="max-width: 1100px;min-width: 0px; margin: 50px auto">
+        <div style="width: 20%; margin-right: 3%">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr></tr>
+                    </thead>
+                    <tbody>
                     <tr>
-                        <th>랭킹</th>
-                        <th>{{ rank }}</th>
+                        <td><a href="{% url 'common:user_detail' User.username %}"
+                               style="display: block; color: rgb(0,0,0); text-decoration: none">회원 정보</a></td>
                     </tr>
                     <tr>
-                        <th>맞은 문제</th>
-                        <th>{{ solved }}</th>
+                        <td class="table-active"><a href="{% url 'common:user_problem' User.username %}"
+                                                    style="display: block; color: rgb(0,0,0); text-decoration: none">문제
+                            풀이
+                            기록</a></td>
                     </tr>
-                    <tr>
-                        <th>제출</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}">{{ submit }}</a>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>AC</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=0">{{ ac }}</a></th>
-                    </tr>
-                    <tr>
-                        <th>WA</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=1">{{ wa }}</a></th>
-                    </tr>
-                    <tr>
-                        <th>시간초과</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=2">{{ tle }}</a></th>
-                    </tr>
-                    <tr>
-                        <th>출력초과</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=3">{{ ole }}</a></th>
-                    </tr>
-                    <tr>
-                        <th>메모리 초과</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=4">{{ mle }}</a></th>
-                    </tr>
-                    <tr>
-                        <th>컴파일 에러</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=5">{{ ce }}</a></th>
-                    </tr>
-                    <tr>
-                        <th>런타임 에러</th>
-                        <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=6">{{ re }}</a></th>
-                    </tr>
+                    </tbody>
                 </table>
-                {% endfor %}
-                </div>
             </div>
-            <div class="col-md-9" style="margin-top: 15px;">
-                <table class="table table-sm table-borderd">
-                    <thead class="table-active">
+        </div>
+        <div style="width: 76%;">
+            <h3>문제 풀이 기록</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="table-responsive" style="margin-top: 15px;">
+                        <table class="table table-sm">
+                            <tr>
+                                <th>랭킹</th>
+                                <th>{{ rank }}</th>
+                            </tr>
+                            <tr>
+                                <th>맞은 문제</th>
+                                <th>{{ solved }}</th>
+                            </tr>
+                            <tr>
+                                <th>제출</th>
+                                <th><a href="{% url 'koj:status' %}?user_id={{ User.username }}">{{ submit }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>맞았습니다</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=0">{{ AC }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>틀렸습니다</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=1">{{ WA }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>시간 초과</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=2">{{ TLE }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>출력 초과</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=3">{{ OLE }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>메모리 초과</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=4">{{ MLE }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>컴파일 에러</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=5">{{ CE }}</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>런타임 에러</th>
+                                <th>
+                                    <a href="{% url 'koj:status' %}?user_id={{ User.username }}&result=6">{{ RE }}</a>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-9" style="margin-top: 15px;">
+                    <table class="table table-sm table-borderd">
+                        <thead class="table-active">
                         <tr>
                             <th>맞은 문제 목록</th>
                         </tr>
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
                         <tr>
                             <th>
-                                {% for submit in submits_ac_d %}
-                                <a href="{% url 'koj:problem_detail' submit.prob_id %}" , style="color:#04B404; font-weight: bold">{{ submit.prob_id }}</a>
-
+                                {% for prob in ac_problems %}
+                                    <a href="{% url 'koj:problem_detail' prob.prob_id %}",
+                                       style="color:#04B404; font-weight: bold">{{ prob.prob_id }}</a>
                                 {% endfor %}
                             </th>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
 
-                <table class="table table-sm table-borderd">
-                    <thead class="table-active">
+                    <table class="table table-sm table-borderd">
+                        <thead class="table-active">
                         <tr>
                             <th>시도했지만 풀지 못한 문제 목록</th>
                         </tr>
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
                         <tr>
                             <th>
-                                {% for submit in submits_wa%}
-                                    <a href="{% url 'koj:problem_detail' submit.prob_id %}" , style="color:#FF4000"> {{ submit.prob_id }}</a>
-
+                                {% for prob in wa_problems %}
+                                    <a href="{% url 'koj:problem_detail' prob.prob_id %}",
+                                       style="color:#FF4000"> {{ prob.prob_id }}</a>
                                 {% endfor %}
                             </th>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+    </section>
+    <div class="container">
     </div>
-</section>
-<div class="container">
-</div>
-</div>
+    </div>
 {% endblock %}
