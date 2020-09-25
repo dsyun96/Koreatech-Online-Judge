@@ -4,7 +4,9 @@ db.sqlite3
 __pycache__
 
 media
-upload
+judge
+run
+
 *.log
 output
 error

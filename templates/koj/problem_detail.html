@@ -5,25 +5,26 @@
 {% block content %}
 
 
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/lib/codemirror.css' %}">
-<!--<link rel="stylesheet" href="{% static '/codemirror-5.51.0/doc/docs.css' %}">-->
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/lib/codemirror.css' %}">
+    <!--<link rel="stylesheet" href="{% static '/codemirror-5.51.0/doc/docs.css' %}">-->
 
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/dracula.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/darcula.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/abcdef.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/duotone-dark.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/dracula.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/darcula.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/abcdef.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/duotone-dark.css' %}">
 
+    <script src="{% static '/codemirror-5.51.0/lib/codemirror.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/xml/xml.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/javascript/javascript.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/clike/clike.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/css/css.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/htmlmixed/htmlmixed.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/addon/edit/matchbrackets.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/addon/selection/active-line.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/doc/activebookmark.js' %}"></script>
 
-<script src="{% static '/codemirror-5.51.0/lib/codemirror.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/xml/xml.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/javascript/javascript.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/clike/clike.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/css/css.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/htmlmixed/htmlmixed.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/addon/edit/matchbrackets.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/addon/selection/active-line.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/doc/activebookmark.js' %}"></script>
-<!--
+    <!--
+>>>>>>> baa908824227976440d27ec938c6f7341f5803e1
 Lint
 <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
 <script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
@@ -34,284 +35,299 @@ Lint
 <script src="{% static '/codemirror-5.51.0/addon/lint/css-lint.js' %}"></script>
 -->
 
-<style type="text/css">
-.d1 {float:left;width:50%;height:500px;border-right:1px solid #b8b8b8;margin-right:-1px;overflow-y:auto;}
-.d2 {float:left;width:49%;height:500px;overflow-y:auto;}
-.d3 {float:left;width:10px;height:500px;background-color:#888888;}
-#hr {cursor:pointer;}
-.container_pb{padding-right:15px;padding-left:15px;margin-right:80px;margin-left:80px;}
-.container {
+    <style type="text/css">
+        .d1 {
+            float: left;
+            width: 50%;
+            height: 500px;
+            border-right: 1px solid #b8b8b8;
+            margin-right: -1px;
+            overflow-y: auto;
+        }
 
-position: relative;
+        .d2 {
+            float: left;
+            width: 49%;
+            height: 500px;
+            overflow-y: auto;
+        }
 
-}
+        .d3 {
+            float: left;
+            width: 10px;
+            height: 500px;
+            background-color: #888888;
+        }
 
-</style>
+        #hr {
+            cursor: pointer;
+        }
+
+        .container_pb {
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: 80px;
+            margin-left: 80px;
+        }
+
+        .container {
+
+            position: relative;
+
+        }
 
 
-<script type="text/javascript">
-  var startpos, diffpos=0, range_d1=150, range_d2=150;
-  var isEnable = false;
-  var container_width = document.querySelector('.container').offsetWidth;
+    </style>
 
 
-  function on_mouse_down(e) {
-    container_width = document.querySelector('.container').offsetWidth;
-   startpos = event.clientX + diffpos;
-   isEnable = true;
-   return false;
-  }
+    <script type="text/javascript">
+        var startpos, diffpos = 0, range_d1 = 150, range_d2 = 150;
+        var isEnable = false;
+        var container_width = document.querySelector('.container').offsetWidth;
 
 
-  function on_mouse_up(e) {
-    container_width = document.querySelector('.container').offsetWidth;
-   isEnable = false;
-   return false;
-  }
+        function on_mouse_down(e) {
+            container_width = document.querySelector('.container').offsetWidth;
+            startpos = event.clientX + diffpos;
+            isEnable = true;
+            return false;
+        }
 
-  function on_mouse_move(e) {
-    container_width = document.querySelector('.container').offsetWidth;
-   if (isEnable) {
-    pos = event.clientX;
-    diffpos = startpos-pos;
-    var width = (container_width-20)/2;
-    if (diffpos > -(width-430) && diffpos < (width)) {
-      document.getElementById("d1").style.width = width - diffpos + "px";
-      document.getElementById("table1").style.width = width - 7 - diffpos + "px";
-      document.getElementById("d2").style.width = width - 20 + diffpos + "px";
-      document.getElementById("table2").style.width = width - 21 + diffpos + "px";
-    }
-   }
-  }
 
-  function init() {
-   container_width = document.querySelector('.container').offsetWidth;
-   document.getElementById("hr").onmousedown = on_mouse_down;
-   document.onmouseup = on_mouse_up;
-   document.onmousemove = on_mouse_move;
-  }
+        function on_mouse_up(e) {
+            container_width = document.querySelector('.container').offsetWidth;
+            isEnable = false;
+            return false;
+        }
 
-</script>
+        function on_mouse_move(e) {
+            container_width = document.querySelector('.container').offsetWidth;
+            if (isEnable) {
+                pos = event.clientX;
+                diffpos = startpos - pos;
+                var width = (container_width - 20) / 2;
+                if (diffpos > -(width - 430) && diffpos < (width)) {
+                    document.getElementById("d1").style.width = width - diffpos + "px";
+                    document.getElementById("table1").style.width = width - 7 - diffpos + "px";
+                    document.getElementById("d2").style.width = width - 20 + diffpos + "px";
+                    document.getElementById("table2").style.width = width - 21 + diffpos + "px";
+                }
+            }
+        }
 
-<body onload="init()">
+        function init() {
+            container_width = document.querySelector('.container').offsetWidth;
+            document.getElementById("hr").onmousedown = on_mouse_down;
+            document.onmouseup = on_mouse_up;
+            document.onmousemove = on_mouse_move;
+        }
 
-{% if problem.is_closed == False %}
-<div class="container">
-    <div class="row" style="margin:50px auto 10px auto;">
-        <div class="d1" id="d1" style="height: 600px;">
-            <div class="table-responsive" style="margin: 0 auto;">
-                <table class="table table-sm table-bordered" id="table1" cellspacing="0" style="width:550px; height : auto; word-break:break-all;">
-                    <thead>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">시간 제한</th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;">{{ problem.time_limit }} 초</td>
-                    </tr>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">메모리 제한</th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;">{{ problem.memory_limit }} MB</td>
-                    </tr>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">문제 이름</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td style="world-break:break-all;"><br>
-                            {% with content=problem.body|safe %}
-                            {{ content }}
-                            {% endwith %}
-                            <br></td>
-                    </tr>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">입력</th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;"><br>
-                            {% with content=problem.input|safe %}
-                            {{ content }}
-                            {% endwith %}
-                            <br></td>
-                    </tr>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">출력</th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;"><br>
-                            {% with content=problem.output|safe %}
-                            {{ content }}
-                            {% endwith %}
-                            <br></td>
-                    </tr>
-                    {% if examples %}
-                    {% for input, output in examples %}
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">입력 예시 {{ forloop.counter }}
-                        </th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;"><br>{{ input }}</td>
-                    </tr>
-                    <tr>
-                        <th class="table-active" style="world-break:break-all; text-decoration:none;">출력 예시 {{ forloop.counter }}
-                        </th>
-                    </tr>
-                    <tr>
-                        <td style="world-break:break-all;"><br>{{ output }}<br></td>
-                    </tr>
-                    </tbody>
-                    {% endfor %}
-                    {% endif %}
+    </script>
 
-                </table>
+    <body onload="init()">
+
+    {% if problem.is_closed == False %}
+        <div class="container">
+            <div class="row" style="margin:50px auto 10px auto;">
+                <div class="d1" id="d1" style="height: 600px;">
+                    <div class="table-responsive" style="margin: 0 auto;">
+                        <table class="table table-sm table-bordered" id="table1" cellspacing="0"
+                               style="width:550px; height : auto; word-break:break-all;">
+                            <thead>
+                            <tr>
+                                <th class="table-active" style="world-break:break-all; text-decoration:none;">시간 제한</th>
+                            </tr>
+                            <tr>
+                                <td style="world-break:break-all;">{{ problem.time_limit }} 초</td>
+                            </tr>
+                            <tr>
+                                <th class="table-active" style="world-break:break-all; text-decoration:none;">메모리 제한
+                                </th>
+                            </tr>
+                            <tr>
+                                <td style="world-break:break-all;">{{ problem.memory_limit }} MB</td>
+                            </tr>
+                            <tr>
+                                <th class="table-active" style="world-break:break-all; text-decoration:none;">문제 이름</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="world-break:break-all;"><br>
+                                    {% with content=problem.body|safe %}
+                                        {{ content }}
+                                    {% endwith %}
+                                    <br></td>
+                            </tr>
+                            <tr>
+                                <th class="table-active" style="world-break:break-all; text-decoration:none;">입력</th>
+                            </tr>
+                            <tr>
+                                <td style="world-break:break-all;"><br>
+                                    {% with content=problem.input|safe %}
+                                        {{ content }}
+                                    {% endwith %}
+                                    <br></td>
+                            </tr>
+                            <tr>
+                                <th class="table-active" style="world-break:break-all; text-decoration:none;">출력</th>
+                            </tr>
+                            <tr>
+                                <td style="world-break:break-all;"><br>
+                                    {% with content=problem.output|safe %}
+                                        {{ content }}
+                                    {% endwith %}
+                                    <br></td>
+                            </tr>
+                            {% if examples %}
+                                {% for input, output in examples %}
+                                    <tr>
+                                        <th class="table-active" style="world-break:break-all; text-decoration:none;">입력
+                                            예시 {{ forloop.counter }}</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="world-break:break-all;"><br>{{ input|linebreaks }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="table-active" style="world-break:break-all; text-decoration:none;">출력
+                                            예시 {{ forloop.counter }}</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="world-break:break-all;"><br>{{ output|linebreaks }}<br></td>
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
+                            {% endif %}
+
+                        </table>
+                    </div>
+                </div>
+                <div class="d3" id="hr" style="height: 600px;"></div>
+                {% if user.is_authenticated %}
+                    <div class="d2" id="d2" style="height: 600px; margin: 0 auto;">
+                        <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}{% if cid %}&contest_id={{ cid }}{% endif %}" method="POST">
+                            {% csrf_token %}
+                            <table class="table table-sm table-active" id="table2" tellspacing="0"
+                                   style="width:544px; height : auto; word-break:break-all;">
+                                <thead>
+                                <tr>
+                                    <th style="vertical-align:middle; width: 50px;">언어</th>
+                                    <th style="width: 50px;">
+                                        <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                                            {% for lang in langs %}
+                                                <option value="{{ lang.id }}"
+                                                        {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </th>
+                                    <th style="vertical-align:middle; width: 50px;">테마</th>
+                                    <th style=" width: 50px;">
+                                        <select style="margin: 15px;" name="themes" id="themes"
+                                                onchange="selectTheme()">
+                                            <option value="0" selected>default</option>
+                                            <option value="1">abcdef</option>
+                                            <option value="2">duotone-dark</option>
+                                            <option value="3">dracula</option>
+                                            <option value="4">darcula</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+
+                            <textarea name="code" id="code"
+                                      style="margin: 30px;height: 350px; width:100%;margin-top: 15px;">{{ code.code }}</textarea>
+
+                            <script>
+
+                                var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                                    lineNumbers: true,
+                                    styleActiveLine: true,
+                                    matchBrackets: true,
+                                    mode: "text/x-csrc"
+                                });
+
+                                var input_lang = document.getElementById("lang");
+                                var input_theme = document.getElementById("themes");
+
+                                function selectLang() {
+                                    var value = input_lang.options[input_lang.selectedIndex].value;
+                                    var mode;
+
+                                    {% for lang in langs %}
+                                        if (value == {{ lang.id }}) {
+                                            if ('{{ lang }}' == 'C') {
+                                                mode = "text/x-csrc";
+                                            } else if ('{{ lang }}' == 'C++') {
+                                                mode = "text/x-c++src";
+                                            } else if ('{{ lang }}' == 'Java') {
+                                                mode = "text/x-java";
+                                            } else if ('{{ lang }}' == 'Python') {
+                                                mode = "python";
+                                            }
+                                        }
+                                    {% endfor %}
+
+                                    editor.setOption("mode", mode);
+                                }
+
+                                function selectTheme() {
+                                    var value = input_theme.options[input_theme.selectedIndex].value;
+                                    var theme;
+
+                                    if (value == 0) {
+                                        theme = 'default';
+                                    } else if (value == 1) {
+                                        theme = 'abcdef';
+                                    } else if (value == 2) {
+                                        theme = 'duotone-dark';
+                                    } else if (value == 3) {
+                                        theme = 'dracula';
+                                    } else if (value == 4) {
+                                        theme = 'darcula';
+                                    }
+
+                                    editor.setOption("theme", theme);
+                                    location.hash = "#" + theme;
+                                }
+
+                                var choice = (location.hash && location.hash.slice(1)) ||
+                                    (document.location.search &&
+                                        decodeURIComponent(document.location.search.slice(1)));
+                                if (choice) {
+                                    input.value = choice;
+                                    editor.setOption("theme", choice);
+                                }
+
+                                CodeMirror.on(window, "hashchange", function () {
+                                    var theme = location.hash.slice(1);
+                                    if (theme) {
+                                        input_theme.value = theme;
+                                        selectTheme();
+                                    }
+                                });
+
+                            </script>
+                            <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
+                            {% if cid %}
+                                <input type="hidden" name="cid" id="cid" value="{{ cid }}">
+                            {% endif %}
+                            <button class="btn btn-light" type="submit"
+                                    style="float:right; margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">
+                                제출
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="col-md-6">
+                        <br>로그인을 먼저 해주시기 바랍니다!
+                    </div>
+                {% endif %}
             </div>
         </div>
-        <div class="d3" id="hr" style="height: 600px;"></div>
-        {% if user.is_authenticated %}
-        <div class="d2" id="d2" style="height: 600px; margin: 0 auto;" >
-            {% if cid %}
-            <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}&contest_id={{ cid }}"
-                  method="POST">
-                {% else %}
-                <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}"
-                      method="POST">
-                    {% endif %}
-                    {% csrf_token %}
-                    <table class="table table-sm table-active" id = "table2" tellspacing="0" style="width:544px; height : auto; word-break:break-all;">
-                    <thead>
-                        <tr>
-                            <th style="vertical-align:middle; width: 50px;">언어</th>
-                            <th style="width: 50px;">
-                                <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                                    {% for lang in langs %}
-                                    <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
-                                    {% endfor %}
-                                </select>
-
-                            </th>
-                            <th style="vertical-align:middle; width: 50px;">테마</th>
-                            <th style=" width: 50px;">
-                                <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-                                    <option value="0" selected>default</option>
-                                    <option value="1">abcdef</option>
-                                    <option value="2">duotone-dark</option>
-                                    <option value="3">dracula</option>
-                                    <option value="4">darcula</option>
-                                </select>
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    </table>
-
-
-                <textarea name="code" id="code"
-                  style="margin: 30px;height: 350px; width:100%;margin-top: 15px;">{{ code.code }}
-                </textarea>
-
-                    <script>
-
-                      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-                        lineNumbers: true,
-                        styleActiveLine: true,
-                        matchBrackets: true,
-                        mode:"text/x-csrc"
-
-                      });
-
-                      var input_lang = document.getElementById("lang");
-                      var input_theme = document.getElementById("themes");
-
-                      function selectLang() {
-                        var values = input_lang.options[input_lang.selectedIndex].value;
-                        var mode;
-
-                        {% for lang in langs %}
-                            if(values == {{ lang.id }}){
-                                if('{{lang}}' == 'C'){
-                                mode = "text/x-csrc";
-                                }
-                                else if('{{lang}}' == 'C++'){
-                                mode = "text/x-c++src";
-                                }
-                                else if('{{lang}}' == 'Java'){
-                                mode = "text/x-java";
-                                }
-                                else if('{{lang}}' == 'Python'){
-                                mode = "python";
-                                }
-                            }
-                        {% endfor %}
-                        editor.setOption("mode", mode);
-
-                      }
-
-                      function selectTheme() {
-                        var values = input_theme.options[input_theme.selectedIndex].value;
-                        var theme;
-
-                        if(values == 0){
-                        theme = 'default';
-                        editor.setOption("theme", theme);
-                        }
-                        else if(values == 1){
-                        theme = 'abcdef';
-                        editor.setOption("theme", theme);
-                        }
-                        else if(values == 2){
-                        theme = 'duotone-dark';
-                        editor.setOption("theme", theme);
-                        }
-                        else if(values == 3){
-                        theme = 'dracula';
-                        editor.setOption("theme", theme);
-                        }
-                        else if(values == 4){
-                        theme = 'darcula';
-                        editor.setOption("theme", theme);
-                        }
-                        location.hash = "#" + theme;
-                      }
-
-                      var choice = (location.hash && location.hash.slice(1)) ||
-                                    (document.location.search &&
-                                    decodeURIComponent(document.location.search.slice(1)));
-                      if (choice) {
-                        input.value = choice;
-                        editor.setOption("theme", choice);
-                      }
-
-                      CodeMirror.on(window, "hashchange", function() {
-                        var theme = location.hash.slice(1);
-                        if (theme) { input_theme.value = theme; selectTheme(); }
-                      });
-
-                    </script>
-                    {% if cid %}
-                    <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
-                    <input type="hidden" name="cid" id="cid" value="{{ cid }}">
-                    {% else %}
-                    <input type="hidden" name="prob_id" id="prob_id" value="{{ problem.prob_id }}">
-                    {% endif %}
-                <button class="btn btn-light" type="submit"
-                        style="float:right; margin: 10px 10px 10px 10px; min-width: 45px; border-color: #E6E6E6">제출</button>
-            </form>
-        </div>
-        {% else %}
-        <div class="col-md-6">
-            <br>
-            로그인을 먼저 해주시기 바랍니다!
-        </div>
-        {% endif %}
-    </div>
-
-</div>
-{% else %}
-<h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
-{% endif %}
-</body>
+    {% else %}
+        <h4 style="align-content: center;"> 공개되지 않은 문제입니다! </h4>
+    {% endif %}
+    </body>
 
 {% endblock %}
