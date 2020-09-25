@@ -94,7 +94,11 @@ class Judge:
                     args.append(f'{self.DIR}')
 
                 for arg in shlex.split(str(self.lang.args)):
-                    args.append(arg)
+                    if str(self.lang) == 'Java' or 'Main' not in arg:
+                        args.append(arg)
+                    else:
+                        idx = arg.find('Main')
+                        args.append(f'{arg[:idx]}{self.DIR}/{arg[idx:]}')
 
                 print(args)
 
