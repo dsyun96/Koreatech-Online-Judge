@@ -3,26 +3,26 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/lib/codemirror.css' %}">
-<!--
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/lib/codemirror.css' %}">
+    <!--
 <link rel="stylesheet" href="{% static '/codemirror-5.51.0/doc/docs.css' %}">
 -->
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/dracula.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/darcula.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/abcdef.css' %}">
-<link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/duotone-dark.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/dracula.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/darcula.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/abcdef.css' %}">
+    <link rel="stylesheet" href="{% static '/codemirror-5.51.0/theme/duotone-dark.css' %}">
 
-<script src="{% static '/codemirror-5.51.0/lib/codemirror.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/xml/xml.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/javascript/javascript.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/clike/clike.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/css/css.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/mode/htmlmixed/htmlmixed.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/addon/edit/matchbrackets.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/addon/selection/active-line.js' %}"></script>
-<script src="{% static '/codemirror-5.51.0/doc/activebookmark.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/lib/codemirror.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/xml/xml.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/javascript/javascript.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/clike/clike.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/css/css.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/mode/htmlmixed/htmlmixed.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/addon/edit/matchbrackets.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/addon/selection/active-line.js' %}"></script>
+    <script src="{% static '/codemirror-5.51.0/doc/activebookmark.js' %}"></script>
 
-<!--Lint
+    <!--Lint
 <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
 <script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
 <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
@@ -32,170 +32,172 @@
 <script src="{% static '/codemirror-5.51.0/addon/lint/css-lint.js' %}"></script>
 -->
 
-<div class="container" style="margin: 15px auto">
+    <div class="container" style="margin: 15px auto">
 
-    {% if user.is_authenticated %}
-    <form action="{% url 'koj:ide' %}" id="ide-form" method="POST">
-        {% csrf_token %}
-        <table class="table table-sm table-active" tellspacing="0"
-               style=" height : auto; word-break:break-all;">
-            <thead>
-            <tr>
-                <th style="vertical-align:middle; width: 50px;">언어</th>
-                <th style="width: 50px;">
-                    <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+        {% if user.is_authenticated %}
+            <form action="{% url 'koj:ide' %}" id="ide-form" method="POST">
+                {% csrf_token %}
+                <table class="table table-sm table-active" tellspacing="0"
+                       style=" height : auto; word-break:break-all;">
+                    <thead>
+                    <tr>
+                        <th style="vertical-align:middle; width: 50px;">언어</th>
+                        <th style="width: 50px;">
+                            <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                                {% for lang in langs %}
+                                    <option value="{{ lang.id }}"
+                                            {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
+                        <th style="vertical-align:middle; width: 50px;">테마</th>
+                        <th style=" width: 50px;">
+                            <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
+                                <option value="0" selected>default</option>
+                                <option value="1">abcdef</option>
+                                <option value="2">duotone-dark</option>
+                                <option value="3">dracula</option>
+                                <option value="4">darcula</option>
+                            </select>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+
+                <textarea name="code" id="code" style="height:250px;"></textarea>
+                <script>
+
+                    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                        lineNumbers: true,
+                        styleActiveLine: true,
+                        matchBrackets: true,
+                        mode: "text/x-csrc"
+                    });
+
+                    var input_lang = document.getElementById("lang");
+                    var input_theme = document.getElementById("themes");
+
+                    function selectLang() {
+                        var value = input_lang.options[input_lang.selectedIndex].value;
+                        var mode;
+
                         {% for lang in langs %}
-                        <option value="{{ lang.id }}" {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+                            if (value == {{ lang.id }}) {
+                                if ('{{ lang }}' == 'C') {
+                                    mode = "text/x-csrc";
+                                } else if ('{{ lang }}' == 'C++') {
+                                    mode = "text/x-c++src";
+                                } else if ('{{ lang }}' == 'Java') {
+                                    mode = "text/x-java";
+                                } else if ('{{ lang }}' == 'Python') {
+                                    mode = "python";
+                                }
+                            }
                         {% endfor %}
-                    </select>
-                </th>
-                <th style="vertical-align:middle; width: 50px;">테마</th>
-                <th style=" width: 50px;">
-                    <select style="margin: 15px;" name="themes" id="themes" onchange="selectTheme()">
-                        <option value="0" selected>default</option>
-                        <option value="1">abcdef</option>
-                        <option value="2">duotone-dark</option>
-                        <option value="3">dracula</option>
-                        <option value="4">darcula</option>
-                    </select>
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-        </table>
+                        editor.setOption("mode", mode);
+                    }
 
-        <textarea name="code" id="code" style="height:250px;"></textarea>
-        <script>
+                    function selectTheme() {
+                        var value = input_theme.options[input_theme.selectedIndex].value;
+                        var theme;
 
-            var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-                lineNumbers: true,
-                styleActiveLine: true,
-                matchBrackets: true,
-                mode: "text/x-csrc"
-            });
+                        if (value == 0) {
+                            theme = 'default';
+                        } else if (value == 1) {
+                            theme = 'abcdef';
+                        } else if (value == 2) {
+                            theme = 'duotone-dark';
+                        } else if (value == 3) {
+                            theme = 'dracula';
+                        } else if (value == 4) {
+                            theme = 'darcula';
+                        }
 
-            var input_lang = document.getElementById("lang");
-            var input_theme = document.getElementById("themes");
+                        editor.setOption("theme", theme);
+                        location.hash = "#" + theme;
+                    }
 
-            function selectLang() {
-                var values = input_lang.options[input_lang.selectedIndex].value;
-                var theme;
-                var mode;
+                    var choice = (location.hash && location.hash.slice(1)) ||
+                        (document.location.search &&
+                            decodeURIComponent(document.location.search.slice(1)));
+                    if (choice) {
+                        input.value = choice;
+                        editor.setOption("theme", choice);
+                    }
 
-                if (values == 0) {
-                    mode = "text/x-csrc";
-                    editor.setOption("mode", mode);
-                } else if (values == 1) {
-                    mode = "text/x-c++src";
-                    editor.setOption("mode", mode);
-                } else if (values == 2) {
-                    mode = "text/x-java";
-                    editor.setOption("mode", mode);
-                } else if (values == 3) {
-                    mode = "python";
-                    editor.setOption("mode", mode);
-                }
-            }
-
-            function selectTheme() {
-                var values = input_theme.options[input_theme.selectedIndex].value;
-                var theme;
-
-                if (values == 0) {
-                    theme = 'default';
-                    editor.setOption("theme", theme);
-                } else if (values == 1) {
-                    theme = 'abcdef';
-                    editor.setOption("theme", theme);
-                } else if (values == 2) {
-                    theme = 'duotone-dark';
-                    editor.setOption("theme", theme);
-                } else if (values == 3) {
-                    theme = 'dracula';
-                    editor.setOption("theme", theme);
-                } else if (values == 4) {
-                    theme = 'darcula';
-                    editor.setOption("theme", theme);
-                }
-                location.hash = "#" + theme;
-            }
-
-            var choice = (location.hash && location.hash.slice(1)) ||
-                (document.location.search &&
-                    decodeURIComponent(document.location.search.slice(1)));
-            if (choice) {
-                input.value = choice;
-                editor.setOption("theme", choice);
-            }
-
-            CodeMirror.on(window, "hashchange", function() {
-                var theme = location.hash.slice(1);
-                if (theme) {
-                    input_theme.value = theme;
-                    selectTheme();
-                }
-            });
+                    CodeMirror.on(window, "hashchange", function () {
+                        var theme = location.hash.slice(1);
+                        if (theme) {
+                            input_theme.value = theme;
+                            selectTheme();
+                        }
+                    });
 
 
-        </script>
+                </script>
 
 
-    <table class="table table-sm table-active" tellspacing="0"
-               style=" height : auto; word-break:break-all;">
-            <thead>
-            <tr>
-                <th style="vertical-align:middle; width: 25px;">입력</th>
-                <td style="vertical-align:middle; width: 800px;"><textarea class="form-control" name="code" id="input" style="height:100px; width:900px;"></textarea></td>
-                <td style="text-align: center; vertical-align: middle;"><button class="btn btn-primary btn-lg" type="submit">RUN</button></td>
-            </tr>
-            <tr>
-                <th style="vertical-align:middle; width: 25px;">출력</th>
-                <td><textarea class="form-control" name="code" id="output" style="height:100px; width:900px; font-family:Courier;"></textarea></td>
-            </tr>
-            </thead>
-        </table>
-    </form>
-    {% else %}
-    <div class="col-md-6">
-        로그인을 먼저 해주시기 바랍니다!
+                <table class="table table-sm table-active" tellspacing="0"
+                       style=" height : auto; word-break:break-all;">
+                    <thead>
+                    <tr>
+                        <th style="vertical-align:middle; width: 25px;">입력</th>
+                        <td style="vertical-align:middle; width: 800px;"><textarea class="form-control" name="code"
+                                                                                   id="input"
+                                                                                   style="height:100px; width:900px;"></textarea>
+                        </td>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <button class="btn btn-primary btn-lg" type="submit">RUN</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="vertical-align:middle; width: 25px;">출력</th>
+                        <td><textarea class="form-control" name="code" id="output"
+                                      style="height:100px; width:900px; font-family:Consolas;"></textarea></td>
+                    </tr>
+                    </thead>
+                </table>
+            </form>
+        {% else %}
+            <div class="col-md-6">
+                로그인을 먼저 해주시기 바랍니다!
+            </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 
-<script>
+    <script>
 
-    var chatSocket = new WebSocket(
-        'ws://' + window.location.host +
-        '/ws/ide');
-
-    chatSocket.onmessage = function(e) {
-        var data = JSON.parse(e.data);
-        var output = data['output'];
-        document.querySelector('#output').value = output;
-    };
-
-    chatSocket.onclose = function(e) {
-        chatSocket = new WebSocket(
+        let ideSocket = new WebSocket(
             'ws://' + window.location.host +
             '/ws/ide');
-    };
 
-    document.querySelector('#code').focus();
-    document.querySelector('#ide-form').addEventListener('submit', (e) => {
-        e.preventDefault();
+        ideSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const output = data['output'];
+            document.querySelector('#output').value = output;
+        };
 
-        var code = document.querySelector('#code').value;
-        var lang = document.querySelector('#lang').value;
-        var input = document.querySelector('#input').value;
-        chatSocket.send(JSON.stringify({
-            'code': code,
-            'lang': lang,
-            'input': input,
-        }));
+        ideSocket.onclose = function (e) {
+            ideSocket = new WebSocket(
+                'ws://' + window.location.host +
+                '/ws/ide');
+        };
 
-        return false;
-    });
+        document.querySelector('#code').focus();
+        document.querySelector('#ide-form').addEventListener('submit', (e) => {
+            e.preventDefault();
 
-</script>
+            const code = document.querySelector('#code').value;
+            const lang = document.querySelector('#lang').value;
+            const input = document.querySelector('#input').value;
+            ideSocket.send(JSON.stringify({
+                'code': code,
+                'lang': lang,
+                'input': input,
+            }));
+        });
+
+    </script>
 
 {% endblock %}
