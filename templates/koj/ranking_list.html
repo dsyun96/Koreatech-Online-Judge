@@ -21,7 +21,7 @@
                             <td><a href="{% url 'common:user_detail' users.username %}">{{ users.username }}</a>
                             </td>
                             <td>
-                                <a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=AC">{{ users_ac }}</a>
+                                <a href="{% url 'koj:status' %}?user_id={{ users.username }}&result=0">{{ users_ac }}</a>
                             </td>
                             <td><a href="{% url 'koj:status' %}?user_id={{ users.username }}">{{ users_submit }}</a>
                             </td>
