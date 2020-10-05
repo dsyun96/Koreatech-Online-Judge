@@ -13,40 +13,54 @@
                 <div style="text-align:center">
                     <h3>{{ con.title }}</h3>
                 </div>
+                <h5 id="clock" style="color:gray;">00:00</h5>
 
                 <h5>Contest Start Time : {{ con.start_time }}</h5>
                 <h5>Contest End Time : {{ con.end_time }}</h5>
                 <h5>Available Language : {{ con.get_lang_display }}</h5>
+                <h5>{{ penalty_time }}</h5>
 
                 <div class="table-responsive">
-                    <table class="table">
+                    <table id="test" class="table">
                         <thead>
                         <tr>
                             <th style="width: 20px;">순위</th>
-                            <th style="width: 20px;">아이디</th>
-                            <th style="width: 20px;">푼 문제</th>
+                            <th style="width: 5px;">아이디</th>
+                            <th style="width: 80px;">푼 문제</th>
                             <th style="width: 20px;">걸린 시간</th>
                             {% for prob in con_prob %}
-                                <th style="width: 30px;">
+                                <th style="width: 50px;">
                                     <a href="{% url 'koj:problem_detail' prob.problem %}?contest_id={{ con.contest_id }}">
-
                                         {{ forloop.counter|to_char }}
                                     </a>
                                 </th>
                             {% endfor %}
-
-
                         </tr>
                         </thead>
                         <tbody>
-
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-
+                            {% for con, solved, times, times_sum in contest_ranking %}
+                            <tr>
+                                <th>{{ forloop.counter }}</th>
+                                <th>{{ con }}</th>
+                                <th>{{ solved }}</th>
+                                <th>{{ times_sum }}</th>
+                                {% for time, w in times %}
+                                    {% if time is None %}
+                                        {% if w != 0 %}
+                                             <th style="width: 50px;">(-{{ w }})</th>
+                                        {% else %}
+                                            <th style="width: 50px;">None</th>
+                                        {% endif %}
+                                    {% else %}
+                                        <th style="width: 50px;">{{ time|date:"d-H:i:s" }}
+                                        {% if w != 0 %}
+                                            (-{{ w }})
+                                        {% endif %}
+                                    </th>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -56,4 +70,77 @@
             </div>
         </section>
     {% endif %}
+    <script>
+        window.onload = function() {
+            var target = document.getElementById("test");
+            var tablerow = target.rows.length;
+            var tablecol = target.rows[0].cells.length;
+
+            var fastest;
+            var fastest_point;
+            var standard;
+
+            //if(target.rows[2].cells[7].innerText.substring(0,1)=='(')
+                //alert(target.rows[2].cells[7].innerText.substring(0,1));
+
+            for(var i =4 ; i<tablecol; i++) {
+                fastest=0;
+                fastest_point=0;
+                standard = 0
+
+                for (var j = 1; j < tablerow; j++) {
+                    if(target.rows[j].cells[i].innerText=='None')
+                        target.rows[j].cells[i].style.backgroundColor = "#F2F2F2"
+                    else target.rows[j].cells[i].style.backgroundColor = "#2EFE64"
+                    if (target.rows[j].cells[i].innerText.substring(0, 1) != '(') {
+                        if (standard == 0) {
+                            fastest = target.rows[j].cells[i].innerText.substring(0, 11);
+                            fastest_point = target.rows[j].cells[i];
+                            standard = 1
+                        }
+                        else {
+                            if (fastest > target.rows[j].cells[i].innerText.substring(0, 11)) {
+                                fastest = target.rows[j].cells[i].innerText.substring(0, 11);
+                                fastest_point = target.rows[j].cells[i];
+                            }
+                        }
+                    }
+                    else{
+                        target.rows[j].cells[i].style.backgroundColor = "#FA5858";
+                    }
+                }
+                fastest_point.style.backgroundColor = "#A9A9F5";
+            }
+
+            //fastest_point.style.backgroundColor ="#81F781"
+
+            if(target.rows[0].cells[0].innerText == '순위')
+                target.rows[0].cells[0].style.backgroundColor="#2EFE64";
+
+        }
+
+
+    var clockTarget = document.getElementById("clock");
+
+    function clock() {
+        var date = new Date();
+        var month = date.getMonth();
+        var clockDate = date.getDate();
+        var day = date.getDay();
+        var week = ['일', '월', '화', '수', '목', '금', '토'];
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        clockTarget.innerText = `${month + 1}월 ${clockDate}일 ${week[day]}요일` +
+            `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    }
+
+    function init() {
+        clock();
+        setInterval(clock, 1000);
+    }
+
+    init();
+
+    </script>
 {% endblock %}
