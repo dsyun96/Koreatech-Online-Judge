@@ -239,10 +239,10 @@ class Run:
             res = _judger.run(
                 max_cpu_time=1000,
                 max_real_time=2000,
-                max_memory=_judger.UNLIMITED if str(self.lang) == 'Java' else 128 * 2 ** 20,
+                max_memory=_judger.UNLIMITED if str(self.lang) == 'Java' else self.problem.memory_limit * 2 ** 20,
                 max_process_number=200,
                 max_output_size=131072,
-                max_stack=_judger.UNLIMITED if str(self.lang) == 'Java' else 128 * 2 ** 20,
+                max_stack=_judger.UNLIMITED if str(self.lang) == 'Java' else self.problem.memory_limit * 2 ** 20,
                 exe_path=f'/usr/bin/{self.lang.exe}',
                 input_path=f'{self.DIR}/input',
                 output_path=f'{self.DIR}/output',

@@ -205,6 +205,7 @@ Lint
                 <div class="d3" id="hr" style="height: 600px;"></div>
                 {% if user.is_authenticated %}
                     <div class="d2" id="d2" style="height: 600px; margin: 0 auto;">
+                       <th>{{ con.lang.all }}</th>
                         <form action="{% url 'koj:status' %}?user_id={{ user.get_username }}&prob_id={{ problem.prob_id }}{% if cid %}&contest_id={{ cid }}{% endif %}" method="POST">
                             {% csrf_token %}
                             <table class="table table-sm table-active" id="table2" tellspacing="0"
@@ -212,14 +213,25 @@ Lint
                                 <thead>
                                 <tr>
                                     <th style="vertical-align:middle; width: 50px;">언어</th>
-                                    <th style="width: 50px;">
-                                        <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
-                                            {% for lang in langs %}
-                                                <option value="{{ lang.id }}"
-                                                        {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </th>
+                                    {% if cid %}
+                                        <th style="width: 50px;">
+                                            <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                                                {% for lang in con.lang.all %}
+                                                    <option value="{{ lang.id }}"
+                                                            {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </th>
+                                    {% else %}
+                                        <th style="width: 50px;">
+                                            <select style="margin: 15px;" name="lang" id="lang" onchange="selectLang()">
+                                                {% for lang in langs %}
+                                                    <option value="{{ lang.id }}"
+                                                            {% if forloop.first %}selected{% endif %}>{{ lang }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </th>
+                                    {% endif %}
                                     <th style="vertical-align:middle; width: 50px;">테마</th>
                                     <th style=" width: 50px;">
                                         <select style="margin: 15px;" name="themes" id="themes"
