@@ -1,13 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import Problem, Submit, Testcase, Language
-from contest.models import Contest
+from contest.models import Contest, ConProblem
 from common.models import CustomUser
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .tasks import judge
 from .forms import ProblemForm, TestcaseForm
 from .infos import *
+from django.utils.safestring import mark_safe
+
 
 
 # Create your views here.
@@ -34,14 +36,16 @@ def problem_detail(request, prob_id):
     problem = get_object_or_404(Problem, prob_id=prob_id)
     code = ''
     cid = ''
-    con_lang = ''
+    con = ''
 
     if request.GET.get('id'):
         code = get_object_or_404(Submit, id=request.GET['id'])
 
     if request.GET.get('contest_id'):
         cid = request.GET.get('contest_id')
-        con_lang = Contest.objects.get(contest_id=request.GET['contest_id']).lang
+        con = Contest.objects.get(contest_id=request.GET['contest_id'])
+
+
 
     examples = []
     for example in Testcase.objects.filter(problem=Problem.objects.get(prob_id=prob_id)).filter(is_example=True):
@@ -59,7 +63,7 @@ def problem_detail(request, prob_id):
         'code': code,
         'examples': examples,
         'cid': cid,
-        'con_lang': con_lang,
+        'con': con,
         'langs': langs
     }
     return render(request, 'koj/problem_detail.html', context)
