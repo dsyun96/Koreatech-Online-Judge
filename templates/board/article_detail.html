@@ -4,96 +4,105 @@
 
 {% block content %}
 
-    <script type="text/javascript" language="javascript">
-        function update_article() {
-            const check = confirm("게시글을 수정하시겠습니까?");
-            if (check) location.href = '{% url 'board:article_update' article.article_id %}'
-        }
+<script type="text/javascript" language="javascript">
+  function update_article(){
+    var check = confirm("게시글을 수정하시겠습니까?");
+    if(check) location.href = '{% url 'board:article_update' article.article_id %}'
+  }
+  function delete_article(){
+    var check = confirm("게시글을 삭제하시겠습니까?");
+    if(check) location.href ='{% url 'board:article_delete' article.article_id %}'
+  }
+</script>
 
-        function delete_article() {
-            const check = confirm("게시글을 삭제하시겠습니까?");
-            if (check) location.href = '{% url 'board:article_delete' article.article_id %}'
-        }
-    </script>
+<script type="text/javascript" language="javascript">
 
-    <script type="text/javascript" language="javascript">
-
-    </script>
+</script>
 
 
-    <div class="container">
-        <div class="row">
-            <div class="table-responsive" style="margin-top: 15px;">
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>제목 : {{ article.title }}</th>
-                        <th>IP : {{ article.ip_address }}</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><br>
-                            {% with content=article.content|safe %}
-                                {{ content|linebreaksbr }}
-                            {% endwith %}
-                            <br></td>
-                    </tr>
-                    <tr></tr>
-                    </tbody>
-                </table>
-
-                <button type="button" class="btn btn-primary" style="float:left;"
-                        onclick="location.href = '{% url 'board:article_rcmd' article.article_id %}'">추천
-                </button>
-
-                <button type="button" class="btn btn-primary" style="float:left;"
-                        onclick="update_article();">수정하기
-                </button>
-                <button type="button" class="btn btn-primary" style="float:left;"
-                        onclick="delete_article();">삭제하기
-                </button>
-                <button type="button" class="btn btn-primary" style="float:left;"
-                        onclick="location.href ='{% url 'board:article_list' %}'">돌아가기
-                </button>
-                <!-- location.href ='{% url 'board:article_list' %}' -->
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="table-responsive" style="max-width:1100px; margin: 45px auto 0 auto;">
+            <!--{% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}-->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th colspan="4">{{ article.title }}</th>
+                </tr>
+                <tr>
+                    <td>{{ article.author }}</td>
+                    <td>{{ article.created_at }}</td>
+                    <td>조회 : {{ article.views }}</td>
+                    <td>추천 : {{ article.recommend }}</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="4"><br>
+                        {% with content=article.content|safe %}
+                        {{ content|linebreaksbr }}
+                        {% endwith %}
+                    </td>
+                </tr>
+                <tr class="table-borderless table-sm">
+                    <td colspan="4" style="text-align : center; vertical; vertical-align: middle;">
+                        <button type="button" class="btn btn-light" style="margin: 0 auto"
+                    onclick="location.href = '{% url 'board:article_rcmd' article.article_id %}'">추천</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <br> <br>
-    {% if user.is_authenticated %}
-        <div class="container">
-            <div class="row">
-                <div class="table-responsive" style="margin-top: 15px;">
-                    <hr>
-                    <form method="post" action="{% url 'board:comment_write' article.article_id %}">
-                        {% csrf_token %}
-                        {% for i in article.comment_set.all %}
-                            <p> ->{{ i.author }}&nbsp&nbsp {{ i }} <a
-                                    href="{% url 'board:comment_delete' i.id article.article_id %}">삭제</a></p>
-                            <hr>
-                        {% endfor %}
+</div>
 
-                        {{ comment }}
-                        <input type="submit">
-                    </form>
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <div class="container">
+{% if user.is_authenticated %}
+<div class="container">
+    <div class="row">
+        <div class="table-responsive" style="max-width:1100px; margin: 0 auto 0 auto;">
             <hr>
-            로그인을 먼저 해주시기 바랍니다!
-            <br><br>
+            <form method="post" action="{% url 'board:comment_write' article.article_id %}">
+                {% csrf_token %}
+                <table class="table">
+                    {% for i in article.comment_set.all %}
+                    <tr>
+                        <td colspan="2">{{ i.author }}&nbsp&nbsp {{ i }}
+                            <a href="{% url 'board:comment_delete' i.id article.article_id %}">삭제</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td> {{ comment.content }} </td>
+                        <td style="text-align : center; vertical; vertical-align: middle;"><button type="submit" class="btn btn-light">댓글쓰기</button></td>
+                    </tr>
+                </table>
+            </form>
         </div>
-    {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="container">
+  <hr>
+          로그인을 먼저 해주시기 바랍니다!
+          <br><br>
+</div>
+{% endif %}
+<div class="container">
+    <button type="button" class="btn btn-light" style="margin: 0 15px 45px 15px"
+                    onclick="location.href ='{% url 'board:article_list' %}'">글목록</button>
+
+    <button type="button" class="btn btn-light" style="margin: 0 15px 45px 15px"
+                    onclick="update_article();">수정</button>
+    <button type="button" class="btn btn-light" style="margin: 0 15px 45px 15px"
+                    onclick="delete_article();">삭제</button>
+
+</div>
+
 
 {% endblock %}

@@ -2,46 +2,34 @@
 
 {% block content %}
 
-    <div class="container">
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.media }}
-            {{ form.as_p }}
-            <!--
-          <form method = "POST" action=".">
-                {% csrf_token %}
-              {% for field in form %}
-              <div class ="form-group">
-                  <label for = "{{ field.id_for_label }}">{{field.label}}</label>
-                  {{ field.field.widget.name }}
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        {{form.media}}
+        <div class="table-responsive" style="margin-top: 45px;">
+            <table class="table" style="max-width: 850px; margin: 0 auto 0 auto; ">
+                <tbody>
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">제목</td>
+                    <td colspan="5">{{form.title}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">글머리</td>
+                    <td colspan="5">{{form.head}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 110px; text-align:right;">내용</td>
+                    <td colspan="5">{{form.content}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-light" style="float:right; margin: 30px 110px 30px 0;">수정하기</button>
+        </div>
+        <!--
+        <button type ="button" class = "btn btn-primary" style = "float:left;" onclick = "location.href ='/board/list/'">돌아가기</button>
+        -->
+    </form>
 
-                  {% if field.name == 'content' %}
-                    {{field.content}}
-                 <textarea class = "form-control" name = "{{ field.name }}" placeholder = "{{field.label}}"></textarea>
-
-                  {% elif field.name == 'head' %}
-                   <select name="{{ field.name }}">
-                      <option value="N">자유</option>
-                      <option value="Q">질문</option>
-                      <option value="I">정보</option>
-                   </select>
-
-                 {% else %}
-                 <input type = "{{ field.field.widget.input_type }}" class ="form-control" id ="{{field.id_for_label}}"
-                 placeholder = "{{field.label}}" name = "{{field.name}}">
-                 {% endif %}
-               </div>
-            {% if field.errors %}
-            <span style = "color:red">{{field.errors}}</span>
-            {% endif %}
-            {% endfor %}
-            -->
-            <input class="btn btn-dark" type="submit" value="수정하기">
-            <!--
-            <button type ="button" class = "btn btn-primary" style = "float:left;" onclick = "location.href ='/board/list/'">돌아가기</button>
-            -->
-        </form>
-
-    </div>
+</div>
 
 {% endblock %}

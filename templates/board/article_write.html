@@ -4,35 +4,34 @@
 
 {% block content %}
 
-    <!--
+<!--
 {% if user.is_authenticated %}
 -->
-        <div class="container">
-            <form method="POST" action="{% url 'board:article_write' %}">
-                {% csrf_token %}
-                <div class="table-responsive" style="margin-top: 45px;">
-                    <table class="table table-sm" style="max-width: 850px; margin: 0 auto 0 auto; ">
-                        <tbody>
-                        <tr>
-                            <td style="width: 110px; text-align:right; vertical-align:middle;">제목</td>
-                            <td colspan="5">{{ form.title }}</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 110px; text-align:right; vertical-align:middle;">글머리</td>
-                            <td colspan="5">{{ form.head }}</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 110px; text-align:right;">내용</td>
-                            <td colspan="5">{{ form.content }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-light" style="float:right; margin: 30px 110px 0 0;">글쓰기
-                    </button>
-                </div>
-            </form>
+<div class="container">
+    <form method="POST" action="{% url 'board:article_write' %}">
+        {% csrf_token %}
+        <div class="table-responsive" style="margin-top: 45px;">
+            <table class="table" style="max-width: 850px; margin: 0 auto 0 auto; ">
+                <tbody>
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">제목</td>
+                    <td colspan="5">{{form.title}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 110px; text-align:right; vertical-align:middle;">글머리</td>
+                    <td colspan="5">{{form.head}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 110px; text-align:right;">내용</td>
+                    <td colspan="5">{{form.content}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-light" style="float:right; margin: 30px 110px 0 0;">글쓰기</button>
         </div>
-        <!--
+    </form>
+</div>
+<!--
 {% else %}
 <div class="container">
 
@@ -40,5 +39,5 @@
           <br><br>
 </div>
 -->
-    {% endif %}
+{% endif %}
 {% endblock %}
